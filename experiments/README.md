@@ -14,7 +14,7 @@ The summary of contests are:
 
 **Overview**: Comparsion across different methods for demonstration selection selection for In-Context Learning to evaluate the performance in a multi-tasking fo setting for different *k* number of examples when all datast is available and when just the data related to the specific task is available
 
-**Data**: TBD
+**Data**: 900 examples in a pool for each task from Instruction Induction dataset that has one and only return + evaluation with 100 examples per task
 
 **Methodology**: TBD
 
