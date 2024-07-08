@@ -2,7 +2,7 @@ import torch
 from langchain_huggingface.llms import HuggingFacePipeline
 from langchain_core.prompts import PromptTemplate
 from langchain_core.prompts.few_shot import FewShotPromptTemplate
-from transformers import AutoModelForCausalLM, AutoTokenizer,  pipeline
+from transformers import AutoModelForCausalLM, AutoTokenizer,  pipeline,  BitsAndBytesConfig
 from scipy.spatial.distance import cosine
 import datetime
 import pandas as pd
@@ -10,7 +10,7 @@ import re
 import numpy as np
 
 class Sampler:
-    def __init__(self, access_token: str, model_id: str, is_with_class: bool) -> None:
+    def __init__(self, access_token: str, model_id: str, is_with_class: bool, model_kwargs: dict = None, **kwargs) -> None:
         """
         Initializes a new instance of the Sampler class.
 
@@ -21,14 +21,24 @@ class Sampler:
         Returns:
             None
         """
+
         self.access_token = access_token
-        self.model_kwargs = {"torch_dtype": torch.bfloat16}
         self.model_id = model_id
         self.train_data = pd.read_pickle("data/pool.pickle").reset_index()
+
+
         if is_with_class:
             self.test_data = pd.read_pickle("data/class_distances.pickle").reset_index()
         else:
             self.test_data = pd.read_pickle("data/distances.pickle").reset_index()
+
+        self.model_kwargs = model_kwargs
+
+        if "device" in kwargs:
+            self.device = kwargs["device"]
+        else:
+            self.device = None
+
 
 
 
@@ -94,13 +104,37 @@ class Sampler:
         Returns:
             None
         """
-        pipe = HuggingFacePipeline.from_model_id(
-            model_id=self.model_id,
-            task="text-generation",
-            device_map="auto",
-            model_kwargs=self.model_kwargs,
-            pipeline_kwargs={"max_new_tokens": 25},
-        )
+        
+
+        tokenizer = AutoTokenizer.from_pretrained(self.model_id)
+
+        if "quantization_config" in self.model_kwargs.keys():
+            model = AutoModelForCausalLM.from_pretrained(self.model_id, quantization_config=self.model_kwargs["quantization_config"])
+        else:
+            model = AutoModelForCausalLM.from_pretrained(self.model_id)
+        
+        if self.device is not None:
+            hg_pipe = pipeline("text-generation",
+                                model=model, 
+                                tokenizer=tokenizer, 
+                                device=self.device, 
+                                max_new_tokens=25, 
+                                model_kwargs=self.model_kwargs)
+        
+        else:
+            hg_pipe = pipeline("text-generation", 
+                               model=model, 
+                               tokenizer=tokenizer, 
+                               device_map="auto", 
+                               max_new_tokens=25, 
+                               model_kwargs=self.model_kwargs)
+
+
+        pipe = HuggingFacePipeline(pipeline=hg_pipe)
+        
+
+
+        
         return pipe
     
     def sample_data(self, df, k_samples, idx) -> pd.DataFrame:
@@ -116,16 +150,14 @@ class Sampler:
         "predicted_output": [],
         "possible_outputs": []
         }
+        llm = self.create_llm()
 
         pattern = r'\n Output:[^\n]*'
         for i in range(0, len(self.test_data)):
             print(f"Iteration {i}")
             print(datetime.datetime.now())
             examples =  self.sample_data(self.train_data, k, i)
-            print(len(examples))
             prompt = self.generate_prompt(examples)
-            print(prompt)
-            llm = self.create_llm()
             print(llm)
             chain = prompt | llm
 
@@ -138,7 +170,6 @@ class Sampler:
             results["output"].append( self.test_data.loc[i]["output"])
             results["predicted_output"].append(predicted_output)
             results["possible_outputs"].append(self.test_data.loc[i]["possible_outputs"])
-            break
 
         return pd.DataFrame(results)
 
@@ -185,12 +216,4 @@ class KateSampler(Sampler):
             samples.append(sample)
 
         return samples
-
-
-
-    
-    
-
         
-
-
