@@ -15,7 +15,7 @@ def calculate_distances(is_class_specific: bool):
         for j in range(0, len(train_data)):
 
             if is_class_specific:
-                if train_data.loc[j]["task"] != test_data.loc[i]["task"]:
+                if train_data.loc[j]["task"] == test_data.loc[i]["task"]:
                     emb_train = train_data.loc[j]["input_encoding"]
                     emb_test = test_data.loc[i]["input_encoding"]
                     dist_i.append(cosine(emb_test, emb_train))
@@ -36,5 +36,5 @@ def calculate_distances(is_class_specific: bool):
 print("Starting first")
 calculate_distances(is_class_specific=True)
 
-print("Starting second")
-calculate_distances(is_class_specific=False)
+# print("Starting second")
+# calculate_distances(is_class_specific=False)
