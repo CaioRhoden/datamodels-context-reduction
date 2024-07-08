@@ -1,3 +1,9 @@
-jupyterlab==4.2.0
-pandas==2.2.2
-plotly==5.22.0
+jupyterlab
+pandas
+plotly
+langchain_huggingface
+langchain
+transformers
+huggingface_hub
+python-dotenv
+bitsandbytes
