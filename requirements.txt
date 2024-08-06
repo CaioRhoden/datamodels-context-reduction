@@ -7,3 +7,7 @@ transformers
 huggingface_hub
 python-dotenv
 bitsandbytes
+evaluate
+nltk
+absl-py
+rouge_score
