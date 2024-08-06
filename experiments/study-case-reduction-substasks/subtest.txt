@@ -1,0 +1,6 @@
+- active_to_passive: "starting with professor"
+
+- diff with 3 being subtracted
+
+
+- singular to plural: from "y" to "ies"

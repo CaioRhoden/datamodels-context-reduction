@@ -1,0 +1,19 @@
+k,task,input,output,predicted_output,possible_outputs
+8,active_to_passive,The professors stopped the senators.,The senators were stopped by the professors.,"
+ Output: The senators were stopped by the professors.",
+8,active_to_passive,The professors avoided the artists.,The artists were avoided by the professors.,"
+ Output: The artists were avoided by the professors.",
+8,active_to_passive,The professors thanked the lawyers.,The lawyers were thanked by the professors.,"
+ Output: The lawyers were thanked by the professors.",
+8,orthography_starts_with,Fred talked about everything before Rusty did talk about something. [d],did,"
+ Output: before",
+8,orthography_starts_with,The students drove cars. [d],drove,"
+ Output: students",
+8,orthography_starts_with,There was some particular dog who saved every family. [d],dog,"
+ Output: dog",
+8,singular_to_plural,journey,journeys,"
+ Output: journeys",
+8,singular_to_plural,guy,guys,"
+ Output: guys",
+8,singular_to_plural,roadway,roadways,"
+ Output: roadways",
