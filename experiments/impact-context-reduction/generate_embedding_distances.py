@@ -19,10 +19,13 @@ def calculate_distances(is_class_specific: bool):
                     emb_train = train_data.loc[j]["input_encoding"]
                     emb_test = test_data.loc[i]["input_encoding"]
                     dist_i.append(cosine(emb_test, emb_train))
+                else:
+                    dist_i.append(1)
             else:
                 emb_train = train_data.loc[j]["input_encoding"]
                 emb_test = test_data.loc[i]["input_encoding"]
                 dist_i.append(cosine(emb_test, emb_train))
+        
 
         distances.append(np.array(dist_i))
 

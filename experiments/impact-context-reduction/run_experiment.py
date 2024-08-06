@@ -6,13 +6,14 @@ import torch
 from transformers import BitsAndBytesConfig
 
 
-def main(model_id, sampler_name, k, with_class, device):
+def main(model_id, sampler_name, k, with_class, device, alias):
     
     print(f"Model ID: {model_id}")
     print(f"Sampler: {sampler_name}")
     print(f"k: {k}")
     print(f"with_class: {with_class}")
     print(f"Device: {device}")
+    print(f"Alias: {alias}")
 
     load_dotenv()
     access_token = os.getenv("HUGGINGFACE_TOKEN")
@@ -33,9 +34,9 @@ def main(model_id, sampler_name, k, with_class, device):
     print("Running experiment...")
     results = sampler.run(k=k)
     if with_class:
-        results.to_csv(f"data/results_{sampler_name}_{k}_in_class.csv", index=False)
+        results.to_csv(f"data/results_{alias}_{sampler_name}_{k}_in_class.csv", index=False)
     else:
-        results.to_csv(f"data/results_{sampler_name}_{k}_general.csv", index=False)
+        results.to_csv(f"data/results_{alias}_{sampler_name}_{k}_general.csv", index=False)
         print("Saved")
     print("Done!")
     return
@@ -49,9 +50,11 @@ if __name__ == "__main__":
     parser.add_argument("-k", "--k", type=int, help="An integer k.")
     parser.add_argument('--with_class', dest='with_class', action='store_true', help='A boolean flag')
     parser.add_argument("-d", "--device", type=str, help="Flag indicating if it's using qunatization.")
+    parser.add_argument("-a", "--alias", type=str, help="The model ID (string).")
+
     parser.set_defaults(with_class=False)
 
 
     args = parser.parse_args()
 
-    main(args.model_id, args.sampler, args.k, args.with_class, args.device)
+    main(args.model_id, args.sampler, args.k, args.with_class, args.device, args.alias)
