@@ -1,0 +1,19 @@
+,model,method,k,experiment_type,input,output,predicted_output,possible_outputs,rouge1
+0,gemma2-9,kate,8,inclass,The professor mentioned the artist.,The artist was mentioned by the professor.,,,0.0
+1,gemma2-9,kate,8,inclass,The presidents recommended the lawyer.,The lawyer was recommended by the presidents.,,,0.0
+2,gemma2-9,kate,8,inclass,The professors thanked the tourists.,The tourists were thanked by the professors.,,,0.0
+3,gemma2-9,kate,8,inclass,The scientist contacted the judge.,The judge was contacted by the scientist.,,,0.0
+4,gemma2-9,kate,8,inclass,The doctor stopped the managers.,The managers were stopped by the doctor.,,,0.0
+5,gemma2-9,kate,8,inclass,The author stopped the senator.,The senator was stopped by the author.,,,0.0
+6,gemma2-9,kate,8,inclass,The authors mentioned the lawyer.,The lawyer was mentioned by the authors.,,,0.0
+7,llama3,kate,32,in_class,The professor mentioned the artist.,The artist was mentioned by the professor.,,,0.0
+8,llama3,kate,32,in_class,The presidents recommended the lawyer.,The lawyer was recommended by the presidents.,,,0.0
+9,llama3,kate,32,in_class,The professors thanked the tourists.,The tourists were thanked by the professors.,,,0.0
+10,llama3,kate,32,in_class,The scientist contacted the judge.,The judge was contacted by the scientist.,,,0.0
+11,llama3,kate,32,in_class,The doctor stopped the managers.,The managers were stopped by the doctor.,,,0.0
+12,llama3,kate,32,in_class,The author stopped the senator.,The senator was stopped by the author.,,,0.0
+13,llama3,kate,32,in_class,The authors mentioned the lawyer.,The lawyer was mentioned by the authors.,,,0.0
+14,llama3,kate,32,in_class,The actor believed the senators.,The senators were believed by the actor.,,,0.0
+15,llama3,kate,32,in_class,The judges contacted the athletes.,The athletes were contacted by the judges.,,,0.0
+16,llama3,kate,32,in_class,The judges helped the professor.,The professor was helped by the judges.,,,0.0
+17,llama3,kate,32,in_class,The authors supported the scientist.,The scientist was supported by the authors.,,,0.0
