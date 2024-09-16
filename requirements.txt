@@ -11,3 +11,4 @@ evaluate
 nltk
 absl-py
 rouge_score
+langchain_community
