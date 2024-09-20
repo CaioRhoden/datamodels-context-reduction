@@ -1,6 +1,6 @@
 from src.dataloader.BaseDataloader import BaseDataloader
 # from src.vector_store import BaseVectorStore
-from langchain.embeddings import HuggingFaceBgeEmbeddings
+# from langchain.embeddings import HuggingFaceBgeEmbeddings
 from src.llms import BaseLLM
 import torch
 from langchain.prompts import PromptTemplate
@@ -78,7 +78,7 @@ class BasePipeline():
         
 
 
-        return self.llm.pipe().invoke(prompt)
+        return self.llm.run(prompt)
 
 
 
@@ -89,6 +89,7 @@ class BasePipeline():
         tasks, inputs, outputs, predicted = [], [], [], []
 
         for i in range(checkpoint, len(test_data)):
+            print(f"Step {i} of {len(test_data)}")
             tasks.append( test_data.loc[i]["task"])
             inputs.append( test_data.loc[i]["input"])
             outputs.append( test_data.loc[i]["output"])
@@ -99,7 +100,7 @@ class BasePipeline():
             if i % checkpoints_step == 0 and i > checkpoint:
 
                 df = pd.DataFrame({"task": tasks, "input": inputs, "output": outputs, "predicted": predicted})
-                df.to_pickle(f"../data/runs_id/{run_tag}/{i - checkpoints_step}_{i}.pickle")
+                df.to_pickle(f"../../data/runs_id/{run_tag}/{i - checkpoints_step}_{i}.pickle")
                 tasks, inputs, outputs, predicted = [], [], [], []
 
 
