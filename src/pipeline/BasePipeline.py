@@ -1,11 +1,15 @@
 from src.dataloader.BaseDataloader import BaseDataloader
+# from src.vector_store import BaseVectorStore
 from langchain.embeddings import HuggingFaceBgeEmbeddings
-from langchain.vectorstores import Chroma
+from src.llms import BaseLLM
+import torch
+from langchain.prompts import PromptTemplate
+import pandas as pd
 
 
-# from ..retriever import BaseRetriever
+
+from src.retriever import BaseRetriever
 # from ..models import BaseModel
-# from ..vector_stores import BaseVectorStore
 
 
 
@@ -14,40 +18,92 @@ class BasePipeline():
 
     
     def __init__(
-                    self,
+                    self, 
+                    retriever: BaseRetriever,
+                    llm: BaseLLM,
                     dataloader: BaseDataloader,
-                    # retriever: BaseRetriever,
-                    # model: BaseModel,
                     device: str | None = "cpu",
-                    vector_store: bool | None = False
                 ) -> None:
         
+        torch.set_default_device(device)
         self.device = device
+
         self.dataloader = dataloader,
-        self.documents = dataloader.get_data()
+        self.documents = dataloader.get_documents()
+
+        self.retriever = retriever
+        self.llm = llm
+    
 
 
-        self.embeddingModel = HuggingFaceBgeEmbeddings(model_name="dunzhang/stella_en_400M_v5", model_kwargs={"device": self.device, "trust_remote_code":True}, encode_kwargs = {"normalize_embeddings": True})
+
+
+
         
-        if not vector_store:
-            self.vector_store = Chroma.from_documents(self.documents, embedding=self.embeddingModel, persist_directory="../data/chroma")
-        
-        else:
-            self.vector_store = Chroma(persist_directory="../data/chroma", embedding_function=self.embeddingModel)
 
         # self.retriever = retriever,
         # self.vector_store = vector_store,
         # self.model = model
 
+    def setup_context(self, documents: list) -> PromptTemplate:
 
+        context = "\n".join([f"{doc.page_content} \n" for doc in documents])
+
+
+
+        return context
 
 
 
     
-    def run(self, input: str) -> str:
+    def run(self, input: str, k: int) -> str:
+
+        
+        retrieved_documents = self.retriever.retrieve(self.documents, k, input)
+        context = self.setup_context(retrieved_documents)
+
+        template = """
+            Fill the expected Output
+        
+            Examples:
+            {context}
+
+            Input:
+            {input}
+
+            Output:
+        """
+        prompt = PromptTemplate.from_template(template).format(context=context, input=input)
+
+        
 
 
-        return "AHoy"
+        return self.llm.pipe().invoke(prompt)
+
+
+
+        
     
-    def evaluate(self):
-        pass
+    def run_tests(self, test_data: pd.DataFrame, checkpoints_step: int, checkpoint: int, k: int, run_tag: str) -> None:
+
+        tasks, inputs, outputs, predicted = [], [], [], []
+
+        for i in range(checkpoint, len(test_data)):
+            tasks.append( test_data.loc[i]["task"])
+            inputs.append( test_data.loc[i]["input"])
+            outputs.append( test_data.loc[i]["output"])
+
+
+            predicted.append(self.run(test_data.loc[i]["input"], k))
+
+            if i % checkpoints_step == 0 and i > checkpoint:
+
+                df = pd.DataFrame({"task": tasks, "input": inputs, "output": outputs, "predicted": predicted})
+                df.to_pickle(f"../data/runs_id/{run_tag}/{i - checkpoints_step}_{i}.pickle")
+                tasks, inputs, outputs, predicted = [], [], [], []
+
+
+
+
+
+

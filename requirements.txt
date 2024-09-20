@@ -13,3 +13,4 @@ absl-py
 rouge_score
 langchain_community
 xformers
+chromadb
