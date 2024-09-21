@@ -18,5 +18,4 @@ class BM25(BaseRetriever):
 
         
         self._create_retriver(docs, k)
-        print(self.retriever)
         return self.retriever.invoke(input)

@@ -18,7 +18,6 @@ def run_classical_retriever() -> None:
 
     test = pd.read_csv('../../data/instruction-induction-data/raw/execute_tasks_examples.csv')
 
-    print("ALOHAAA")
 
     pipe.run_tests(
         test_data = test,

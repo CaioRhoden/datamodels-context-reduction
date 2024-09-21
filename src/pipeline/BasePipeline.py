@@ -102,7 +102,9 @@ class BasePipeline():
                 df = pd.DataFrame({"task": tasks, "input": inputs, "output": outputs, "predicted": predicted})
                 df.to_pickle(f"../../data/runs_id/{run_tag}/{i - checkpoints_step}_{i}.pickle")
                 tasks, inputs, outputs, predicted = [], [], [], []
-
+                
+        df = pd.DataFrame({"task": tasks, "input": inputs, "output": outputs, "predicted": predicted})
+        df.to_pickle(f"../../data/runs_id/{run_tag}/{i}_last.pickle")
 
 
 
