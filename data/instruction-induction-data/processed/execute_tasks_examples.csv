@@ -1,0 +1,2101 @@
+task,input,output,possible_outputs
+sentence_similarity,Sentence 1: the man is catching a ball Sentence 2: A man is kicking a ball.,3 - probably,
+sentence_similarity,Sentence 1: A man is cutting a potato. Sentence 2: A woman plays an electric guitar.,0 - definitely not,
+sentence_similarity,Sentence 1: A woman is carrying a boy. Sentence 2: A woman is carrying her baby.,2 - possibly,
+sentence_similarity,Sentence 1: A woman is riding a horse along a perimeter. Sentence 2: A dog is riding a skateboard.,1 - probably not,
+sentence_similarity,Sentence 1: At least 38 Morsi supporters die in clashes Sentence 2: Dozens of Morsi supporters killed in Egypt clashes,4 - almost perfectly,
+sentence_similarity,Sentence 1: A man plays the violin. Sentence 2: A man is playing violin.,5 - perfectly,
+sentence_similarity,Sentence 1: A girl is riding a horse. Sentence 2: The girl trotted the horse.,4 - almost perfectly,
+sentence_similarity,Sentence 1: A man and a woman walk through the woods. Sentence 2: The man and woman are walking.,3 - probably,
+sentence_similarity,Sentence 1: This dog is jumping through the water. Sentence 2: Two dogs running through the water on a beach.,2 - possibly,
+sentence_similarity,Sentence 1: A smiling woman holding a small baby. Sentence 2: Two smiling women holding a baby.,3 - probably,
+sentence_similarity,Sentence 1: A man is climbing a rope. Sentence 2: A man climbs a rope.,5 - perfectly,
+sentence_similarity,Sentence 1: A band is performing on a stage. Sentence 2: A band is playing onstage.,5 - perfectly,
+sentence_similarity,Sentence 1: The girl sang into a microphone. Sentence 2: The lady sang into the microphone.,2 - possibly,
+sentence_similarity,Sentence 1: A dog and a red ball in the air. Sentence 2: A dog digs a hole in a yard.,1 - probably not,
+sentence_similarity,Sentence 1: House blaze kills 7 in northern Pakistan Sentence 2: US drone strike kills 8 in NW Pakistan,1 - probably not,
+sentence_similarity,Sentence 1: Australia cuts rates to record low Sentence 2: Australia cuts interest rates to record low,5 - perfectly,
+sentence_similarity,"Sentence 1: Spanish jobless rate soars past 25 per cent Sentence 2: US jobless rate seen rising, offering Obama no relief",1 - probably not,
+sentence_similarity,Sentence 1: Attack kills 12 in Afghanistan Sentence 2: NATO: 3 troops killed in Afghanistan attack,2 - possibly,
+sentence_similarity,Sentence 1: Colorado shooting suspect was in therapy Sentence 2: Lawyers: Colo. shooting suspect is mentally ill,4 - almost perfectly,
+sentence_similarity,Sentence 1: A man is playing the drums. Sentence 2: A man is playing guitar.,2 - possibly,
+sentence_similarity,Sentence 1: A woman is putting her baby in a waste bin. Sentence 2: The woman is poking holes in the potato.,0 - definitely not,
+sentence_similarity,Sentence 1: A puppy is trying to come out from the sink. Sentence 2: The puppy tried to get out of the tub.,3 - probably,
+sentence_similarity,Sentence 1: A woman is peeling an orange. Sentence 2: A woman cuts off a small piece of lemon rind.,2 - possibly,
+sentence_similarity,Sentence 1: The man is playing the guitar. Sentence 2: A man is playing a guitar.,5 - perfectly,
+sentence_similarity,Sentence 1: Breivik complains of 'ridicule' Sentence 2: Breivik: Jail term 'ridiculous',2 - possibly,
+sentence_similarity,Sentence 1: Five dead in Pakistan suicide blast Sentence 2: Over 120 dead in Pakistan factory blaze,1 - probably not,
+sentence_similarity,Sentence 1: Two people sitting on a large motorcycle. Sentence 2: Two eagles sitting on a long branch.,0 - definitely not,
+sentence_similarity,Sentence 1: A plane rides on a road. Sentence 2: An airplane moves along a runway.,3 - probably,
+sentence_similarity,Sentence 1: Motorists killed after Japanese tunnel collapses Sentence 2: Cars trapped in tunnel collapse outside Tokyo,2 - possibly,
+sentence_similarity,Sentence 1: South Africa train crash kills at least 19 Sentence 2: South Africa train crash kills 26,4 - almost perfectly,
+sentence_similarity,Sentence 1: One man is breaking cement on another man's chest. Sentence 2: A man breaks cinder blocks on another man.,4 - almost perfectly,
+sentence_similarity,Sentence 1: Libya asks UN Security Council for help Sentence 2: Kerry Calls On UN Security Council to Act on Syria,2 - possibly,
+sentence_similarity,Sentence 1: The cook is kneading the flour. Sentence 2: A woman is kneading tortilla dough.,3 - probably,
+sentence_similarity,Sentence 1: Roadside bomb kills 10 Afghan civilians: police Sentence 2: Roadside bomb kills 5 Afghan policemen,3 - probably,
+sentence_similarity,Sentence 1: Nelson Mandela undergoes surgery Sentence 2: ‘Nelson Mandela is recovering’,2 - possibly,
+sentence_similarity,Sentence 1: A man is drilling a hole in a board. Sentence 2: Someone is drilling a hole in a piece of wood.,4 - almost perfectly,
+sentence_similarity,Sentence 1: A woman equestrian riding a horse. Sentence 2: The woman is riding on the brown horse.,4 - almost perfectly,
+sentence_similarity,"Sentence 1: The Note's Must-Reads for Friday, December 6, 2013 Sentence 2: The Note's Must-Reads for Friday, July 12, 2013",2 - possibly,
+sentence_similarity,Sentence 1: A man plays a keyboard. Sentence 2: A person is playing the keyboard.,4 - almost perfectly,
+sentence_similarity,Sentence 1: Two dogs are running in a grassy field Sentence 2: Two dogs running through a grassy field.,5 - perfectly,
+sentence_similarity,Sentence 1: Barack Obama's personal evolution on same-sex marriage Sentence 2: Obama backs same-sex marriage,3 - probably,
+sentence_similarity,Sentence 1: New UN peacekeeping chief named for Central African Republic Sentence 2: UN takes over peacekeeping in Central African Republic,2 - possibly,
+sentence_similarity,Sentence 1: Four children looking at barn animals. Sentence 2: Children looking a sheep.,3 - probably,
+sentence_similarity,"Sentence 1: Pakistani Taliban chief Hakimullah Mehsud killed in drone strike Sentence 2: Pakistani Taliban 'elect new chief', vow 'unprecedented' revenge",1 - probably not,
+sentence_similarity,Sentence 1: A baby eats his food. Sentence 2: A baby is being fed peas.,3 - probably,
+sentence_similarity,Sentence 1: Coty launches $10 billion bid for rival Avon Sentence 2: Coty bids $10 billion for Avon,5 - perfectly,
+sentence_similarity,Sentence 1: 2 dead in Bangladesh clashes over Jamaat leader’s execution Sentence 2: Bangladesh Islamist leader executed,2 - possibly,
+sentence_similarity,Sentence 1: A man is speaking. Sentence 2: A man is spitting.,1 - probably not,
+sentence_similarity,Sentence 1: Juror: Sandusky appeared to accept his fate Sentence 2: Jerry Sandusky convicted of child sexual abuse,2 - possibly,
+sentence_similarity,Sentence 1: The woman is dicing onions. Sentence 2: A woman is dancing in railway station.,0 - definitely not,
+sentence_similarity,Sentence 1: A woman is cutting an onion. Sentence 2: A man is cutting onions.,3 - probably,
+sentence_similarity,Sentence 1: Three dogs playing in the snow. Sentence 2: Three dogs run in the snow.,4 - almost perfectly,
+sentence_similarity,Sentence 1: A woman is hitting a man. Sentence 2: A woman is taking a bath.,0 - definitely not,
+sentence_similarity,Sentence 1: Syrian troops kill 35 in Damascus suburb Sentence 2: Activists: Syrian troops kill dozens near Damascus,4 - almost perfectly,
+sentence_similarity,Sentence 1: A woman is bungee jumping. Sentence 2: A girl is bungee jumping.,4 - almost perfectly,
+sentence_similarity,Sentence 1: The man is playing the keyboards. Sentence 2: A man is playing guitar.,2 - possibly,
+sentence_similarity,Sentence 1: A man is playing a guitar. Sentence 2: A man is eating a banana.,1 - probably not,
+sentence_similarity,Sentence 1: A woman is slicing some tuna. Sentence 2: A woman is cutting raw fish.,3 - probably,
+sentence_similarity,Sentence 1: US Senator McCain meets opposition leaders in Ukraine Sentence 2: SFG meeting reviews situation in Mali,0 - definitely not,
+sentence_similarity,Sentence 1: EU Set for New Sanctions on Iran Sentence 2: EU plans major new sanctions against Iran,4 - almost perfectly,
+sentence_similarity,Sentence 1: A woman is slicing a big pepper. Sentence 2: A person is cutting a green pepper.,3 - probably,
+sentence_similarity,Sentence 1: Five kittens are eating out of five dishes. Sentence 2: Kittens are eating food on trays.,3 - probably,
+sentence_similarity,Sentence 1: North Korea Nuclear Test Sparks Worry Sentence 2: North Korea nuclear test,2 - possibly,
+sentence_similarity,Sentence 1: The baby laughed in his car seat. Sentence 2: A baby is laughing.,3 - probably,
+sentence_similarity,Sentence 1: Israel 'bombs' Syria as envoy presses peace talks bid Sentence 2: Fierce clashes in east Syria as US pushes peace talks,2 - possibly,
+sentence_similarity,Sentence 1: An animal is biting a persons finger. Sentence 2: A slow loris is biting a persons finger.,3 - probably,
+sentence_similarity,Sentence 1: Maldives begins to vote in controversy-ridden presidential poll Sentence 2: Crisis-hit Maldives holds new presidential poll,3 - probably,
+sentence_similarity,Sentence 1: The lady stirred up raw eggs in the bowl. Sentence 2: A woman is pouring eyes into a bowl.,1 - probably not,
+sentence_similarity,Sentence 1: Fire in Russian psychiatric hospital kills 38 Sentence 2: 38 feared dead in Russian psychiatric hospital fire,4 - almost perfectly,
+sentence_similarity,Sentence 1: A man is eating a pizza. Sentence 2: A man is eating a food.,4 - almost perfectly,
+sentence_similarity,"Sentence 1: A man eating an apple, sitting in public. Sentence 2: A man sits in a public place eating an apple.",5 - perfectly,
+sentence_similarity,Sentence 1: Greece votes in crucial election Sentence 2: Greece looks set for repeat election,2 - possibly,
+sentence_similarity,Sentence 1: A plane is landing. Sentence 2: A animated airplane is landing.,3 - probably,
+sentence_similarity,Sentence 1: The man and woman are resting on a couch. Sentence 2: A man and woman are asleep on the couch.,4 - almost perfectly,
+sentence_similarity,Sentence 1: An AeroMexico jet taxing along a runway. Sentence 2: A silver AreoMexico Jet Liner sitting on the tarmac.,3 - probably,
+sentence_similarity,Sentence 1: A panda is climbing. Sentence 2: A man is climbing a rope.,2 - possibly,
+sentence_similarity,Sentence 1: A man is playing the piano. Sentence 2: A man is playing a wooden flute.,1 - probably not,
+sentence_similarity,Sentence 1: A white plane on the runway. Sentence 2: A white Swiss airplane approaches the runway.,4 - almost perfectly,
+sentence_similarity,Sentence 1: A man is playing a guitar. Sentence 2: The girl is playing the guitar.,2 - possibly,
+sentence_similarity,Sentence 1: A blue scooter parked on a sidewalk. Sentence 2: A blue moped parked on the sidewalk.,4 - almost perfectly,
+sentence_similarity,Sentence 1: Brooks pleads not guilty to hacking charges Sentence 2: Dave Lee Travis pleads not guilty to all charges,1 - probably not,
+sentence_similarity,Sentence 1: Suicide bomber kills 4 near NATO's Afghan HQ Sentence 2: Suicide bomber kills 23 at Afghan wedding,2 - possibly,
+sentence_similarity,Sentence 1: Kids are dancing on stage. Sentence 2: Some people are dancing on stage.,3 - probably,
+sentence_similarity,Sentence 1: Queen pays tribute to Nelson Mandela Sentence 2: US presidents pay tribute to Mandela,2 - possibly,
+sentence_similarity,Sentence 1: man on steps Sentence 2: A man sits on steps.,4 - almost perfectly,
+sentence_similarity,Sentence 1: A family is playing on the beach with their dog. Sentence 2: A naked little girl being thrown into the air.,0 - definitely not,
+sentence_similarity,Sentence 1: Egypt's Coptic Pope Shenuda III dies Sentence 2: Egypt prepares to bury Coptic Pope Shenuda III,4 - almost perfectly,
+sentence_similarity,Sentence 1: A man is riding a bicycle on a dirt path. Sentence 2: Two dogs running along dirt path.,2 - possibly,
+sentence_similarity,Sentence 1: Scientists prove there is water on Mars Sentence 2: Has Nasa discovered water on Mars?,2 - possibly,
+sentence_similarity,Sentence 1: Syrians trade blame over blasts Sentence 2: Israel braces for Arab protests,0 - definitely not,
+sentence_similarity,Sentence 1: US drone strike kills 8 militants Sentence 2: US drone strike kills four in NWA: officials,2 - possibly,
+sentence_similarity,Sentence 1: The man is riding a horse. Sentence 2: A woman is using a hoe.,0 - definitely not,
+sentence_similarity,Sentence 1: Egyptian president moves into Mubarak's old office Sentence 2: Egypt's President-Elect Morsi Starts to Form Government,2 - possibly,
+sentence_similarity,Sentence 1: A man is riding on a horse. Sentence 2: A woman is riding an elephant.,2 - possibly,
+sentence_similarity,Sentence 1: Blond woman in a tunnel. Sentence 2: The couple kissing is near a blond woman.,2 - possibly,
+sentence_similarity,Sentence 1: Residents near Gaza instructed to stay near shelter Sentence 2: Best’s great day brings West Indies cheer,0 - definitely not,
+sentence_similarity,Sentence 1: The gate is blue. Sentence 2: The gate is yellow.,2 - possibly,
+sentence_similarity,Sentence 1: A grey house with a red door. Sentence 2: House with a red door.,3 - probably,
+sentence_similarity,Sentence 1: A man jumping his dirt bike. Sentence 2: A man on a bike jumping through the air.,4 - almost perfectly,
+sentence_similarity,Sentence 1: A small dog laying on the bed. Sentence 2: A small dog is laying on a bed.,5 - perfectly,
+active_to_passive,The professor mentioned the artist.,The artist was mentioned by the professor.,
+active_to_passive,The presidents recommended the lawyer.,The lawyer was recommended by the presidents.,
+active_to_passive,The professors thanked the tourists.,The tourists were thanked by the professors.,
+active_to_passive,The scientist contacted the judge.,The judge was contacted by the scientist.,
+active_to_passive,The doctor stopped the managers.,The managers were stopped by the doctor.,
+active_to_passive,The author stopped the senator.,The senator was stopped by the author.,
+active_to_passive,The authors mentioned the lawyer.,The lawyer was mentioned by the authors.,
+active_to_passive,The actor believed the senators.,The senators were believed by the actor.,
+active_to_passive,The judges contacted the athletes.,The athletes were contacted by the judges.,
+active_to_passive,The judges helped the professor.,The professor was helped by the judges.,
+active_to_passive,The authors supported the scientist.,The scientist was supported by the authors.,
+active_to_passive,The judges avoided the students.,The students were avoided by the judges.,
+active_to_passive,The banker advised the tourists.,The tourists were advised by the banker.,
+active_to_passive,The presidents introduced the authors.,The authors were introduced by the presidents.,
+active_to_passive,The senator introduced the bankers.,The bankers were introduced by the senator.,
+active_to_passive,The doctors admired the student.,The student was admired by the doctors.,
+active_to_passive,The artists introduced the manager.,The manager was introduced by the artists.,
+active_to_passive,The student supported the tourist.,The tourist was supported by the student.,
+active_to_passive,The professors stopped the senators.,The senators were stopped by the professors.,
+active_to_passive,The judges mentioned the professor.,The professor was mentioned by the judges.,
+active_to_passive,The bankers avoided the lawyer.,The lawyer was avoided by the bankers.,
+active_to_passive,The tourist admired the authors.,The authors were admired by the tourist.,
+active_to_passive,The actor stopped the senator.,The senator was stopped by the actor.,
+active_to_passive,The senators recommended the artists.,The artists were recommended by the senators.,
+active_to_passive,The tourists advised the president.,The president was advised by the tourists.,
+active_to_passive,The actor recognized the manager.,The manager was recognized by the actor.,
+active_to_passive,The authors contacted the doctors.,The doctors were contacted by the authors.,
+active_to_passive,The tourists recommended the artists.,The artists were recommended by the tourists.,
+active_to_passive,The bankers contacted the senators.,The senators were contacted by the bankers.,
+active_to_passive,The artist admired the managers.,The managers were admired by the artist.,
+active_to_passive,The senator mentioned the doctor.,The doctor was mentioned by the senator.,
+active_to_passive,The president admired the managers.,The managers were admired by the president.,
+active_to_passive,The scientists recommended the tourists.,The tourists were recommended by the scientists.,
+active_to_passive,The authors stopped the manager.,The manager was stopped by the authors.,
+active_to_passive,The actor recognized the professor.,The professor was recognized by the actor.,
+active_to_passive,The judge avoided the banker.,The banker was avoided by the judge.,
+active_to_passive,The tourists admired the judges.,The judges were admired by the tourists.,
+active_to_passive,The athlete encouraged the scientists.,The scientists were encouraged by the athlete.,
+active_to_passive,The manager believed the athletes.,The athletes were believed by the manager.,
+active_to_passive,The senators admired the lawyers.,The lawyers were admired by the senators.,
+active_to_passive,The senators mentioned the professors.,The professors were mentioned by the senators.,
+active_to_passive,The manager believed the presidents.,The presidents were believed by the manager.,
+active_to_passive,The students recommended the banker.,The banker was recommended by the students.,
+active_to_passive,The judges supported the manager.,The manager was supported by the judges.,
+active_to_passive,The athlete thanked the author.,The author was thanked by the athlete.,
+active_to_passive,The tourist encouraged the managers.,The managers were encouraged by the tourist.,
+active_to_passive,The banker advised the students.,The students were advised by the banker.,
+active_to_passive,The managers stopped the student.,The student was stopped by the managers.,
+active_to_passive,The students advised the tourists.,The tourists were advised by the students.,
+active_to_passive,The secretary recommended the tourists.,The tourists were recommended by the secretary.,
+active_to_passive,The president thanked the manager.,The manager was thanked by the president.,
+active_to_passive,The actor recognized the senators.,The senators were recognized by the actor.,
+active_to_passive,The presidents introduced the scientist.,The scientist was introduced by the presidents.,
+active_to_passive,The secretaries recommended the students.,The students were recommended by the secretaries.,
+active_to_passive,The presidents thanked the lawyers.,The lawyers were thanked by the presidents.,
+active_to_passive,The secretaries believed the student.,The student was believed by the secretaries.,
+active_to_passive,The artists recognized the author.,The author was recognized by the artists.,
+active_to_passive,The athlete avoided the bankers.,The bankers were avoided by the athlete.,
+active_to_passive,The artists admired the doctor.,The doctor was admired by the artists.,
+active_to_passive,The student recommended the authors.,The authors were recommended by the student.,
+active_to_passive,The athletes believed the authors.,The authors were believed by the athletes.,
+active_to_passive,The scientist admired the tourist.,The tourist was admired by the scientist.,
+active_to_passive,The presidents avoided the scientist.,The scientist was avoided by the presidents.,
+active_to_passive,The professor mentioned the scientist.,The scientist was mentioned by the professor.,
+active_to_passive,The doctor thanked the actors.,The actors were thanked by the doctor.,
+active_to_passive,The doctor thanked the banker.,The banker was thanked by the doctor.,
+active_to_passive,The senator recommended the athletes.,The athletes were recommended by the senator.,
+active_to_passive,The athletes stopped the student.,The student was stopped by the athletes.,
+active_to_passive,The student supported the professor.,The professor was supported by the student.,
+active_to_passive,The manager advised the professors.,The professors were advised by the manager.,
+active_to_passive,The doctor mentioned the tourist.,The tourist was mentioned by the doctor.,
+active_to_passive,The senator contacted the judge.,The judge was contacted by the senator.,
+active_to_passive,The lawyer recognized the judge.,The judge was recognized by the lawyer.,
+active_to_passive,The tourists helped the manager.,The manager was helped by the tourists.,
+active_to_passive,The athlete stopped the president.,The president was stopped by the athlete.,
+active_to_passive,The athlete mentioned the scientists.,The scientists were mentioned by the athlete.,
+active_to_passive,The tourists introduced the doctors.,The doctors were introduced by the tourists.,
+active_to_passive,The manager mentioned the president.,The president was mentioned by the manager.,
+active_to_passive,The lawyers stopped the manager.,The manager was stopped by the lawyers.,
+active_to_passive,The lawyers recommended the authors.,The authors were recommended by the lawyers.,
+active_to_passive,The secretary contacted the athletes.,The athletes were contacted by the secretary.,
+active_to_passive,The manager avoided the scientists.,The scientists were avoided by the manager.,
+active_to_passive,The president mentioned the secretaries.,The secretaries were mentioned by the president.,
+active_to_passive,The senators stopped the professor.,The professor was stopped by the senators.,
+active_to_passive,The professors avoided the artists.,The artists were avoided by the professors.,
+active_to_passive,The professors thanked the lawyers.,The lawyers were thanked by the professors.,
+active_to_passive,The tourist supported the secretaries.,The secretaries were supported by the tourist.,
+active_to_passive,The senators introduced the artist.,The artist was introduced by the senators.,
+active_to_passive,The senator avoided the judges.,The judges were avoided by the senator.,
+active_to_passive,The student helped the president.,The president was helped by the student.,
+active_to_passive,The manager believed the doctors.,The doctors were believed by the manager.,
+active_to_passive,The actor recommended the artists.,The artists were recommended by the actor.,
+active_to_passive,The tourist recommended the senator.,The senator was recommended by the tourist.,
+active_to_passive,The student recommended the athletes.,The athletes were recommended by the student.,
+active_to_passive,The judge contacted the managers.,The managers were contacted by the judge.,
+active_to_passive,The banker recognized the tourists.,The tourists were recognized by the banker.,
+active_to_passive,The tourist recommended the manager.,The manager was recommended by the tourist.,
+active_to_passive,The tourist thanked the professors.,The professors were thanked by the tourist.,
+active_to_passive,The president contacted the athletes.,The athletes were contacted by the president.,
+active_to_passive,The doctors recognized the athletes.,The athletes were recognized by the doctors.,
+sentiment,"...routine, harmless diversion and little else.",positive,
+sentiment,"An occasionally funny, but overall limp, fish-out-of-water story.",negative,
+sentiment,Unflinchingly bleak and desperate,negative,
+sentiment,A woman's pic directed with resonance by Ilya Chaiken.,positive,
+sentiment,"A tender, heartfelt family drama.",positive,
+sentiment,"Like Leon, it's frustrating and still oddly likable.",positive,
+sentiment,The film's performances are thrilling.,positive,
+sentiment,A coarse and stupid gross-out.,negative,
+sentiment,"An overemphatic, would-be wacky, ultimately tedious sex farce.",negative,
+sentiment,Holden Caulfield did it better.,negative,
+sentiment,Holm ... embodies the character with an effortlessly regal charisma.,positive,
+sentiment,A quiet treasure -- a film to be savored.,positive,
+sentiment,Do not see this film.,negative,
+sentiment,"Crackerjack entertainment -- nonstop romance, music, suspense and action.",positive,
+sentiment,An exquisitely crafted and acted tale.,positive,
+sentiment,It all adds up to good fun.,positive,
+sentiment,Detox is ultimately a pointless endeavor.,negative,
+sentiment,It's a remarkably solid and subtly satirical tour de force.,positive,
+sentiment,Overall very good for what it's trying to do.,positive,
+sentiment,"A fast, funny, highly enjoyable movie.",positive,
+sentiment,"An absurdist comedy about alienation, separation and loss.",negative,
+sentiment,It treats women like idiots.,negative,
+sentiment,Among the year's most intriguing explorations of alientation.,positive,
+sentiment,"A smart, witty follow-up.",positive,
+sentiment,"Dull, lifeless, and amateurishly assembled.",negative,
+sentiment,More whiny downer than corruscating commentary.,negative,
+sentiment,"A very well-made, funny and entertaining picture.",positive,
+sentiment,A movie with a real anarchic flair.,positive,
+sentiment,Rarely has so much money delivered so little entertainment.,negative,
+sentiment,A wildly inconsistent emotional experience.,negative,
+sentiment,It has all the excitement of eating oatmeal.,negative,
+sentiment,Coughs and sputters on its own postmodern conceit.,negative,
+sentiment,One of the most significant moviegoing pleasures of the year.,positive,
+sentiment,Verbinski implements every hack-artist trick to give us the ooky-spookies.,negative,
+sentiment,Funny but perilously slight.,positive,
+sentiment,I just loved every minute of this film.,positive,
+sentiment,One long string of cliches.,negative,
+sentiment,I'm just too bored to care.,negative,
+sentiment,Reggio's continual visual barrage is absorbing as well as thought-provoking.,positive,
+sentiment,"A gorgeous, witty, seductive movie.",positive,
+sentiment,As unseemly as its title suggests.,positive,
+sentiment,A marvel like none you've seen.,positive,
+sentiment,"So much facile technique, such cute ideas, so little movie.",positive,
+sentiment,"Just as moving, uplifting and funny as ever.",positive,
+sentiment,Directed in a paint-by-numbers manner.,negative,
+sentiment,At once half-baked and overheated.,negative,
+sentiment,"Complete lack of originality, cleverness or even visible effort",negative,
+sentiment,Nervous breakdowns are not entertaining.,negative,
+sentiment,Slick piece of cross-promotion.,positive,
+sentiment,Plays like a volatile and overlong W magazine fashion spread.,negative,
+sentiment,Collateral Damage finally delivers the goods for Schwarzenegger fans.,positive,
+sentiment,"A warm but realistic meditation on friendship, family and affection.",positive,
+sentiment,"Beautifully observed, miraculously unsentimental comedy-drama.",positive,
+sentiment,There's not enough here to justify the almost two hours.,negative,
+sentiment,A sometimes tedious film.,negative,
+sentiment,The piquant story needs more dramatic meat on its bones.,negative,
+sentiment,The Cold Turkey would've been a far better title.,negative,
+sentiment,It's a charming and often affecting journey.,positive,
+sentiment,The Wild Thornberrys Movie is a jolly surprise.,positive,
+sentiment,A solid film...but more conscientious than it is truly stirring.,positive,
+sentiment,Teen movies have really hit the skids.,negative,
+sentiment,A painfully funny ode to bad behavior.,positive,
+sentiment,Will amuse and provoke adventurous adults in specialty venues.,positive,
+sentiment,A sequence of ridiculous shoot-'em-up scenes.,negative,
+sentiment,It's made with deftly unsettling genre flair.,positive,
+sentiment,As vulgar as it is banal.,negative,
+sentiment,A solid examination of the male midlife crisis.,positive,
+sentiment,It's a stunning lyrical work of considerable force and truth.,positive,
+sentiment,"It is amusing, and that's all it needs to be.",positive,
+sentiment,Falls neatly into the category of Good Stupid Fun.,positive,
+sentiment,This is so bad.,negative,
+sentiment,... the movie is just a plain old monster.,negative,
+sentiment,"A warm, funny, engaging film.",positive,
+sentiment,...a magnificent drama well worth tracking down.,positive,
+sentiment,It's everything you don't go to the movies for.,negative,
+sentiment,Jones ... does offer a brutal form of charisma.,positive,
+sentiment,Enormously entertaining for moviegoers of any age.,positive,
+sentiment,Too much of the humor falls flat.,negative,
+sentiment,"The lower your expectations, the more you'll enjoy it.",negative,
+sentiment,"Forced, familiar and thoroughly condescending.",negative,
+sentiment,A sequel that's much too big for its britches.,negative,
+sentiment,No way I can believe this load of junk.,negative,
+sentiment,No telegraphing is too obvious or simplistic for this movie.,negative,
+sentiment,Indifferently implausible popcorn programmer of a movie.,negative,
+sentiment,Very psychoanalytical -- provocatively so -- and also refreshingly literary.,positive,
+sentiment,"Trite, banal, cliched, mostly inoffensive.",negative,
+sentiment,"Movie fans, get ready to take off...the other direction.",negative,
+sentiment,"The film is quiet, threatening and unforgettable.",positive,
+sentiment,"It proves quite compelling as an intense, brooding character study.",positive,
+sentiment,Has all the depth of a wading pool.,negative,
+sentiment,Nothing is sacred in this gut-buster.,negative,
+sentiment,"An entertaining, colorful, action-filled crime story with an intimate heart.",positive,
+sentiment,Rarely has leukemia looked so shimmering and benign.,negative,
+sentiment,Not exactly the Bees Knees,negative,
+sentiment,One from the heart.,positive,
+sentiment,"It's dumb, but more importantly, it's just not scary.",negative,
+sentiment,Chokes on its own depiction of upper-crust decorum.,negative,
+sentiment,An unwise amalgam of Broadcast News and Vibes.,negative,
+sentiment,Blanchett's performance confirms her power once again.,positive,
+sentiment,Burns never really harnesses to full effect the energetic cast.,negative,
+first_word_letter,place,p,
+first_word_letter,family,f,
+first_word_letter,point,p,
+first_word_letter,east,e,
+first_word_letter,service,s,
+first_word_letter,run,r,
+first_word_letter,site,s,
+first_word_letter,wife,w,
+first_word_letter,hurricane,h,
+first_word_letter,league,l,
+first_word_letter,section,s,
+first_word_letter,surface,s,
+first_word_letter,contract,c,
+first_word_letter,fight,f,
+first_word_letter,guitar,g,
+first_word_letter,ball,b,
+first_word_letter,model,m,
+first_word_letter,press,p,
+first_word_letter,culture,c,
+first_word_letter,collection,c,
+first_word_letter,foot,f,
+first_word_letter,theory,t,
+first_word_letter,invasion,i,
+first_word_letter,quarter,q,
+first_word_letter,agreement,a,
+first_word_letter,personnel,p,
+first_word_letter,northwest,n,
+first_word_letter,editor,e,
+first_word_letter,cricket,c,
+first_word_letter,lap,l,
+first_word_letter,description,d,
+first_word_letter,camera,c,
+first_word_letter,mountain,m,
+first_word_letter,principal,p,
+first_word_letter,regiment,r,
+first_word_letter,corner,c,
+first_word_letter,credit,c,
+first_word_letter,suit,s,
+first_word_letter,closing,c,
+first_word_letter,boundary,b,
+first_word_letter,armament,a,
+first_word_letter,signal,s,
+first_word_letter,affect,a,
+first_word_letter,baby,b,
+first_word_letter,fantasy,f,
+first_word_letter,voting,v,
+first_word_letter,reduction,r,
+first_word_letter,document,d,
+first_word_letter,inning,i,
+first_word_letter,lighter,l,
+first_word_letter,moon,m,
+first_word_letter,explanation,e,
+first_word_letter,diamond,d,
+first_word_letter,custom,c,
+first_word_letter,photograph,p,
+first_word_letter,accordance,a,
+first_word_letter,trap,t,
+first_word_letter,performer,p,
+first_word_letter,morale,m,
+first_word_letter,calm,c,
+first_word_letter,boom,b,
+first_word_letter,afford,a,
+first_word_letter,admission,a,
+first_word_letter,timing,t,
+first_word_letter,rendition,r,
+first_word_letter,breach,b,
+first_word_letter,servant,s,
+first_word_letter,counterpart,c,
+first_word_letter,drag,d,
+first_word_letter,shed,s,
+first_word_letter,cantata,c,
+first_word_letter,choreography,c,
+first_word_letter,rejection,r,
+first_word_letter,vector,v,
+first_word_letter,bite,b,
+first_word_letter,fare,f,
+first_word_letter,groove,g,
+first_word_letter,clearance,c,
+first_word_letter,precision,p,
+first_word_letter,simplicity,s,
+first_word_letter,characterization,c,
+first_word_letter,glory,g,
+first_word_letter,leisure,l,
+first_word_letter,simpler,s,
+first_word_letter,prequel,p,
+first_word_letter,baseman,b,
+first_word_letter,geography,g,
+first_word_letter,flu,f,
+first_word_letter,symbolism,s,
+first_word_letter,distributor,d,
+first_word_letter,judgement,j,
+first_word_letter,conquer,c,
+first_word_letter,strand,s,
+first_word_letter,diversion,d,
+first_word_letter,gateway,g,
+first_word_letter,rhetoric,r,
+first_word_letter,phosphate,p,
+first_word_letter,cheating,c,
+first_word_letter,fumble,f,
+first_word_letter,promoter,p,
+negation,Newton played as quarterback during Super Bowl 50.,Newton did not play as quarterback during Super Bowl 50.,
+negation,Tucker plays as kicker with the Ravens.,Tucker does not play as kicker with the Ravens.,
+negation,During Super Bowl 50 the Nintendo gaming company debuted their ad for the first time.,During Super Bowl 50 the Nintendo gaming company did not debut their ad for the first time.,
+negation,The ad shown during the Super Bowl with the trailer of X-Men: Apocalypse was paid by Fox.,The ad shown during the Super Bowl with the trailer of X-Men: Apocalypse was not paid by Fox.,
+negation,the Super Bowl in England will be carried by BBC.,the Super Bowl in England will not be carried by BBC.,
+negation,Manning's top receiver for Super Bowl 50 was Sanders.,Manning's top receiver for Super Bowl 50 was not Sanders.,
+negation,Nathan Alterman was a poet.,Nathan Alterman was not a poet.,
+negation,The French spread along with their imperialism spread the Catholic religion.,The French spread along with their imperialism did not spread the Catholic religion.,
+negation,Wales differs from other areas in the United Kingdom regarding education.,Wales does not differ from other areas in the United Kingdom regarding education.,
+negation,Norman architecture has rounded arches.,Norman architecture has not rounded arches.,
+negation,"At Westinghouse, Tesla's position was consultant.","At Westinghouse, Tesla's position was not consultant.",
+negation,"In 1915, Edison received a bid.","In 1915, Edison did not receive a bid.",
+negation,In a multiplication algorithm to produce the same outcome whether multiplying or squaring two integers the input would need to remain constant.,In a multiplication algorithm to produce the same outcome whether multiplying or squaring two integers the input would not need to remain constant.,
+negation,A teacher is most likely teaching at a school.,A teacher is not most likely teaching at a school.,
+negation,Teachers might be responsible for student discipline.,Teachers might not be responsible for student discipline.,
+negation,"If a teacher is only teaching one person, they are called a tutor.","If a teacher is only teaching one person, they are not called a tutor.",
+negation,The youngest student a teacher might have are infants.,The youngest student a teacher might have are not infants.,
+negation,Teachers likely follow standardized curricula.,Teachers likely do not follow standardized curricula.,
+negation,A teacher needs to be enthusiastic with regards to their subject matter.,A teacher does not need to be enthusiastic with regards to their subject matter.,
+negation,The general religious belief of nations that received Huguenot refugees is Protestant.,The general religious belief of nations that received Huguenot refugees is not Protestant.,
+negation,The LDS Church focuses on spiritual mentorship.,The LDS Church does not focuse on spiritual mentorship.,
+negation,"To impact German culture, Martin Luther translated the Bible.","To impact German culture, Martin Luther did not translate the Bible.",
+negation,Lurther was declared to be an outlaw by Edict of Works presented by Emperor.,Lurther was declared to be an outlaw by Edict of Works not presented by Emperor.,
+negation,California used to be ruled by Mexico.,California was never ruled by Mexico.,
+negation,California Institute of Technology is a private university.,California Institute of Technology is not a private university.,
+negation,BSkyB was having issues with Thomson.,BSkyB was not having issues with Thomson.,
+negation,Gasoline and heating gas was rationed by Sweden.,Gasoline and heating gas was not rationed by Sweden.,
+negation,Non-condensing direct-drive locomotives  for fast passenger trains were notably used in Britain.,Non-condensing direct-drive locomotives  for fast passenger trains were not used in Britain.,
+negation,An early clue that philogiston theory was wrong was metals weight gain during rusting.,An early clue that philogiston theory was wrong was not metals weight gain during rusting.,
+negation,The majority of the amazon forest is in Brazil.,The majority of the amazon forest is not in Brazil.,
+negation,Scientists think all of the plagues originated from China.,Scientists think all of the plagues did not originate from China.,
+negation,Walt Disney was approached about producing color broadcasts of his anthology series by NBC.,Walt Disney was not approached about producing color broadcasts of his anthology series by NBC.,
+negation,The perception of Genghis Khan in Mongolia brightened in the 1990s.,The perception of Genghis Khan in Mongolia did not brighten in the 1990s.,
+negation,The denomination associated with Saint Kentigern College is Presbyterian.,The denomination associated with Saint Kentigern College is not Presbyterian.,
+negation,The usual form of the government's wealth redistribution is taxation.,The usual form of the government's wealth redistribution is not taxation.,
+negation,The second largest contrubtor to Kenyas GDP is Agriculture.,The second largest contrubtor to Kenyas GDP is not Agriculture.,
+negation,The first month when Parliament takes a two week vacation is April.,The first month when Parliament takes a two week vacation is not April.,
+negation,"The month where, every four years, the ordinary general elections are held on is May.","The month where, every four years, the ordinary general elections are held on is not May.",
+negation,Thomas Godfrey Faussett was born in Oxford.,Thomas Godfrey Faussett was not born in Oxford.,
+negation,Taavi Vartia was born in Helsinki.,Taavi Vartia was not born in Helsinki.,
+negation,Jonathan Wilkins was born in London.,Jonathan Wilkins was not born in London.,
+negation,Tazewell Ellett was born in Richmond.,Tazewell Ellett was not born in Richmond.,
+negation,Robert Moss was born in Melbourne.,Robert Moss was not born in Melbourne.,
+negation,Parvaz Mirza was born in Birmingham.,Parvaz Mirza was not born in Birmingham.,
+negation,Jim Chapin died in Florida.,Jim Chapin did not die in Florida.,
+negation,William %22Rip%22 Robertson died in Laos.,William %22Rip%22 Robertson did not die in Laos.,
+negation,William Cumin died in Bath.,William Cumin did not die in Bath.,
+negation,Gotthard Deutsch died in Cincinnati.,Gotthard Deutsch did not die in Cincinnati.,
+negation,Jorge Noceda Sanchez died in Miami.,Jorge Noceda Sanchez did not die in Miami.,
+negation,John Joseph Cotman died in Norwich.,John Joseph Cotman did not die in Norwich.,
+negation,Mira Ashby died in Toronto.,Mira Ashby did not die in Toronto.,
+negation,Diego de Arroyo died in Madrid.,Diego de Arroyo did not die in Madrid.,
+negation,Robert Cryan died in Dublin.,Robert Cryan did not die in Dublin.,
+negation,John Bonser died in Portland.,John Bonser did not die in Portland.,
+negation,Time is absolute.,Time is not absolute.,
+negation,Some clubs are exclusive.,Some clubs are not exclusive.,
+negation,Some plants are carniverous.,Some plants are not carniverous.,
+negation,Monkeys are funny.,Monkeys are not funny.,
+negation,Hydrgen is flammable.,Hydrgen is not flammable.,
+negation,Celebrating requires food.,Celebrating does not require food.,
+negation,Soccer is competitive.,Soccer is not competitive.,
+negation,Vodka is generally colourless.,Vodka is not generally colourless.,
+negation,Weddings can be boring.,Weddings cannot be boring.,
+negation,Zork is a game.,Zork is not a game.,
+negation,Some tea contains caffeine.,Some tea does not contain caffeine.,
+negation,Businesses like to succeed.,Businesses do not like to succeed.,
+negation,Love is contagious.,Love is not contagious.,
+negation,Life is a journey.,Life is not a journey.,
+negation,Exercising requires motivation.,Exercising does not require motivation.,
+negation,Integrity is good.,Integrity is not good.,
+negation,Beef can be marinated.,Beef cannot be marinated.,
+negation,Pretending requires creativity.,Pretending does not require creativity.,
+negation,Porcelain is white.,Porcelain is not white.,
+negation,Rubies can be polished.,Rubies cannot be polished.,
+negation,Investing is risky.,Investing is not risky.,
+negation,Writing requires patience.,Writing does not require patience.,
+negation,Janice was a pediatrician.,Janice was not a pediatrician.,
+negation,We like to camp.,We do not like to camp.,
+negation,Marmite is delicious.,Marmite is not delicious.,
+negation,Chocolate is yummy.,Chocolate is not yummy.,
+negation,Genova is part of Italy.,Genova is not part of Italy.,
+negation,Music can be beautifull.,Music cannot be beautifull.,
+negation,Romance is generally complicated.,Romance is not generally complicated.,
+negation,The official language of Bhopal is Hindi.,The official language of Bhopal is not Hindi.,
+negation,Jarama is a river.,Jarama is not a river.,
+negation,Sonic X was created in Japan.,Sonic X was not created in Japan.,
+negation,Kosovo maintains diplomatic relations with Italy.,Kosovo does not maintain diplomatic relations with Italy.,
+negation,Portugal maintains diplomatic relations with Germany.,Portugal does not maintain diplomatic relations with Germany.,
+negation,Mexico maintains diplomatic relations with Italy.,Mexico does not maintain diplomatic relations with Italy.,
+negation,Dacia Duster is produced by Renault.,Dacia Duster is not produced by Renault.,
+negation,The capital of Bohemia is Prague.,The capital of Bohemia is not Prague.,
+negation,Wiener Schnitzel was created in Austria.,Wiener Schnitzel was not created in Austria.,
+negation,Great Performances was originally aired on PBS.,Great Performances was not originally aired on PBS.,
+negation,Vevo is owned by Google.,Vevo is not owned by Google.,
+negation,Dennis Rowland plays jazz music.,Dennis Rowland does not play jazz music.,
+negation,The Two Babylons was created in Scotland.,The Two Babylons was not created in Scotland.,
+negation,The original language of Sadratnamala is Sanskrit.,The original language of Sadratnamala is not Sanskrit.,
+negation,Hempstead Washburne died in Chicago.,Hempstead Washburne did not die in Chicago.,
+negation,The official language of Posio is Finnish.,The official language of Posio is not Finnish.,
+negation,Kerch Strait is located in Russia.,Kerch Strait is not located in Russia.,
+taxonomy_animal,"kangaroo, beetle, bike, bird, bear, noodles, bicycle","beetle, bear, kangaroo, bird",
+taxonomy_animal,"cow, dog, bird, boat, singer, bike","dog, cow, bird",
+taxonomy_animal,"dog, kangaroo, noodles, bicycle, eagle","kangaroo, eagle, dog",
+taxonomy_animal,"eagle, bird, cow, silver, boots, pilot","cow, eagle, bird",
+taxonomy_animal,"black, bicycle, eagle, bird, boat, cow","bird, cow, eagle",
+taxonomy_animal,"bird, bicycle, cow, jam, pie, kangaroo","kangaroo, cow, bird",
+taxonomy_animal,"bear, boots, boat, dog, crocodile, noodles","crocodile, dog, bear",
+taxonomy_animal,"eagle, bike, bear, silver, beetle, bird, black","bear, beetle, bird, eagle",
+taxonomy_animal,"bird, cake, kangaroo, dog, bicycle, bear, boat","bird, bear, dog, kangaroo",
+taxonomy_animal,"black, dog, singer, bear, beetle, cow","cow, beetle, bear, dog",
+taxonomy_animal,"cheese, dog, singer, bear, pilot, crocodile","crocodile, bear, dog",
+taxonomy_animal,"bicycle, bird, beetle, shorts, kangaroo, bear","beetle, bear, bird, kangaroo",
+taxonomy_animal,"black, crocodile, dog, cow, shorts","crocodile, dog, cow",
+taxonomy_animal,"bear, boat, kangaroo, dog, black, bike, cow","cow, dog, bear, kangaroo",
+taxonomy_animal,"bicycle, dog, beetle, eagle, cow, pilot","eagle, beetle, dog, cow",
+taxonomy_animal,"cow, dog, jam, bear, silver, bird","dog, bird, bear, cow",
+taxonomy_animal,"bird, bicycle, eagle, astronaut, crocodile","eagle, bird, crocodile",
+taxonomy_animal,"eagle, cheese, crocodile, cow, pilot","eagle, crocodile, cow",
+taxonomy_animal,"eagle, dog, bear, silver, black, cake","dog, eagle, bear",
+taxonomy_animal,"bear, pilot, silver, cow, crocodile, dog, bicycle","bear, cow, dog, crocodile",
+taxonomy_animal,"astronaut, bike, black, eagle, kangaroo, cow, beetle","beetle, kangaroo, eagle, cow",
+taxonomy_animal,"crocodile, pie, dog, silver, beetle","crocodile, dog, beetle",
+taxonomy_animal,"beetle, bird, singer, bear, cow, astronaut, pilot","beetle, bear, cow, bird",
+taxonomy_animal,"kangaroo, black, crocodile, silver, eagle, pizza, bear","eagle, bear, kangaroo, crocodile",
+taxonomy_animal,"eagle, bird, dog, singer, boat","dog, bird, eagle",
+taxonomy_animal,"grape, pie, dog, singer, eagle, cow, beetle","eagle, beetle, cow, dog",
+taxonomy_animal,"kangaroo, bicycle, boots, crocodile, singer, eagle","kangaroo, eagle, crocodile",
+taxonomy_animal,"bird, cereal, eagle, crocodile, bicycle","bird, crocodile, eagle",
+taxonomy_animal,"bear, coat, silver, shorts, dog, bird, eagle","eagle, bird, bear, dog",
+taxonomy_animal,"eagle, coat, dog, silver, crocodile, bear, boots","bear, eagle, crocodile, dog",
+taxonomy_animal,"kangaroo, bird, dog, beetle, black, silver","dog, kangaroo, bird, beetle",
+taxonomy_animal,"cow, beetle, grape, black, bird, crocodile","cow, beetle, crocodile, bird",
+taxonomy_animal,"dog, bike, bicycle, bear, beetle","dog, beetle, bear",
+taxonomy_animal,"beetle, silver, cow, dog, singer, boots, bear","dog, beetle, cow, bear",
+taxonomy_animal,"beetle, coat, bird, eagle, cow, black, boots","bird, beetle, eagle, cow",
+taxonomy_animal,"cheese, eagle, dog, crocodile, bike, pilot","crocodile, eagle, dog",
+taxonomy_animal,"singer, cow, crocodile, coat, kangaroo, dog","kangaroo, cow, crocodile, dog",
+taxonomy_animal,"beetle, kangaroo, bike, eagle, crocodile, silver, bicycle","crocodile, eagle, kangaroo, beetle",
+taxonomy_animal,"bicycle, pilot, eagle, dog, beetle, boots, cow","eagle, dog, cow, beetle",
+taxonomy_animal,"kangaroo, dog, eagle, shorts, noodles, bird","dog, bird, kangaroo, eagle",
+taxonomy_animal,"silver, bear, beetle, crocodile, dog, pie, astronaut","crocodile, bear, dog, beetle",
+taxonomy_animal,"crocodile, singer, bike, bird, pie, kangaroo, eagle","kangaroo, bird, crocodile, eagle",
+taxonomy_animal,"shorts, dog, bear, jam, eagle","bear, dog, eagle",
+taxonomy_animal,"bear, black, noodles, kangaroo, dog","kangaroo, bear, dog",
+taxonomy_animal,"crocodile, kangaroo, silver, bear, singer, pilot","crocodile, bear, kangaroo",
+taxonomy_animal,"kangaroo, silver, bird, bear, beetle, black","bear, beetle, bird, kangaroo",
+taxonomy_animal,"beetle, bird, bear, boat, noodles, eagle","beetle, eagle, bird, bear",
+taxonomy_animal,"astronaut, grape, kangaroo, bird, bear, cow, boots","bear, bird, cow, kangaroo",
+taxonomy_animal,"coat, cheese, eagle, astronaut, cow, kangaroo, bear","kangaroo, eagle, bear, cow",
+taxonomy_animal,"bird, kangaroo, cow, pilot, boots, noodles","kangaroo, cow, bird",
+taxonomy_animal,"kangaroo, pizza, beetle, eagle, grape, crocodile","kangaroo, crocodile, beetle, eagle",
+taxonomy_animal,"dog, bear, eagle, noodles, boots, black","dog, bear, eagle",
+taxonomy_animal,"astronaut, cow, dog, black, eagle","dog, eagle, cow",
+taxonomy_animal,"bear, black, coat, cow, kangaroo","cow, kangaroo, bear",
+taxonomy_animal,"bear, bird, cow, boots, black","cow, bird, bear",
+taxonomy_animal,"eagle, bird, noodles, bicycle, dog, crocodile, coat","bird, crocodile, dog, eagle",
+taxonomy_animal,"bike, beetle, eagle, kangaroo, cereal","beetle, eagle, kangaroo",
+taxonomy_animal,"cow, bear, bird, bike, kangaroo, boots","bear, bird, kangaroo, cow",
+taxonomy_animal,"bird, kangaroo, dog, bike, shorts, pie, cow","cow, bird, kangaroo, dog",
+taxonomy_animal,"bicycle, cow, kangaroo, singer, bird, beetle, boat","bird, beetle, cow, kangaroo",
+taxonomy_animal,"silver, bird, black, crocodile, cow, astronaut, beetle","bird, beetle, crocodile, cow",
+taxonomy_animal,"eagle, beetle, kangaroo, cheese, coconut, boat","kangaroo, eagle, beetle",
+taxonomy_animal,"eagle, kangaroo, silver, bicycle, singer, crocodile","crocodile, eagle, kangaroo",
+taxonomy_animal,"eagle, dog, shorts, crocodile, grape, kangaroo","eagle, dog, crocodile, kangaroo",
+taxonomy_animal,"black, bear, crocodile, kangaroo, silver, astronaut, bird","bear, bird, crocodile, kangaroo",
+taxonomy_animal,"grape, bird, dog, shorts, crocodile, silver","bird, dog, crocodile",
+taxonomy_animal,"bear, kangaroo, cheese, crocodile, black, cow","cow, crocodile, bear, kangaroo",
+taxonomy_animal,"coat, bird, eagle, cheese, astronaut, beetle","beetle, eagle, bird",
+taxonomy_animal,"crocodile, noodles, singer, bear, kangaroo, boots, dog","bear, kangaroo, dog, crocodile",
+taxonomy_animal,"crocodile, bike, bear, bird, singer, silver","crocodile, bird, bear",
+taxonomy_animal,"eagle, crocodile, beetle, bird, black, shorts","eagle, bird, crocodile, beetle",
+taxonomy_animal,"eagle, silver, pilot, astronaut, crocodile, dog","eagle, dog, crocodile",
+taxonomy_animal,"silver, bird, grape, beetle, bear, black, crocodile","beetle, crocodile, bear, bird",
+taxonomy_animal,"astronaut, dog, beetle, eagle, singer","beetle, eagle, dog",
+taxonomy_animal,"bird, silver, beetle, cow, jam","beetle, cow, bird",
+taxonomy_animal,"cereal, beetle, bird, eagle, crocodile, coat","bird, crocodile, beetle, eagle",
+taxonomy_animal,"dog, cow, beetle, bird, pilot, boat","bird, beetle, dog, cow",
+taxonomy_animal,"boots, crocodile, bear, pilot, beetle","crocodile, bear, beetle",
+taxonomy_animal,"dog, silver, kangaroo, pie, bike, eagle","dog, eagle, kangaroo",
+taxonomy_animal,"beetle, pilot, crocodile, cow, boots, boat, bird","crocodile, bird, beetle, cow",
+taxonomy_animal,"bicycle, singer, bird, astronaut, kangaroo, eagle, beetle","eagle, beetle, bird, kangaroo",
+taxonomy_animal,"crocodile, bear, cereal, coconut, kangaroo","bear, kangaroo, crocodile",
+taxonomy_animal,"dog, beetle, silver, coat, boat, bear, eagle","dog, beetle, bear, eagle",
+taxonomy_animal,"bear, dog, pie, cereal, beetle, black, cow","bear, cow, beetle, dog",
+taxonomy_animal,"crocodile, cow, black, dog, pizza, silver","crocodile, cow, dog",
+taxonomy_animal,"silver, bear, singer, grape, dog, bird","bird, bear, dog",
+taxonomy_animal,"eagle, coat, cow, kangaroo, boat, bear, silver","bear, eagle, kangaroo, cow",
+taxonomy_animal,"bird, kangaroo, black, crocodile, silver, beetle","crocodile, beetle, bird, kangaroo",
+taxonomy_animal,"crocodile, dog, coat, cow, bird, black","dog, crocodile, cow, bird",
+taxonomy_animal,"jam, cow, boat, bear, crocodile, beetle, silver","bear, crocodile, beetle, cow",
+taxonomy_animal,"black, cow, astronaut, bear, boat, beetle, crocodile","beetle, crocodile, cow, bear",
+taxonomy_animal,"crocodile, astronaut, cheese, kangaroo, eagle, bird","bird, kangaroo, crocodile, eagle",
+taxonomy_animal,"bird, bike, astronaut, bicycle, cow, dog","bird, dog, cow",
+taxonomy_animal,"crocodile, silver, coat, beetle, eagle, boots, bird","beetle, crocodile, bird, eagle",
+taxonomy_animal,"astronaut, jam, bird, crocodile, silver, kangaroo, beetle","kangaroo, beetle, crocodile, bird",
+taxonomy_animal,"bear, silver, pilot, bird, kangaroo, crocodile, bicycle","kangaroo, crocodile, bear, bird",
+taxonomy_animal,"crocodile, bike, bicycle, bear, dog, singer","crocodile, bear, dog",
+taxonomy_animal,"bird, shorts, crocodile, kangaroo, bear, bike, noodles","bear, bird, crocodile, kangaroo",
+taxonomy_animal,"singer, eagle, cow, kangaroo, coat, beetle, bike","beetle, cow, kangaroo, eagle",
+taxonomy_animal,"boots, shorts, dog, bicycle, bird, bear","dog, bear, bird",
+diff,47 0,47,
+diff,61 0,61,
+diff,21 1,20,
+diff,31 1,30,
+diff,44 1,43,
+diff,60 1,59,
+diff,27 2,25,
+diff,57 2,55,
+diff,91 2,89,
+diff,33 3,30,
+diff,38 3,35,
+diff,45 3,42,
+diff,80 3,77,
+diff,85 3,82,
+diff,57 4,53,
+diff,36 5,31,
+diff,48 5,43,
+diff,81 5,76,
+diff,98 5,93,
+diff,44 6,38,
+diff,51 6,45,
+diff,22 7,15,
+diff,63 7,56,
+diff,77 7,70,
+diff,82 7,75,
+diff,50 8,42,
+diff,62 9,53,
+diff,91 9,82,
+diff,22 10,12,
+diff,79 10,69,
+diff,46 12,34,
+diff,67 12,55,
+diff,71 12,59,
+diff,106 12,94,
+diff,70 13,57,
+diff,62 14,48,
+diff,87 14,73,
+diff,111 14,97,
+diff,87 15,72,
+diff,51 16,35,
+diff,72 16,56,
+diff,108 17,91,
+diff,71 19,52,
+diff,91 21,70,
+diff,116 22,94,
+diff,121 22,99,
+diff,106 24,82,
+diff,58 25,33,
+diff,75 25,50,
+diff,103 25,78,
+diff,117 25,92,
+diff,56 28,28,
+diff,93 28,65,
+diff,111 28,83,
+diff,65 29,36,
+diff,92 32,60,
+diff,93 33,60,
+diff,129 33,96,
+diff,130 33,97,
+diff,92 34,58,
+diff,70 35,35,
+diff,75 35,40,
+diff,131 37,94,
+diff,82 39,43,
+diff,98 43,55,
+diff,99 43,56,
+diff,114 46,68,
+diff,128 46,82,
+diff,137 46,91,
+diff,138 48,90,
+diff,144 48,96,
+diff,122 50,72,
+diff,130 50,80,
+diff,141 50,91,
+diff,111 51,60,
+diff,134 51,83,
+diff,150 51,99,
+diff,128 52,76,
+diff,124 53,71,
+diff,150 53,97,
+diff,126 54,72,
+diff,114 56,58,
+diff,119 56,63,
+diff,131 57,74,
+diff,131 58,73,
+diff,148 59,89,
+diff,143 60,83,
+diff,154 62,92,
+diff,158 62,96,
+diff,142 65,77,
+diff,142 69,73,
+diff,149 69,80,
+diff,167 70,97,
+diff,168 75,93,
+diff,171 76,95,
+diff,154 77,77,
+diff,172 78,94,
+diff,175 81,94,
+diff,181 84,97,
+diff,194 97,97,
+synonyms,procedure,process,
+synonyms,drag,trail,
+synonyms,permit,let,
+synonyms,decide,determine,
+synonyms,blueprint,design,
+synonyms,help,aid,
+synonyms,learn,see,
+synonyms,keystone,key,
+synonyms,young,youth,
+synonyms,spare,free,
+synonyms,arm,branch,
+synonyms,amino,aminic,
+synonyms,distinguished,grand,
+synonyms,tongue,knife,
+synonyms,strange,unknown,
+synonyms,tap,tip,
+synonyms,dollar,buck,
+synonyms,overt,open,
+synonyms,mood,mode,
+synonyms,defeated,discomfited,
+synonyms,boundary,bound,
+synonyms,alive,live,
+synonyms,risk,danger,
+synonyms,distinct,decided,
+synonyms,besides,also,
+synonyms,appropriate,capture,
+synonyms,frequent,haunt,
+synonyms,skill,science,
+synonyms,step,tread,
+synonyms,perplex,get,
+synonyms,spill,fall,
+synonyms,yea,yeah,
+synonyms,batch,plenty,
+synonyms,alteration,adjustment,
+synonyms,mother,fuss,
+synonyms,offer,offering,
+synonyms,career,calling,
+synonyms,closure,closing,
+synonyms,result,outcome,
+synonyms,king,queen,
+synonyms,strain,extend,
+synonyms,here,hither,
+synonyms,ranking,superior,
+synonyms,telegram,wire,
+synonyms,locomotive,engine,
+synonyms,market,marketplace,
+synonyms,justify,warrant,
+synonyms,hammer,pound,
+synonyms,yellow,yellowish,
+synonyms,nation,country,
+synonyms,repair,doctor,
+synonyms,confidence,trust,
+synonyms,sociable,social,
+synonyms,tramp,bum,
+synonyms,bias,prejudice,
+synonyms,pour,stream,
+synonyms,why,wherefore,
+synonyms,behind,slow,
+synonyms,hard,strong,
+synonyms,penny,cent,
+synonyms,foil,transparency,
+synonyms,citation,reference,
+synonyms,self,ego,
+synonyms,improbable,tall,
+synonyms,agrarian,agricultural,
+synonyms,provision,supply,
+synonyms,radical,basal,
+synonyms,message,content,
+synonyms,crying,tears,
+synonyms,pierce,thrust,
+synonyms,bank,cant,
+synonyms,eye,optic,
+synonyms,pure,virgin,
+synonyms,sure,trusted,
+synonyms,management,direction,
+synonyms,advanced,modern,
+synonyms,atom,particle,
+synonyms,prevention,bar,
+synonyms,being,existence,
+synonyms,source,seed,
+synonyms,garrison,fort,
+synonyms,soonest,earliest,
+synonyms,brilliantly,bright,
+synonyms,affecting,touching,
+synonyms,hail,come,
+synonyms,mystery,secret,
+synonyms,significant,important,
+synonyms,system,scheme,
+synonyms,hazard,risk,
+synonyms,functional,operational,
+synonyms,multitude,people,
+synonyms,hale,whole,
+synonyms,overture,approach,
+synonyms,ancestor,root,
+synonyms,possibly,perhaps,
+synonyms,moisture,wet,
+synonyms,completion,closing,
+synonyms,infantry,foot,
+synonyms,dose,dosage,
+synonyms,marketplace,market,
+larger_animal,"mirror carp, alligator",alligator,
+larger_animal,"baboons, hamster",baboons,
+larger_animal,"shih tzu, ant",shih tzu,
+larger_animal,"hamster, salmon",salmon,
+larger_animal,"cod, bobcat",cod,
+larger_animal,"baboons, ant",baboons,
+larger_animal,"giant squid, baboons",giant squid,
+larger_animal,"reindeer, cod",reindeer,
+larger_animal,"hamster, owl",owl,
+larger_animal,"hamster, penguin",penguin,
+larger_animal,"shih tzu, walrus",walrus,
+larger_animal,"pomeranian, blue whale",blue whale,
+larger_animal,"penguin, ant",penguin,
+larger_animal,"border collie, ant",border collie,
+larger_animal,"walrus, baboons",walrus,
+larger_animal,"blue whale, shih tzu",blue whale,
+larger_animal,"border collie, brown bear",brown bear,
+larger_animal,"bobcat, humpback whale",humpback whale,
+larger_animal,"penguin, german shepherd",german shepherd,
+larger_animal,"bobcat, brown bear",brown bear,
+larger_animal,"mirror carp, walrus",walrus,
+larger_animal,"hamster, brown bear",brown bear,
+larger_animal,"reindeer, sheep",reindeer,
+larger_animal,"pomeranian, penguin",penguin,
+larger_animal,"sheep, giant squid",giant squid,
+larger_animal,"ant, mirror carp",mirror carp,
+larger_animal,"penguin, anaconda",anaconda,
+larger_animal,"rottweiler, penguin",rottweiler,
+larger_animal,"owl, border collie",border collie,
+larger_animal,"anaconda, ant",anaconda,
+larger_animal,"northern pike, rottweiler",rottweiler,
+larger_animal,"border collie, penguin",border collie,
+larger_animal,"ant, brown bear",brown bear,
+larger_animal,"bobcat, reindeer",reindeer,
+larger_animal,"hamster, shih tzu",shih tzu,
+larger_animal,"penguin, humpback whale",humpback whale,
+larger_animal,"bobcat, baboons",baboons,
+larger_animal,"german shepherd, ant",german shepherd,
+larger_animal,"owl, reindeer",reindeer,
+larger_animal,"anaconda, northern pike",anaconda,
+larger_animal,"blue whale, cod",blue whale,
+larger_animal,"border collie, shih tzu",border collie,
+larger_animal,"baboons, alligator",alligator,
+larger_animal,"cod, alligator",alligator,
+larger_animal,"owl, rottweiler",rottweiler,
+larger_animal,"walrus, bobcat",walrus,
+larger_animal,"cod, pomeranian",cod,
+larger_animal,"mirror carp, blue whale",blue whale,
+larger_animal,"northern pike, cod",cod,
+larger_animal,"blue whale, baboons",blue whale,
+larger_animal,"blue whale, penguin",blue whale,
+larger_animal,"blue whale, ant",blue whale,
+larger_animal,"sheep, alligator",alligator,
+larger_animal,"giant squid, shih tzu",giant squid,
+larger_animal,"giant squid, hamster",giant squid,
+larger_animal,"cod, penguin",cod,
+larger_animal,"salmon, rottweiler",rottweiler,
+larger_animal,"pomeranian, owl",owl,
+larger_animal,"ant, reindeer",reindeer,
+larger_animal,"ant, humpback whale",humpback whale,
+larger_animal,"penguin, giant squid",giant squid,
+larger_animal,"walrus, hamster",walrus,
+larger_animal,"cod, ant",cod,
+larger_animal,"giant squid, owl",giant squid,
+larger_animal,"hamster, bobcat",bobcat,
+larger_animal,"german shepherd, northern pike",german shepherd,
+larger_animal,"giant squid, border collie",giant squid,
+larger_animal,"reindeer, baboons",reindeer,
+larger_animal,"salmon, pomeranian",salmon,
+larger_animal,"salmon, alligator",alligator,
+larger_animal,"ant, alligator",alligator,
+larger_animal,"owl, german shepherd",german shepherd,
+larger_animal,"northern pike, walrus",walrus,
+larger_animal,"alligator, northern pike",alligator,
+larger_animal,"blue whale, hamster",blue whale,
+larger_animal,"anaconda, pomeranian",anaconda,
+larger_animal,"ant, northern pike",northern pike,
+larger_animal,"german shepherd, pomeranian",german shepherd,
+larger_animal,"hamster, alligator",alligator,
+larger_animal,"alligator, shih tzu",alligator,
+larger_animal,"humpback whale, salmon",humpback whale,
+larger_animal,"sheep, anaconda",anaconda,
+larger_animal,"alligator, bobcat",alligator,
+larger_animal,"hamster, reindeer",reindeer,
+larger_animal,"penguin, brown bear",brown bear,
+larger_animal,"humpback whale, border collie",humpback whale,
+larger_animal,"walrus, salmon",walrus,
+larger_animal,"giant squid, salmon",giant squid,
+larger_animal,"pomeranian, brown bear",brown bear,
+larger_animal,"cod, mirror carp",cod,
+larger_animal,"anaconda, owl",anaconda,
+larger_animal,"border collie, pomeranian",border collie,
+larger_animal,"baboons, penguin",baboons,
+larger_animal,"northern pike, brown bear",brown bear,
+larger_animal,"pomeranian, shih tzu",shih tzu,
+larger_animal,"owl, blue whale",blue whale,
+larger_animal,"salmon, anaconda",anaconda,
+larger_animal,"brown bear, cod",brown bear,
+larger_animal,"brown bear, salmon",brown bear,
+larger_animal,"border collie, salmon",border collie,
+translation_en-es,place,lugar,"['asiento', 'apostar', 'casa', 'colocar', 'posición', 'puesto', 'entonar', 'colocarse', 'poner', 'situar', 'lugar', 'contratar', 'sitio', 'clasificarse', 'plaza']"
+translation_en-es,family,familia,"['familia', 'familiar']"
+translation_en-es,point,punto,"['indicar', 'momento', 'punta', 'punto', 'apuntar']"
+translation_en-es,east,este,"['levante', 'hacia oriente', 'oriental', 'hacia el este', 'oriente', 'rumbo al este', 'al este', 'este', 'rumbo este', 'oriente.']"
+translation_en-es,aircraft,aeronave,['aeronave']
+translation_en-es,title,título,"['tutela', 'título']"
+translation_en-es,party,partido,"['divertirse', 'parte contratante', 'carrete', 'fiestar', 'partido', 'pachanga', 'reventón', 'fiesta']"
+translation_en-es,victory,victoria,['victoria']
+translation_en-es,list,tira,"['escora', 'hacer una lista', 'tira', 'lista', 'escorar', 'leer una lista']"
+translation_en-es,evidence,evidencia,"['prueba', 'evidencia', 'evidenciar']"
+translation_en-es,brother,hermano,"['par', 'hermano']"
+translation_en-es,novel,novela,"['novela', 'novedoso', 'novedosa']"
+translation_en-es,turn,turno,"['turno', 'rebelar', 'girar', 'volver', 'doblar']"
+translation_en-es,king,rey,"['rey', 'coronar']"
+translation_en-es,staff,personal,"['empleado', 'varas', 'personal', 'pentagrama', 'equipo', 'plantilla', 'báculo', 'pauta', 'bastón']"
+translation_en-es,broadcast,programa,"['programa', 'emisión']"
+translation_en-es,trade,comercio,"['comerciar', 'comercio', 'gremio']"
+translation_en-es,unit,unidad,['unidad']
+translation_en-es,letter,letra,"['carta', 'letra', 'carácter']"
+translation_en-es,morning,mañana,"['madrugada', 'mañana', 'AM']"
+translation_en-es,coach,coche,"['entrenadora', 'vagón', 'entrenar', 'entrenador', 'autocar', 'coche']"
+translation_en-es,inch,pulgada,['pulgada']
+translation_en-es,invasion,invasión,['invasión']
+translation_en-es,sense,sentido,"['significación', 'significado', 'sentir', 'sentido', 'sensación', 'acepción', 'dar sentido']"
+translation_en-es,ice,hielo,"['helado', 'congelar', 'hielo']"
+translation_en-es,floor,palabra,['palabra']
+translation_en-es,boat,barca,"['barco', 'bote', 'barca']"
+translation_en-es,seat,asiento,"['asiento', 'sede']"
+translation_en-es,transport,transporte,"['exiliar', 'deportado', 'transportar', 'transporte']"
+translation_en-es,platform,plataforma,"['plataforma', 'andén']"
+translation_en-es,environment,ambiente,"['sistema operativo', 'ecosistema', 'medio ambiente', 'medio', 'programa', 'clima', 'medioambiente', 'naturaleza', 'entorno', 'ambiente']"
+translation_en-es,genre,género,['género']
+translation_en-es,combination,combinación,['combinación']
+translation_en-es,importance,importancia,['importancia']
+translation_en-es,department,departamento,"['sección', 'departamento']"
+translation_en-es,assistance,asistencia,['asistencia']
+translation_en-es,anniversary,aniversario,['aniversario']
+translation_en-es,fighter,guerrero,"['caza', 'combatiente', 'guerrero']"
+translation_en-es,instance,instancia,"['caso', 'instancia']"
+translation_en-es,occupation,ocupación,['ocupación']
+translation_en-es,satellite,satélite,['satélite']
+translation_en-es,strip,tira,"['remover', 'tira', 'sacarse la ropa', 'desvestir']"
+translation_en-es,triple,triple,"['triple', 'triplicar']"
+translation_en-es,duration,duración,['duración']
+translation_en-es,slavery,esclavitud,['esclavitud']
+translation_en-es,ticket,boleto,"['billete', 'multa', 'pasaje', 'parte', 'boleto', 'tique', 'tiquete', 'entrada']"
+translation_en-es,confidence,confidencia,"['certeza propia', 'certeza', 'certidumbre', 'confidencia']"
+translation_en-es,principle,principio,['principio']
+translation_en-es,tag,pilla pilla,"['etiquetar', 'el pillarse', 'etiqueta marbete', 'pilla pilla']"
+translation_en-es,dinner,cena,['cena']
+translation_en-es,creature,criatura,['criatura']
+translation_en-es,propaganda,propaganda,['propaganda']
+translation_en-es,consciousness,conciencia,['conciencia']
+translation_en-es,priority,prioridad,['prioridad']
+translation_en-es,scientist,científico,['científico']
+translation_en-es,mood,mal humor,"['humor', 'mal humor', 'mal genio', 'ánimos', 'ánimo']"
+translation_en-es,eruption,erupción,['erupción']
+translation_en-es,diving,buceo,"['buceo', 'submarinismo']"
+translation_en-es,notion,ganas,"['intención', 'ganas', 'noción']"
+translation_en-es,fever,fiebre,['fiebre']
+translation_en-es,kit,juego,"['juego', 'kit', 'equipo', 'ensello']"
+translation_en-es,shipyard,astillero,['astillero']
+translation_en-es,deadline,fecha límite,"['compromiso', 'fecha límite', 'requisito']"
+translation_en-es,framework,infraestructura,"['marco', 'infraestructura']"
+translation_en-es,client,cliente,['cliente']
+translation_en-es,drag,bocanada,"['arrastrar', 'bocanada', 'resistencia']"
+translation_en-es,membrane,membrana,['membrana']
+translation_en-es,profession,profesión,['profesión']
+translation_en-es,liberty,libertad,['libertad']
+translation_en-es,morality,moralidad,['moralidad']
+translation_en-es,equality,igualdad,"['equidad', 'paridad', 'igualdad']"
+translation_en-es,menu,menú,"['menú', 'carta']"
+translation_en-es,autonomy,autonomía,['autonomía']
+translation_en-es,certification,certificación,['certificación']
+translation_en-es,conception,concepción,['concepción']
+translation_en-es,sympathy,compasión,"['empatía', 'compasión']"
+translation_en-es,emission,emisión,['emisión']
+translation_en-es,clearance,despeje,"['oferta', 'espacio', 'limpieza', 'barata', 'permiso', 'liquidación', 'acceso', 'claro', 'remate', 'ganga', 'despeje', 'compensación']"
+translation_en-es,belly,barriga,"['barriga', 'panza', 'vientre']"
+translation_en-es,innocence,inocencia,['inocencia']
+translation_en-es,expressway,autopista,['autopista']
+translation_en-es,enterprise,empresa,"['empuje', 'emprendimiento', 'empresa', 'iniciativa']"
+translation_en-es,millennium,milenio,['milenio']
+translation_en-es,casino,casino,['casino']
+translation_en-es,relocation,mudanza,"['mudanza', 'traslado']"
+translation_en-es,curse,maldición,"['maldición', 'mala palabra', 'regla', 'maldecir', 'menstruación']"
+translation_en-es,disguise,disfraz,"['pantalla', 'disfrazar', 'tapadera', 'disfraz']"
+translation_en-es,lithium,litio,['litio']
+translation_en-es,gamma,gamma,"['gama', 'gamma']"
+translation_en-es,thread,tema,"['subproceso', 'argumento', 'hilo', 'pasar', 'filete', 'tema', 'enhebrar', 'rosca', 'proceso ligero', 'tópico']"
+translation_en-es,posture,postura,['postura']
+translation_en-es,echo,eco,"['eco', 'repercutir', 'repetir']"
+translation_en-es,vernacular,idioma,"['dialecto', 'idioma', 'vernáculo']"
+translation_en-es,builder,constructor,"['constructor civil', 'constructor']"
+translation_en-es,chip,patata frita,"['ficha', 'desconcharse', 'papa frita', 'desconchado', 'patata frita', 'astillar', 'astilla', 'desconchar', 'chip']"
+translation_en-es,juice,zumo,"['zumo', 'jugo']"
+translation_en-es,apple,manzana,['manzana']
+translation_en-es,casualty,baja,"['baja', 'víctima']"
+translation_en-es,turf,césped,"['hipódromo', 'césped']"
+translation_en-es,doctorate,doctorado,['doctorado']
+num_to_verbal,94,ninety-four,
+num_to_verbal,122,one hundred and twenty-two,
+num_to_verbal,239,two hundred and thirty-nine,
+num_to_verbal,259,two hundred and fifty-nine,
+num_to_verbal,285,two hundred and eighty-five,
+num_to_verbal,316,three hundred and sixteen,
+num_to_verbal,444,four hundred and forty-four,
+num_to_verbal,504,five hundred and four,
+num_to_verbal,572,five hundred and seventy-two,
+num_to_verbal,648,six hundred and forty-eight,
+num_to_verbal,658,six hundred and fifty-eight,
+num_to_verbal,672,six hundred and seventy-two,
+num_to_verbal,742,seven hundred and forty-two,
+num_to_verbal,753,seven hundred and fifty-three,
+num_to_verbal,887,eight hundred and eighty-seven,
+num_to_verbal,1033,one thousand and thirty-three,
+num_to_verbal,1057,one thousand and fifty-seven,
+num_to_verbal,1123,"one thousand, one hundred and twenty-three",
+num_to_verbal,1156,"one thousand, one hundred and fifty-six",
+num_to_verbal,1234,"one thousand, two hundred and thirty-four",
+num_to_verbal,1249,"one thousand, two hundred and forty-nine",
+num_to_verbal,1375,"one thousand, three hundred and seventy-five",
+num_to_verbal,1457,"one thousand, four hundred and fifty-seven",
+num_to_verbal,1485,"one thousand, four hundred and eighty-five",
+num_to_verbal,1495,"one thousand, four hundred and ninety-five",
+num_to_verbal,1612,"one thousand, six hundred and twelve",
+num_to_verbal,1816,"one thousand, eight hundred and sixteen",
+num_to_verbal,1874,"one thousand, eight hundred and seventy-four",
+num_to_verbal,1914,"one thousand, nine hundred and fourteen",
+num_to_verbal,2029,two thousand and twenty-nine,
+num_to_verbal,2313,"two thousand, three hundred and thirteen",
+num_to_verbal,2355,"two thousand, three hundred and fifty-five",
+num_to_verbal,2363,"two thousand, three hundred and sixty-three",
+num_to_verbal,2433,"two thousand, four hundred and thirty-three",
+num_to_verbal,2532,"two thousand, five hundred and thirty-two",
+num_to_verbal,2687,"two thousand, six hundred and eighty-seven",
+num_to_verbal,2737,"two thousand, seven hundred and thirty-seven",
+num_to_verbal,2784,"two thousand, seven hundred and eighty-four",
+num_to_verbal,2905,"two thousand, nine hundred and five",
+num_to_verbal,2999,"two thousand, nine hundred and ninety-nine",
+num_to_verbal,3041,three thousand and forty-one,
+num_to_verbal,3277,"three thousand, two hundred and seventy-seven",
+num_to_verbal,3524,"three thousand, five hundred and twenty-four",
+num_to_verbal,3879,"three thousand, eight hundred and seventy-nine",
+num_to_verbal,4082,four thousand and eighty-two,
+num_to_verbal,4093,four thousand and ninety-three,
+num_to_verbal,4365,"four thousand, three hundred and sixty-five",
+num_to_verbal,4416,"four thousand, four hundred and sixteen",
+num_to_verbal,4451,"four thousand, four hundred and fifty-one",
+num_to_verbal,4506,"four thousand, five hundred and six",
+num_to_verbal,4534,"four thousand, five hundred and thirty-four",
+num_to_verbal,4844,"four thousand, eight hundred and forty-four",
+num_to_verbal,4919,"four thousand, nine hundred and nineteen",
+num_to_verbal,4954,"four thousand, nine hundred and fifty-four",
+num_to_verbal,5003,five thousand and three,
+num_to_verbal,5464,"five thousand, four hundred and sixty-four",
+num_to_verbal,5598,"five thousand, five hundred and ninety-eight",
+num_to_verbal,5670,"five thousand, six hundred and seventy",
+num_to_verbal,5672,"five thousand, six hundred and seventy-two",
+num_to_verbal,5727,"five thousand, seven hundred and twenty-seven",
+num_to_verbal,5810,"five thousand, eight hundred and ten",
+num_to_verbal,5820,"five thousand, eight hundred and twenty",
+num_to_verbal,6182,"six thousand, one hundred and eighty-two",
+num_to_verbal,6327,"six thousand, three hundred and twenty-seven",
+num_to_verbal,6819,"six thousand, eight hundred and nineteen",
+num_to_verbal,6821,"six thousand, eight hundred and twenty-one",
+num_to_verbal,7144,"seven thousand, one hundred and forty-four",
+num_to_verbal,7174,"seven thousand, one hundred and seventy-four",
+num_to_verbal,7202,"seven thousand, two hundred and two",
+num_to_verbal,7220,"seven thousand, two hundred and twenty",
+num_to_verbal,7428,"seven thousand, four hundred and twenty-eight",
+num_to_verbal,7440,"seven thousand, four hundred and forty",
+num_to_verbal,7594,"seven thousand, five hundred and ninety-four",
+num_to_verbal,7610,"seven thousand, six hundred and ten",
+num_to_verbal,7633,"seven thousand, six hundred and thirty-three",
+num_to_verbal,7669,"seven thousand, six hundred and sixty-nine",
+num_to_verbal,7714,"seven thousand, seven hundred and fourteen",
+num_to_verbal,7746,"seven thousand, seven hundred and forty-six",
+num_to_verbal,7797,"seven thousand, seven hundred and ninety-seven",
+num_to_verbal,7881,"seven thousand, eight hundred and eighty-one",
+num_to_verbal,7933,"seven thousand, nine hundred and thirty-three",
+num_to_verbal,7974,"seven thousand, nine hundred and seventy-four",
+num_to_verbal,8124,"eight thousand, one hundred and twenty-four",
+num_to_verbal,8135,"eight thousand, one hundred and thirty-five",
+num_to_verbal,8242,"eight thousand, two hundred and forty-two",
+num_to_verbal,8324,"eight thousand, three hundred and twenty-four",
+num_to_verbal,8438,"eight thousand, four hundred and thirty-eight",
+num_to_verbal,8506,"eight thousand, five hundred and six",
+num_to_verbal,8678,"eight thousand, six hundred and seventy-eight",
+num_to_verbal,8686,"eight thousand, six hundred and eighty-six",
+num_to_verbal,8865,"eight thousand, eight hundred and sixty-five",
+num_to_verbal,9116,"nine thousand, one hundred and sixteen",
+num_to_verbal,9131,"nine thousand, one hundred and thirty-one",
+num_to_verbal,9225,"nine thousand, two hundred and twenty-five",
+num_to_verbal,9486,"nine thousand, four hundred and eighty-six",
+num_to_verbal,9539,"nine thousand, five hundred and thirty-nine",
+num_to_verbal,9549,"nine thousand, five hundred and forty-nine",
+num_to_verbal,9626,"nine thousand, six hundred and twenty-six",
+num_to_verbal,9747,"nine thousand, seven hundred and forty-seven",
+num_to_verbal,9854,"nine thousand, eight hundred and fifty-four",
+rhymes,compete,neat,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,ice,rice,"['rice', 'price', 'ice', 'twice', 'slice', 'spice']"
+rhymes,day,gay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,weigh,may,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,sheet,heat,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,laugh,calf,"['half', 'staff', 'calf', 'laugh', 'giraffe']"
+rhymes,thief,leaf,"['beef', 'thief', 'leaf', 'brief']"
+rhymes,happy,unhappy,"['happy', 'unhappy']"
+rhymes,gay,way,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,gray,way,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,street,defeat,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,eat,defeat,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,neat,complete,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,smart,apart,"['part', 'start', 'heart', 'art', 'smart', 'depart', 'apart']"
+rhymes,defeat,seat,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,they,away,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,myself,herself,"['myself', 'itself', 'shelf', 'himself', 'herself']"
+rhymes,stage,page,"['page', 'age', 'stage', 'wage', 'cage']"
+rhymes,heat,beat,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,play,stay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,crop,pop,"['stop', 'shop', 'pop', 'crop']"
+rhymes,may,play,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,seat,compete,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,wool,bull,"['pull', 'full', 'wool', 'bull']"
+rhymes,meat,street,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,spoon,afternoon,"['afternoon', 'noon', 'balloon', 'cartoon', 'soon', 'spoon']"
+rhymes,car,far,"['car', 'guitar', 'star', 'bar', 'far', 'jar']"
+rhymes,away,delay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,beef,leaf,"['beef', 'thief', 'leaf', 'brief']"
+rhymes,rice,price,"['rice', 'price', 'ice', 'twice', 'slice', 'spice']"
+rhymes,part,start,"['part', 'start', 'heart', 'art', 'smart', 'depart', 'apart']"
+rhymes,complete,compete,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,beat,sheet,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,pop,crop,"['stop', 'shop', 'pop', 'crop']"
+rhymes,lock,sock,"['clock', 'sock', 'block', 'rock', 'knock', 'shock', 'lock']"
+rhymes,say,bay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,slice,twice,"['rice', 'price', 'ice', 'twice', 'slice', 'spice']"
+rhymes,bar,guitar,"['car', 'guitar', 'star', 'bar', 'far', 'jar']"
+rhymes,block,clock,"['clock', 'sock', 'block', 'rock', 'knock', 'shock', 'lock']"
+rhymes,meet,street,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,pray,gay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,spice,twice,"['rice', 'price', 'ice', 'twice', 'slice', 'spice']"
+rhymes,piece,peace,"['police', 'piece', 'niece', 'peace']"
+rhymes,pay,may,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,hey,pay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,bay,may,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,wage,page,"['page', 'age', 'stage', 'wage', 'cage']"
+rhymes,sweet,beat,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,age,cage,"['page', 'age', 'stage', 'wage', 'cage']"
+rhymes,knock,clock,"['clock', 'sock', 'block', 'rock', 'knock', 'shock', 'lock']"
+rhymes,pull,wool,"['pull', 'full', 'wool', 'bull']"
+rhymes,start,part,"['part', 'start', 'heart', 'art', 'smart', 'depart', 'apart']"
+rhymes,cage,page,"['page', 'age', 'stage', 'wage', 'cage']"
+rhymes,man,van,"['man', 'fan', 'plan', 'pan', 'van']"
+rhymes,far,bar,"['car', 'guitar', 'star', 'bar', 'far', 'jar']"
+rhymes,stay,bay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,guitar,bar,"['car', 'guitar', 'star', 'bar', 'far', 'jar']"
+rhymes,heart,start,"['part', 'start', 'heart', 'art', 'smart', 'depart', 'apart']"
+rhymes,sock,knock,"['clock', 'sock', 'block', 'rock', 'knock', 'shock', 'lock']"
+rhymes,sandal,handle,"['handle', 'candle', 'sandal']"
+rhymes,staff,giraffe,"['half', 'staff', 'calf', 'laugh', 'giraffe']"
+rhymes,way,gay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,exist,insist,"['list', 'insist', 'exist']"
+rhymes,shop,stop,"['stop', 'shop', 'pop', 'crop']"
+rhymes,soon,spoon,"['afternoon', 'noon', 'balloon', 'cartoon', 'soon', 'spoon']"
+rhymes,calf,half,"['half', 'staff', 'calf', 'laugh', 'giraffe']"
+rhymes,plan,van,"['man', 'fan', 'plan', 'pan', 'van']"
+rhymes,fan,man,"['man', 'fan', 'plan', 'pan', 'van']"
+rhymes,greet,complete,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,art,heart,"['part', 'start', 'heart', 'art', 'smart', 'depart', 'apart']"
+rhymes,star,far,"['car', 'guitar', 'star', 'bar', 'far', 'jar']"
+rhymes,rock,knock,"['clock', 'sock', 'block', 'rock', 'knock', 'shock', 'lock']"
+rhymes,page,wage,"['page', 'age', 'stage', 'wage', 'cage']"
+rhymes,stop,shop,"['stop', 'shop', 'pop', 'crop']"
+rhymes,apart,depart,"['part', 'start', 'heart', 'art', 'smart', 'depart', 'apart']"
+rhymes,delay,pray,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,police,piece,"['police', 'piece', 'niece', 'peace']"
+rhymes,display,bay,"['pay', 'gray', 'stay', 'play', 'day', 'they', 'say', 'away', 'way', 'may', 'delay', 'hey', 'pray', 'bay', 'gay', 'display', 'weigh']"
+rhymes,delete,sheet,"['eat', 'sweet', 'street', 'meet', 'meat', 'complete', 'seat', 'heat', 'beat', 'defeat', 'compete', 'greet', 'sheet', 'delete', 'neat']"
+rhymes,clock,block,"['clock', 'sock', 'block', 'rock', 'knock', 'shock', 'lock']"
+rhymes,sightseeing,skiing,"['skiing', 'sightseeing']"
+rhymes,pump,jump,"['jump', 'pump']"
+rhymes,balloon,afternoon,"['afternoon', 'noon', 'balloon', 'cartoon', 'soon', 'spoon']"
+rhymes,itself,myself,"['myself', 'itself', 'shelf', 'himself', 'herself']"
+rhymes,jar,bar,"['car', 'guitar', 'star', 'bar', 'far', 'jar']"
+rhymes,only,lonely,"['only', 'lonely']"
+rhymes,herself,shelf,"['myself', 'itself', 'shelf', 'himself', 'herself']"
+rhymes,leaf,beef,"['beef', 'thief', 'leaf', 'brief']"
+rhymes,joke,smoke,"['smoke', 'joke', 'folk']"
+rhymes,price,ice,"['rice', 'price', 'ice', 'twice', 'slice', 'spice']"
+rhymes,impossible,possible,"['possible', 'impossible']"
+rhymes,shock,rock,"['clock', 'sock', 'block', 'rock', 'knock', 'shock', 'lock']"
+rhymes,dog,blog,"['dog', 'blog']"
+rhymes,himself,herself,"['myself', 'itself', 'shelf', 'himself', 'herself']"
+rhymes,van,pan,"['man', 'fan', 'plan', 'pan', 'van']"
+rhymes,peace,police,"['police', 'piece', 'niece', 'peace']"
+rhymes,giraffe,calf,"['half', 'staff', 'calf', 'laugh', 'giraffe']"
+rhymes,cartoon,afternoon,"['afternoon', 'noon', 'balloon', 'cartoon', 'soon', 'spoon']"
+rhymes,uncomfortable,comfortable,"['comfortable', 'uncomfortable']"
+rhymes,smoke,joke,"['smoke', 'joke', 'folk']"
+translation_en-de,place,Platz,"['Position', 'plazieren', 'Bude', 'Stelle', 'Ort', 'Schlafplatz', 'Sitzplatz', 'Quartier', 'Stehplatz', 'for vehicles: Standplatz', 'stellen', 'Platz', 'Sitz', 'einordnen']"
+translation_en-de,family,Familie,"['Familie', 'vom anderen Ufer sein']"
+translation_en-de,point,Punkt,"['Komma', 'Peninsula', 'Standpunkt', 'Halbinsel', 'Spitze', 'Zeitpunkt', 'Landzunge', 'Punkt', 'zeigen']"
+translation_en-de,east,Osten,"['Osten', 'Ost']"
+translation_en-de,aircraft,Luftfahrzeug,['Luftfahrzeug']
+translation_en-de,title,Titel,"['Eigentumsnachweis', 'Titel', 'Eigentumsrecht']"
+translation_en-de,party,Partei,"['Partie', 'Fest', 'Partei', 'Teilnehmer', 'Teilnehmerin', 'Party', 'Feier', 'Fete']"
+translation_en-de,victory,Sieg,['Sieg']
+translation_en-de,list,Liste,"['Liste', 'Schlagseite', 'aufzählen', 'Krängung']"
+translation_en-de,cover,Deckung,"['Abdeckung', 'decken', 'Versteck', 'Deckung', 'bespringen', 'besteigen', 'behandeln', 'Deckel', 'Gedeck', 'abdecken', 'covern', 'Deckung geben', 'Überdeckung', 'Decke']"
+translation_en-de,idea,Idee,"['Idee', 'Ahnung']"
+translation_en-de,loss,Verlust,"['Verlust', 'Niederlage']"
+translation_en-de,king,König,"['Dame', 'König']"
+translation_en-de,staff,Belegschaft,"['Belegschaft', 'Notenlinien', 'Personal', 'Stab']"
+translation_en-de,broadcast,Sendung,"['verbreiten', 'Rundfunk', 'Sendung', 'Ausstrahlung', 'senden', 'Übertragung']"
+translation_en-de,trade,Handel,"['Passat', 'Kommerz', 'Tausch', 'Facharbeiter', 'Passatwind', 'Handel', 'Handwerk', 'Geschäft']"
+translation_en-de,energy,Energie,['Energie']
+translation_en-de,peak,Gipfel,"['Gipfel', 'Maximum']"
+translation_en-de,combat,Kampf,"['Schlacht', 'Kampf']"
+translation_en-de,source,Quelle,"['Ursprung', 'beziehen', 'Quellkode', 'Quelle', 'belegen', 'Quellcode']"
+translation_en-de,piece,Stück,['Stück']
+translation_en-de,plant,Pflanze,"['platzieren', 'pflanzen', 'Kombination', 'Pflanze']"
+translation_en-de,ice,Eis,"['frieren', 'einfrieren', 'Eis']"
+translation_en-de,lot,Los,"['Parzelle', 'Grund', 'Haufen', 'Grundstück', 'Los', 'Häuflein', 'Anzahl', 'Gruppe', 'Schicksal', 'Charge', 'Menge']"
+translation_en-de,couple,Paar,"['Paar', 'einige', 'ein paar']"
+translation_en-de,boat,Boot,"['Boot', 'Schiff']"
+translation_en-de,seat,Sitz,"['Sitz', 'Sitzplatz']"
+translation_en-de,transport,Beförderung,"['befördern', 'Beförderung', 'transportieren']"
+translation_en-de,mouth,Mündung,"['Mündlein', 'Mund', 'Maul', 'Mündung']"
+translation_en-de,iron,Eisen,"['eisern', 'Eisen', 'bügeln', 'Bügeleisen']"
+translation_en-de,composition,Zusammenstellung,"['Komposition', 'Zusammenstellung']"
+translation_en-de,forest,Wald,"['Hain', 'Wald', 'aufforsten', 'Gehölz', 'Forst']"
+translation_en-de,bird,Vogel,"['Braut', 'Typ', 'Perle', 'Schnitte', 'Vogel', 'absitzen im Cafe Viereck', 'Mieze']"
+translation_en-de,armor,Panzerung,"['Rüstung', 'Panzerung', 'Panzer', 'Panzerkraftwagen']"
+translation_en-de,replacement,Ersatz,"['Ersatzspieler', 'Ersatz']"
+translation_en-de,discovery,Entdeckung,['Entdeckung']
+translation_en-de,sale,Auktion,"['Verkauf', 'Ausverkauf', 'Auktion', 'Schlussverkauf']"
+translation_en-de,chain,Kette,"['Kette', 'ketten']"
+translation_en-de,designation,Benennung,['Benennung']
+translation_en-de,pace,Tempo,"['Tempo', 'Geschwindigkeit', 'Schritt', 'Pass', 'Passgang']"
+translation_en-de,pit,Box,"['Stein', 'Loch', 'Same', 'Kern', 'Box', 'Grube']"
+translation_en-de,dress,Kleidung,"['sich anziehen', 'ankleiden', 'anziehen', 'Kleid', 'Kleidung', 'kleiden']"
+translation_en-de,delay,Verzögerung,"['etwas verschieben', 'sich verspäten', 'Verzögerung']"
+translation_en-de,electricity,Strom,"['Elektrizität', 'Strom']"
+translation_en-de,coup,Coup,['Coup']
+translation_en-de,improvement,Verbesserung,['Verbesserung']
+translation_en-de,victim,Opfer,['Opfer']
+translation_en-de,girlfriend,Freundin,"['Freundin', 'Girlfriend']"
+translation_en-de,tension,Spannung,['Spannung']
+translation_en-de,patient,Patient,"['Patient', 'geduldig']"
+translation_en-de,crest,Kamm,"['Krone', 'Kamm', 'Haube']"
+translation_en-de,consideration,Vergütung,"['Rücksicht', 'Vergütung', 'Erwägung', 'Überlegung']"
+translation_en-de,autobiography,Autobiografie,['Autobiografie']
+translation_en-de,sum,Summe,"['Summe', 'summieren']"
+translation_en-de,procedure,Prozedur,"['Prozedur', 'Vorgehensweise', 'Vorgehen', 'Unterprogramm', 'Prozedere']"
+translation_en-de,ceiling,Decke,['Decke']
+translation_en-de,coalition,Koalition,['Koalition']
+translation_en-de,essay,Versuch,"['Aufsatz', 'Essay', 'Versuch']"
+translation_en-de,goalkeeper,Torwart,"['Goali', 'Schlussmann', 'Torsteher', 'Fliegenfängerin', 'Keeper', 'Torwartin', 'Torwächterin', 'Torsteherin', 'Schlussfrau', 'Keeperin', 'Tormann', 'Goalmann', 'Torhüterin', 'Torwächter', 'Fliegenfänger', 'Torhüter', 'Torwart', 'Torfrau', 'Goalie', 'Goalfrau']"
+translation_en-de,marble,Marmor,"['Murmel', 'Marmor', 'marmorieren']"
+translation_en-de,ballet,Ballett,['Ballett']
+translation_en-de,stunt,Stunt,['Stunt']
+translation_en-de,dragon,Drache,"['Drache', 'Lindwurm', 'Wurm', 'Wyvern']"
+translation_en-de,soccer,Fußball,['Fußball']
+translation_en-de,biology,Biologie,['Biologie']
+translation_en-de,invention,Erfinden,"['Invention', 'Erfinden', 'Erfindung', 'Einfallsreichtum']"
+translation_en-de,button,Taste,"['Taste', 'Knopf', 'Knospe']"
+translation_en-de,embassy,Botschaft,['Botschaft']
+translation_en-de,abbey,Klosterkirche,"['Abtei', 'Klosterkirche']"
+translation_en-de,ankle,Knöchel,"['Fußknöchel', 'Knöchel', 'enkel']"
+translation_en-de,fog,Nebel,['Nebel']
+translation_en-de,suspicion,Verdacht,"['Argwohn', 'Verdacht', 'Verdächtigung']"
+translation_en-de,poison,Gift,"['Giftstoff', 'Gift', 'vergiften']"
+translation_en-de,integrity,Integrität,['Integrität']
+translation_en-de,treasure,Schatz,['Schatz']
+translation_en-de,vector,Vektor,['Vektor']
+translation_en-de,evaluation,Beurteilung,['Beurteilung']
+translation_en-de,premier,Ministerpräzident,['Ministerpräzident']
+translation_en-de,mock,Nachahmung,"['aufziehen', 'Schein-', 'nachahmen', 'hochnehmen', 'Nachahmung', 'nachgemacht', 'nachäffen']"
+translation_en-de,certificate,Zertifikat,['Zertifikat']
+translation_en-de,slate,Schiefergrau,"['planen', 'Kandidatenliste', 'verreissen', 'schiefergrau', 'Tafel', 'vorsehen', 'Liste', 'Schiefergrau', 'Schiefertafel', 'Dachschiefer', 'bestimmen', 'ansetzen', 'Schuldentafel', 'Schiefer']"
+translation_en-de,coordination,Koordination,"['Koordinierung', 'Koordination']"
+translation_en-de,mourning,Trauer,['Trauer']
+translation_en-de,confluence,Zusammenfluss,['Zusammenfluss']
+translation_en-de,fortification,Festung,"['Festung', 'Fort', 'Befestigen', 'Festungsbau']"
+translation_en-de,slogan,Devise,"['Devise', 'Losung', 'Spruch ; Schlachtruf', 'Parole', 'Motto']"
+translation_en-de,authenticity,Authentizität,['Authentizität']
+translation_en-de,denial,Leugnung,"['Negierung', 'Negation', 'Verneinung', 'Leugnung', 'Dementi', 'Verweigerung']"
+translation_en-de,haul,Lastbeförderung,"['Fang', 'ziehen', 'Gütertransport', 'transportieren', 'Fischzug', 'schleppen', 'Lastbeförderung', 'befödern']"
+translation_en-de,attribute,Attribut,"['zuschreiben', 'Attribut']"
+translation_en-de,bunker,Bunker,['Bunker']
+translation_en-de,prostitute,Prostituierte,"['prostituieren', 'sich prostituieren', 'Hure', 'Prostituierte', 'Dirne']"
+translation_en-de,foliage,Blätter,"['Laub', 'Blätter']"
+translation_en-de,perfection,Vollkommenheit,"['Vollkommenheit', 'Perfektion']"
+translation_en-de,quartet,Quartett,['Quartett']
+translation_en-de,sailor,Matrose,"['Seemann', 'Matrose']"
+translation_en-de,shootout,Schießerei,"['Schusswechsel', 'Schießerei']"
+translation_en-de,jewellery,Schmuck,"['Juwelen', 'Schmuck']"
+translation_en-de,objection,Beanstandung,"['Einspruch', 'Beanstandung', 'Widerspruch', 'Einwand']"
+translation_en-de,casualty,Opfer,['Opfer']
+antonyms,fortunate,unfortunate,
+antonyms,express,local,
+antonyms,real,nominal,
+antonyms,urban,rural,
+antonyms,natural,flat,
+antonyms,strength,weakness,
+antonyms,unmask,mask,
+antonyms,legitimate,illegitimate,
+antonyms,sanity,insanity,
+antonyms,plucked,bowed,
+antonyms,provocative,unprovocative,
+antonyms,imperishable,perishable,
+antonyms,illegible,legible,
+antonyms,logical,illogical,
+antonyms,inclined,vertical,
+antonyms,uncompromising,compromising,
+antonyms,synergistic,antagonistic,
+antonyms,dishonest,honest,
+antonyms,noncommissioned,commissioned,
+antonyms,clergy,laity,
+antonyms,nonspeaking,speaking,
+antonyms,unworthy,worthy,
+antonyms,divergence,convergence,
+antonyms,unnaturally,naturally,
+antonyms,affirm,negate,
+antonyms,unmitigated,mitigated,
+antonyms,import,export,
+antonyms,indecisive,decisive,
+antonyms,atypical,typical,
+antonyms,nominative,oblique,
+antonyms,unmodified,modified,
+antonyms,approve,disapprove,
+antonyms,stay,change,
+antonyms,perceptibly,imperceptibly,
+antonyms,successful,unsuccessful,
+antonyms,assisted,unassisted,
+antonyms,enabling,disabling,
+antonyms,infectious,noninfectious,
+antonyms,reasonable,unreasonable,
+antonyms,irreverence,reverence,
+antonyms,empirical,theoretical,
+antonyms,immodest,modest,
+antonyms,impatience,patience,
+antonyms,unattached,attached,
+antonyms,incommensurate,commensurate,
+antonyms,female,male,
+antonyms,falsity,truth,
+antonyms,dissimilar,similar,
+antonyms,disincentive,incentive,
+antonyms,curable,incurable,
+antonyms,hawk,dove,
+antonyms,guided,unguided,
+antonyms,animate,inanimate,
+antonyms,unchristian,christian,
+antonyms,elitist,egalitarian,
+antonyms,credulous,incredulous,
+antonyms,misconception,conception,
+antonyms,uncongenial,congenial,
+antonyms,glad,sad,
+antonyms,suspected,unsuspected,
+antonyms,narrow,wide,
+antonyms,acceleration,deceleration,
+antonyms,flexion,extension,
+antonyms,benign,malignant,
+antonyms,attach,detach,
+antonyms,unlock,lock,
+antonyms,concerned,unconcerned,
+antonyms,highland,lowland,
+antonyms,enclosed,unenclosed,
+antonyms,disobedient,obedient,
+antonyms,invalidate,validate,
+antonyms,nondeductible,deductible,
+antonyms,married,unmarried,
+antonyms,displease,please,
+antonyms,elation,depression,
+antonyms,noncompliance,compliance,
+antonyms,descendant,ancestor,
+antonyms,anode,cathode,
+antonyms,immature,mature,
+antonyms,recede,advance,
+antonyms,unburden,burden,
+antonyms,wellness,illness,
+antonyms,alternate,opposite,
+antonyms,unextended,extended,
+antonyms,fairness,unfairness,
+antonyms,surprised,unsurprised,
+antonyms,inconsistency,consistency,
+antonyms,dorsal,ventral,
+antonyms,deciduous,evergreen,
+antonyms,enter,exit,
+antonyms,ignoble,noble,
+antonyms,fauna,flora,
+antonyms,above,below,
+antonyms,agreement,disagreement,
+antonyms,uninspiring,inspiring,
+antonyms,privileged,underprivileged,
+antonyms,unveiled,veiled,
+antonyms,tail,head,
+antonyms,improperly,properly,
+antonyms,darkness,lightness,
+word_in_context,Sentence 1: Hyenas scavenge. Sentence 2: She scavenged the garbage cans for food. Word: scavenge,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: There are three synagogues in the Jewish section. Sentence 2: Sections from the left ventricle showed diseased tissue. Word: section,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: She ordered some wine for the meal. Sentence 2: Wine is stronger than beer. Word: wine,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: A thing of the spirit. Sentence 2: Things of the heart. Word: thing,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: He tripled to the rightfield corner. Sentence 2: The southeastern corner of the Mediterranean. Word: corner,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Belabor the obvious. Sentence 2: She was belabored by her fellow students. Word: belabor,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Be careful crossing the street. Sentence 2: The whole street protested the absence of lights. Word: street,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Youth everywhere rises in revolt. Sentence 2: Her youth and beauty is what attracted him to her. Word: youth,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Engrave a letter. Sentence 2: Engrave a pen. Word: engrave,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: To command an army or a ship. Sentence 2: Command the military forces. Word: command,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The invaders spread their language all over the country. Sentence 2: A big oil spot spread across the water. Word: spread,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Tap a keg of beer. Sentence 2: Tap a maple tree for its syrup. Word: tap,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Flood the market with tennis shoes. Sentence 2: The swollen river flooded the village. Word: flood,not the same,"['not the same', 'no', 'false']"
+word_in_context,"Sentence 1: English is a cognate of Greek, German, Russian and Persian. Sentence 2: English and, Russian, Icelandic and Irish are all cognates. Word: cognate",same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: His success in the marathon was unexpected. Sentence 2: The election was a remarkable success for the Whigs. Word: success,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: The relief pitcher got credit for a save. Sentence 2: The goalie made a brilliant save. Word: save,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The stick does not bend. Sentence 2: Bend your knees. Word: bend,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Heel a golf ball. Sentence 2: Heel that dance. Word: heel,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: The whole body filed out of the auditorium. Sentence 2: The student body. Word: body,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Indent the documents. Sentence 2: Indent the paragraphs of a letter. Word: indent,not the same,"['not the same', 'no', 'false']"
+word_in_context,"Sentence 1: Direct your anger towards others, not towards yourself. Sentence 2: He directed all his energies into his dissertation. Word: direct",not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: She wanted to aim a pun. Sentence 2: He aimed his fists towards his opponent's face. Word: aim,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: The aptness of men to follow example. Sentence 2: The aptness of iron to rust. Word: aptness,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The embodiment of hope. Sentence 2: A circle was the embodiment of his concept of life. Word: embodiment,not the same,"['not the same', 'no', 'false']"
+word_in_context,"Sentence 1: In the middle of the marathon, David collapsed from fatigue. Sentence 2: Rain during the middle of April. Word: middle",not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: They gave full play to the artist's talent. Sentence 2: It was all done in play. Word: play,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Rise to the occasion. Sentence 2: Her spirits rose when she heard the good news. Word: rise,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: I am trying to contact my sister. Sentence 2: He never contacted his children after he emigrated to Australia. Word: contact,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: There was an art exhibition on in the town hall. Sentence 2: A boat exhibition. Word: exhibition,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: I need him to be nice. Sentence 2: I needed him to go. Word: need,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: An assurance of help when needed. Sentence 2: His assurance in his superiority did not make him popular. Word: assurance,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Fold up the newspaper. Sentence 2: Tony folded the flaps open. Word: fold,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The engineer marvelled at his construction. Sentence 2: Construction is underway on the new bridge. Word: construction,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Dip the brush into the paint. Sentence 2: She dipped her knee. Word: dip,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: The government must do its part. Sentence 2: Religions in all parts of the world. Word: part,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: This shall not relieve either Party of any obligations. Sentence 2: The thief relieved me of $100. Word: relieve,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: A string of islands. Sentence 2: The strings played superlatively well. Word: string,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: To moderate a synod. Sentence 2: John moderated the discussion. Word: moderate,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Strike an arc. Sentence 2: The clock struck midnight. Word: strike,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: I promise you my best effort. Sentence 2: I promised somebody my time. Word: promise,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: All that bowing and scraping did not impress him. Sentence 2: They collected blood scrapings for analysis. Word: scraping,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: It was the deliberation of his act that was insulting. Sentence 2: The deliberations of the jury. Word: deliberation,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: He published an unexpected attack on my work. Sentence 2: An attack of diarrhea. Word: attack,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Collapse the music stand. Sentence 2: The school system is collapsing. Word: collapse,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: An invasion of locusts. Sentence 2: An invasion of tourists. Word: invasion,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Printing at higher resolution will cause a reduction in performance. Sentence 2: They never did achieve a final resolution of their differences. Word: resolution,not the same,"['not the same', 'no', 'false']"
+word_in_context,"Sentence 1: Don't handle the merchandise. Sentence 2: About his altar, handling holy things -- John Milton. Word: handle",same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The operator couldn't get Kobe because of the earthquake. Sentence 2: I'll get this finished by lunchtime. Word: get,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Circulate a rumor. Sentence 2: This letter is being circulated among the faculty. Word: circulate,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Inject heroin. Sentence 2: He injected new life into the performance. Word: inject,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Catalytic activity. Sentence 2: They avoided all recreational activity. Word: activity,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Juvenile offenses often reflect an inadequacy in the parents. Sentence 2: The inadequacy of unemployment benefits. Word: inadequacy,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Load a car. Sentence 2: Load the truck with hay. Word: load,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: I love French food. Sentence 2: I loved to write. Word: love,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: He used terror to make them confess. Sentence 2: He was the terror of the neighborhood. Word: terror,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Bell cows. Sentence 2: Who will bell the cat? Word: bell,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Students receive instruction in the arts and sciences. Sentence 2: Instruction will be provided on how to handle difficult customers. Word: instruction,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The files will erase quickly. Sentence 2: The chalkboard erased easily. Word: erase,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: He beat his breast in anger. Sentence 2: The robin has a red breast. Word: breast,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: He got a bang on the head. Sentence 2: They got a great bang out of it. Word: bang,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: The plane's operation in high winds. Sentence 2: The power of its engine determines its operation. Word: operation,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: His work established a new department of literature. Sentence 2: Baking is not my department. Word: department,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The child's acquisition of language. Sentence 2: That graphite tennis racquet is quite an acquisition. Word: acquisition,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: A branch of Congress. Sentence 2: We have branches in all major suburbs. Word: branch,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The publisher wants to distribute the book in Asia. Sentence 2: The function distributes the values evenly. Word: distribute,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Make a break for it. Sentence 2: He finally got his big break. Word: break,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: She can not conceive. Sentence 2: Assisted procreation can help those trying to conceive. Word: conceive,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Pioneers had to cross the continent on foot. Sentence 2: There are seven continents. Word: continent,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The woman charged that her jailer was a fondler. Sentence 2: Not all fondlers are sexual perverts. Word: fondler,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Injustice is a heinous wrong. Sentence 2: He feels that you are in the wrong. Word: wrong,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Lie down on the bed until you feel better. Sentence 2: She lied when she told me she was only 29. Word: lie,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: A look of triumph. Sentence 2: His look was fixed on her eyes. Word: look,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: A profession of disagreement. Sentence 2: My father was a barrister by profession. Word: profession,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: There's too much shadiness to take good photographs. Sentence 2: The shadiness of their transactions. Word: shadiness,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: The breeze rustled the papers on her desk. Sentence 2: The breeze was cooled by the lake. Word: breeze,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: He made a great maneuver. Sentence 2: Parallel parking can be a difficult maneuver. Word: maneuver,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: State your name. Sentence 2: State your opinion. Word: state,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Glaze the bread with eggwhite. Sentence 2: The potter glazed the dishes. Word: glaze,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The last bastion of communism. Sentence 2: A bastion against corruption. Word: bastion,same,"['same', 'yes', 'true']"
+word_in_context,"Sentence 1: Force socialization rarely creates strong friendships, but there are exceptions. Sentence 2: There was too much socialization with the enlisted men. Word: socialization",same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The locks pound the water of the canal. Sentence 2: Pound the roots with a heavy flat stone. Word: pound,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Grind lenses for glasses and cameras. Sentence 2: Grind an axe. Word: grind,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: For recreation he wrote poetry and solved crossword puzzles. Sentence 2: Drug abuse is often regarded as a form of recreation. Word: recreation,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: He's my best mate. Sentence 2: I'm going to the pub with a few mates. Word: mate,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: The assembly plant is an enormous facility. Sentence 2: Educational facilities. Word: facility,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: The book tells the story of two roommates. Sentence 2: Disney's stories entertain adults as well as children. Word: story,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: His claim to the property has come under question. Sentence 2: He obeyed without question. Word: question,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Students making aliyah. Sentence 2: He was called on for an aliyah. Word: aliyah,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: These shoes cost $100. Sentence 2: The bill will cost them 500 million dollars. Word: cost,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: Let's eliminate the course on Akkadian hieroglyphics. Sentence 2: This possibility can be eliminated from our consideration. Word: eliminate,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Post a warning at the dump. Sentence 2: The newspaper posted him in Timbuktu. Word: post,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Pinnacle a pediment. Sentence 2: He did not want to be pinnacled. Word: pinnacle,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Choke a carburetor. Sentence 2: This neckband is choking the cat. Word: choke,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Threw down the gauntlet. Sentence 2: Took up the gauntlet. Word: gauntlet,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: They had to consult before arriving at a decision. Sentence 2: Consult your local broker. Word: consult,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: He put the cup back in the saucer. Sentence 2: The handle of the cup was missing. Word: cup,same,"['same', 'yes', 'true']"
+word_in_context,Sentence 1: His treatment of the race question is badly biased. Sentence 2: His treatment of space borrows from Italian architecture. Word: treatment,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Please bracket this remark. Sentence 2: Bracket bookshelves. Word: bracket,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: Violate the sanctity of the church. Sentence 2: This sentence violates the rules of syntax. Word: violate,not the same,"['not the same', 'no', 'false']"
+word_in_context,Sentence 1: I appreciate your efforts. Sentence 2: The yen appreciated again! Word: appreciate,not the same,"['not the same', 'no', 'false']"
+orthography_starts_with,Mary thinks that she is smart. [t],thinks that,
+orthography_starts_with,"They love to play golf, but I do not. [b]",but,
+orthography_starts_with,Muriel said nothing else than that she had been insulted. [s],said she,
+orthography_starts_with,The mechanical doll wriggled itself loose. [t],the,
+orthography_starts_with,Fred talked about everything before Rusty did talk about something. [d],did,
+orthography_starts_with,Who did you get an accurate description of? [g],get,
+orthography_starts_with,Who did you think kissed the gorilla? [k],kissed,
+orthography_starts_with,"Every senator seems to become more corrupt, as he talks to more lobbyists. [b]",become,
+orthography_starts_with,They realised that never had Sir Thomas been so offended. [r],realised,
+orthography_starts_with,The book is boring. [b],book boring,
+orthography_starts_with,I remembered having kissed Mary. [i],i,
+orthography_starts_with,We elected me. [m],me,
+orthography_starts_with,John asked. [a],asked,
+orthography_starts_with,John ate his noodle quietly. [h],his,
+orthography_starts_with,We investigated the area for bombs. [t],the,
+orthography_starts_with,"The higher the stakes, the lower his expectations are. [a]",are,
+orthography_starts_with,"The more pictures of him that appear in the news, the more embarrassed John becomes. [e]",embarrassed,
+orthography_starts_with,John promise Mary to shave himself. [h],himself,
+orthography_starts_with,"The angrier Mary got, the more she looked at pictures. [m]",mary more,
+orthography_starts_with,John bought a book on the table. [t],the table,
+orthography_starts_with,Tom said he would and Bill actually did eat a raw eggplant. [e],eat eggplant,
+orthography_starts_with,"Any tiger has orange fur, marked with black stripes. [m]",marked,
+orthography_starts_with,I met the man who grows peaches. [m],met man,
+orthography_starts_with,Which pictures of himself does John like? [w],which,
+orthography_starts_with,Who do you think Tom saw? [y],you,
+orthography_starts_with,I talked to Winston about himself. [t],talked to,
+orthography_starts_with,Fred talked about everything before Rusty did talk about something. [e],everything,
+orthography_starts_with,Everybody around here who ever buys anything on credit talks in his sleep. [t],talks,
+orthography_starts_with,I am both expecting to get the job and of the opinion that it is a desirable one. [a],am and a,
+orthography_starts_with,Muriel said nothing else than that she had been insulted. [e],else,
+orthography_starts_with,We linguists love to argue [w],we,
+orthography_starts_with,"The angrier Mary got, the more she looked at pictures. [a]",angrier at,
+orthography_starts_with,It annoys me that Fido barks. [b],barks,
+orthography_starts_with,Which topic did you choose without getting his approval? [c],choose,
+orthography_starts_with,Jessica loaded boxes on the wagon. [l],loaded,
+orthography_starts_with,The tub leaked water. [t],the tub,
+orthography_starts_with,She asked was Alison coming to the party. [c],coming,
+orthography_starts_with,It was a brand new car that he bought. [n],new,
+orthography_starts_with,he had spent five thousand dollars. [t],thousand,
+orthography_starts_with,John owns the book. [b],book,
+orthography_starts_with,I want her to dance. [h],her,
+orthography_starts_with,Fanny regretted having to talk to Aunt Norris. [r],regretted,
+orthography_starts_with,Rusty talked about himself only after Mary did talk about him. [r],rusty,
+orthography_starts_with,Each candidate who has interest in semantics will be admitted to the department. [s],semantics,
+orthography_starts_with,John is likely to leave. [l],likely leave,
+orthography_starts_with,John has not kissed Mary. [h],has,
+orthography_starts_with,Carmen obtained the spare part at the hardware store. [a],at,
+orthography_starts_with,"Extremely frantically, Anson danced at Trade [a]",anson at,
+orthography_starts_with,The man I saw get into the cab robbed the bank. [i],i into,
+orthography_starts_with,Water bubbled up out of the kettle. [u],up,
+orthography_starts_with,We celebrated in the streets in the rain on Tuesday in the morning. [s],streets,
+orthography_starts_with,Books were taken from each student by the other. [b],books by,
+orthography_starts_with,John said Joan saw someone from her graduating class. [s],said saw someone,
+orthography_starts_with,John was believed by Mary to be telling the truth. [t],to telling the truth,
+orthography_starts_with,It annoys people that dogs bark. [a],annoys,
+orthography_starts_with,"Everybody gets on well with a certain relative, but often only his therapist knows which one. [t]",therapist,
+orthography_starts_with,I would hate for John to leave. [f],for,
+orthography_starts_with,John told Mary that it was important to Fred to leave early. [j],john,
+orthography_starts_with,The book was written. [w],was written,
+orthography_starts_with,It was believed by the students that they would have an exam. [w],was would,
+orthography_starts_with,John considers Bill silly. [j],john,
+orthography_starts_with,Some people yell at noisy dogs in my neighborhood. [n],noisy neighborhood,
+orthography_starts_with,A letter was received that Jones would be upset by. [t],that,
+orthography_starts_with,"Most columnists claim that a senior White House official has been briefing them, and the newspaper today reveals which one. [t]",that them the today,
+orthography_starts_with,"Everybody gets on well with a certain relative, but often only his therapist knows which one. [b]",but,
+orthography_starts_with,"Most columnists claim that a senior White House official has been briefing them, and the newspaper today reveals which one. [o]",official one,
+orthography_starts_with,That surprised me. [s],surprised,
+orthography_starts_with,John tried to leave. [t],tried to,
+orthography_starts_with,John is sad. [j],john,
+orthography_starts_with,There was some particular dog who saved every family. [w],was who,
+orthography_starts_with,Tabs are kept on suspected drug dealers by the FBI. [o],on,
+orthography_starts_with,They want them arrested. [w],want,
+orthography_starts_with,"Bob tried to wash himself, and Mary to read the funnies. [r]",read,
+orthography_starts_with,John was believed by Mary to be telling the truth. [w],was,
+orthography_starts_with,Who always drinks milk? [m],milk,
+orthography_starts_with,It is a problem that he is here. [a],a,
+orthography_starts_with,Books were taken from no student and given to Mary. [m],mary,
+orthography_starts_with,"Most columnists claim that a senior White House official has been briefing them, and the newspaper today reveals which one. [h]",house has,
+orthography_starts_with,I met the person who left. [p],person,
+orthography_starts_with,Susan told her a story. [h],her,
+orthography_starts_with,All who lost money in the scam are eligible for the program. [e],eligible,
+orthography_starts_with,It was believed by everybody that Mary was a thief. [e],everybody,
+orthography_starts_with,I am counting on Bill to get there on time. [c],counting,
+orthography_starts_with,Lou put the umbrella in the closet. [p],put,
+orthography_starts_with,We preferred them on our team. [p],preferred,
+orthography_starts_with,That professor is feared by all students. [p],professor,
+orthography_starts_with,Cohen proved that the continuum hypothesis was independent. [p],proved,
+orthography_starts_with,I would prefer for John to leave. [f],for,
+orthography_starts_with,John was believed by Mary to be telling the truth. [b],believed by be,
+orthography_starts_with,The students drove cars. [d],drove,
+orthography_starts_with,It mattered that the Giants had lost. [m],mattered,
+orthography_starts_with,"He announced he would marry the woman he loved most, but none of his relatives could figure out who. [w]",would woman who,
+orthography_starts_with,She voted for herself. [s],she,
+orthography_starts_with,There is a monster in Loch Ness. [m],monster,
+orthography_starts_with,The administration has issued a statement that it is willing to meet a student group. [w],willing,
+orthography_starts_with,John promised Bill to leave. [b],bill,
+orthography_starts_with,She can run an accelerator. [a],an accelerator,
+orthography_starts_with,There was some particular dog who saved every family. [d],dog,
+orthography_starts_with,Some people yell at noisy dogs in my neighborhood. [p],people,
+orthography_starts_with,We like ourselves. [o],ourselves,
+sum,0 47,47,
+sum,0 61,61,
+sum,1 20,21,
+sum,1 30,31,
+sum,1 43,44,
+sum,1 59,60,
+sum,2 25,27,
+sum,2 55,57,
+sum,2 89,91,
+sum,3 30,33,
+sum,3 35,38,
+sum,3 42,45,
+sum,3 77,80,
+sum,3 82,85,
+sum,4 53,57,
+sum,5 31,36,
+sum,5 43,48,
+sum,5 76,81,
+sum,5 93,98,
+sum,6 38,44,
+sum,6 45,51,
+sum,7 15,22,
+sum,7 56,63,
+sum,7 70,77,
+sum,7 75,82,
+sum,8 42,50,
+sum,9 53,62,
+sum,9 82,91,
+sum,10 12,22,
+sum,10 69,79,
+sum,12 34,46,
+sum,12 55,67,
+sum,12 59,71,
+sum,12 94,106,
+sum,13 57,70,
+sum,14 48,62,
+sum,14 73,87,
+sum,14 97,111,
+sum,15 72,87,
+sum,16 35,51,
+sum,16 56,72,
+sum,17 91,108,
+sum,19 52,71,
+sum,21 70,91,
+sum,22 94,116,
+sum,22 99,121,
+sum,24 82,106,
+sum,25 33,58,
+sum,25 50,75,
+sum,25 78,103,
+sum,25 92,117,
+sum,28 28,56,
+sum,28 65,93,
+sum,28 83,111,
+sum,29 36,65,
+sum,32 60,92,
+sum,33 60,93,
+sum,33 96,129,
+sum,33 97,130,
+sum,34 58,92,
+sum,35 35,70,
+sum,35 40,75,
+sum,37 94,131,
+sum,39 43,82,
+sum,43 55,98,
+sum,43 56,99,
+sum,46 68,114,
+sum,46 82,128,
+sum,46 91,137,
+sum,48 90,138,
+sum,48 96,144,
+sum,50 72,122,
+sum,50 80,130,
+sum,50 91,141,
+sum,51 60,111,
+sum,51 83,134,
+sum,51 99,150,
+sum,52 76,128,
+sum,53 71,124,
+sum,53 97,150,
+sum,54 72,126,
+sum,56 58,114,
+sum,56 63,119,
+sum,57 74,131,
+sum,58 73,131,
+sum,59 89,148,
+sum,60 83,143,
+sum,62 92,154,
+sum,62 96,158,
+sum,65 77,142,
+sum,69 73,142,
+sum,69 80,149,
+sum,70 97,167,
+sum,75 93,168,
+sum,76 95,171,
+sum,77 77,154,
+sum,78 94,172,
+sum,81 94,175,
+sum,84 97,181,
+sum,97 97,194,
+singular_to_plural,end,ends,
+singular_to_plural,life,lives,
+singular_to_plural,world,worlds,
+singular_to_plural,match,matches,
+singular_to_plural,career,careers,
+singular_to_plural,player,players,
+singular_to_plural,development,developments,
+singular_to_plural,style,styles,
+singular_to_plural,body,bodies,
+singular_to_plural,process,processes,
+singular_to_plural,base,bases,
+singular_to_plural,star,stars,
+singular_to_plural,issue,issues,
+singular_to_plural,king,kings,
+singular_to_plural,pressure,pressures,
+singular_to_plural,structure,structures,
+singular_to_plural,car,cars,
+singular_to_plural,face,faces,
+singular_to_plural,meeting,meetings,
+singular_to_plural,fight,fights,
+singular_to_plural,singer,singers,
+singular_to_plural,commander,commanders,
+singular_to_plural,coach,coaches,
+singular_to_plural,enemy,enemies,
+singular_to_plural,mission,missions,
+singular_to_plural,camp,camps,
+singular_to_plural,value,values,
+singular_to_plural,offer,offers,
+singular_to_plural,spring,springs,
+singular_to_plural,genus,genera,
+singular_to_plural,deck,decks,
+singular_to_plural,lap,laps,
+singular_to_plural,winner,winners,
+singular_to_plural,journey,journeys,
+singular_to_plural,cruiser,cruisers,
+singular_to_plural,climate,climates,
+singular_to_plural,submarine,submarines,
+singular_to_plural,facility,facilities,
+singular_to_plural,bus,buses,
+singular_to_plural,wear,wears,
+singular_to_plural,monument,monuments,
+singular_to_plural,predecessor,predecessors,
+singular_to_plural,typhoon,typhoons,
+singular_to_plural,justice,justices,
+singular_to_plural,loan,loans,
+singular_to_plural,sculpture,sculptures,
+singular_to_plural,guy,guys,
+singular_to_plural,feud,feuds,
+singular_to_plural,cup,cups,
+singular_to_plural,relation,relations,
+singular_to_plural,jet,jets,
+singular_to_plural,roadway,roadways,
+singular_to_plural,closure,closures,
+singular_to_plural,paint,paints,
+singular_to_plural,cemetery,cemeteries,
+singular_to_plural,electron,electrons,
+singular_to_plural,sum,sums,
+singular_to_plural,variant,variants,
+singular_to_plural,grid,grids,
+singular_to_plural,supporter,supporters,
+singular_to_plural,jaw,jaws,
+singular_to_plural,photograph,photographs,
+singular_to_plural,diary,diaries,
+singular_to_plural,assignment,assignments,
+singular_to_plural,duet,duets,
+singular_to_plural,scorer,scorers,
+singular_to_plural,configuration,configurations,
+singular_to_plural,sentiment,sentiments,
+singular_to_plural,statute,statutes,
+singular_to_plural,interface,interfaces,
+singular_to_plural,kit,kits,
+singular_to_plural,mortar,mortars,
+singular_to_plural,kilometre,kilometres,
+singular_to_plural,triangle,triangles,
+singular_to_plural,poster,posters,
+singular_to_plural,insect,insects,
+singular_to_plural,shed,sheds,
+singular_to_plural,replica,replicas,
+singular_to_plural,recreation,recreations,
+singular_to_plural,warship,warships,
+singular_to_plural,butterfly,butterflies,
+singular_to_plural,fence,fences,
+singular_to_plural,diocese,dioceses,
+singular_to_plural,merge,merges,
+singular_to_plural,pupil,pupils,
+singular_to_plural,spine,spines,
+singular_to_plural,shower,showers,
+singular_to_plural,dislike,dislikes,
+singular_to_plural,broadcaster,broadcasters,
+singular_to_plural,outlook,outlooks,
+singular_to_plural,invest,invests,
+singular_to_plural,botanist,botanists,
+singular_to_plural,voter,voters,
+singular_to_plural,quartet,quartets,
+singular_to_plural,cartoonist,cartoonists,
+singular_to_plural,diversion,diversions,
+singular_to_plural,bath,baths,
+singular_to_plural,denomination,denominations,
+singular_to_plural,stereotype,stereotypes,
+singular_to_plural,distortion,distortions,
+translation_en-fr,place,place,"['place', 'se placer', 'endroit', 'poser', 'faire', 'arriver', 'lieu', 'mettre', 'placer']"
+translation_en-fr,family,famille,['famille']
+translation_en-fr,point,point,"['case', 'opinion', 'avis', 'indiquer', 'aiguille', 'aiguillage', 'point', 'instant', 'pointe', 'prise', 'moment', 'péninsule', 'but', 'flèche', 'dixième', 'pointer', 'prise électrique', 'point de vue', 'objectif', 'virgule']"
+translation_en-fr,east,est,"['oriental', 'orientale', ""de l'est"", ""vers l 'est"", 'est', ""à l'est""]"
+translation_en-fr,aircraft,aéronef,['aéronef']
+translation_en-fr,title,titre,"['titre', 'intitulé']"
+translation_en-fr,party,détachement,"['détachement', 'partie', 'participant', 'parti', 'veiller', 'fêter']"
+translation_en-fr,victory,victoire,['victoire']
+translation_en-fr,list,liste,"['liste', 'lister']"
+translation_en-fr,cover,couverture,"['reprendre', 'couvercle', 'couvrir', 'couvert', 'couverture']"
+translation_en-fr,idea,idée,"['idée', 'pensée']"
+translation_en-fr,loss,perte,"['défaite', 'perte']"
+translation_en-fr,length,longueur,['longueur']
+translation_en-fr,self,soi-même,['soi-même']
+translation_en-fr,broadcast,émission,"['radiodiffuser', 'émission', 'diffuser']"
+translation_en-fr,trade,métier,"['métier', 'échanger', 'commerce']"
+translation_en-fr,energy,énergie,"['courage', 'énergie']"
+translation_en-fr,peak,cime,['cime']
+translation_en-fr,market,marché,"['commercialiser', 'du marché', 'marché']"
+translation_en-fr,quality,qualité,"['qualité', 'de qualité']"
+translation_en-fr,dance,danse,"['danse', 'danser']"
+translation_en-fr,county,comté,"['département', 'comté']"
+translation_en-fr,lot,bande,"['groupe', 'bande', 'ensemble', 'destin']"
+translation_en-fr,wing,aile,"['aile', 'ailier']"
+translation_en-fr,camp,camp,"['bivouaquer', 'camp', 'camper']"
+translation_en-fr,leadership,autorité,"['charisme', 'leadership', 'autorité']"
+translation_en-fr,split,grand écart ; to do the splits: faire le grand écart,"['diviser', 'répartir', 'fendre', 'séparer', 'scinder', 'grand écart ; to do the splits: faire le grand écart']"
+translation_en-fr,leg,jambe,['jambe']
+translation_en-fr,crowd,monceau,"['foule', 'monceau']"
+translation_en-fr,knowledge,connaissance,"['science', 'savoir', 'connaissances', 'connaissance']"
+translation_en-fr,statement,déclaration,"['déclaration', 'instruction', 'relevé']"
+translation_en-fr,campus,campus,['campus']
+translation_en-fr,entry,entrée,"['coefficient', 'article', 'entrée', 'accès', 'vestibule', 'enregistrement', 'rubrique', 'élément']"
+translation_en-fr,circulation,circulation,['circulation']
+translation_en-fr,atmosphere,atmosphère,"['atmosphère', 'ambiance']"
+translation_en-fr,praise,louange,"['louer', 'féliciter', 'louange', 'prôner']"
+translation_en-fr,throne,trône,['trône']
+translation_en-fr,dialogue,dialogue,"['dialoguer', 'conversation', 'dialogue']"
+translation_en-fr,surprise,surprise,"['étonner', 'surprendre', 'surprise']"
+translation_en-fr,agency,agence,"['organisme', 'action', 'agence']"
+translation_en-fr,delivery,accouchement,"['administration', 'naissance', 'parturition', 'accouchement', 'livraison']"
+translation_en-fr,elevation,élévation,['élévation']
+translation_en-fr,jury,jury,['jury']
+translation_en-fr,friendship,amitié,['amitié']
+translation_en-fr,uncle,oncle,"['tonton', 'oncle']"
+translation_en-fr,touch,toucher,['toucher']
+translation_en-fr,worship,culte,"['adorer', 'vénérer', 'culte', 'adoration', 'vénération']"
+translation_en-fr,sculpture,sculpture,['sculpture']
+translation_en-fr,holiday,jour férié,"['vacances', 'fête', 'vacance', 'jour férié', 'congé']"
+translation_en-fr,resignation,démission,"['démission', 'résignation']"
+translation_en-fr,expert,expert,['expert']
+translation_en-fr,punishment,punition,"['punition', 'châtiment']"
+translation_en-fr,custom,coutume,"['droit de douane', 'us', 'coutume', 'connaissance']"
+translation_en-fr,switch,commutateur,"['badine', 'commuter', 'échanger', 'fouetter', 'interrupteur', 'changer', 'commutateur']"
+translation_en-fr,spite,dépit,"['dépit', 'rancune']"
+translation_en-fr,acceptance,acceptation,['acceptation']
+translation_en-fr,photograph,photographie,"['photo', 'photographier', 'photographie']"
+translation_en-fr,upgrade,mise à niveau,['mise à niveau']
+translation_en-fr,genius,génie,['génie']
+translation_en-fr,torture,torture,"['torture', 'torturer']"
+translation_en-fr,triumph,triomphe,"['triomphe', 'triompher']"
+translation_en-fr,reflection,réflexion,"['réflexion', 'reflet']"
+translation_en-fr,hosting,hébergement,['hébergement']
+translation_en-fr,invention,invention,['invention']
+translation_en-fr,gasoline,essence,"['essence', 'gas']"
+translation_en-fr,boxing,boxe,['boxe']
+translation_en-fr,striker,gréviste,['gréviste']
+translation_en-fr,profession,profession,['profession']
+translation_en-fr,superhero,super-héros,['super-héros']
+translation_en-fr,visitor,invité,"['visiteur', 'invitée', 'invité', 'visiteuse']"
+translation_en-fr,rejection,refus,"['refus', 'rejet']"
+translation_en-fr,snake,furet,"['serpenter', 'serpent', 'furet']"
+translation_en-fr,puzzle,puzzle,"['puzzle', 'rendre perplexe', 'devinette', 'mystère', 'énigme', 'casse-tête', 'jeu de patience']"
+translation_en-fr,commissioner,commissaire,['commissaire']
+translation_en-fr,tributary,affluent,['affluent']
+translation_en-fr,zoo,zoo,['zoo']
+translation_en-fr,overhaul,remise à neuf,['remise à neuf']
+translation_en-fr,essence,essence,['essence']
+translation_en-fr,dimension,dimension,"['dimensionner', 'dimension']"
+translation_en-fr,footballer,footballeur,"['footballeuse', 'footballeur']"
+translation_en-fr,draught,à la pression,"[""courant d'air"", 'gorgée', 'à la pression']"
+translation_en-fr,dealer,dealer,['dealer']
+translation_en-fr,impedance,impédance,['impédance']
+translation_en-fr,disruption,interruption,"['perturbation', 'interruption']"
+translation_en-fr,flu,grippe,['grippe']
+translation_en-fr,crack,fissure,"['crack', 'casser', 'craquer', 'fissure', 'craquement', 'plaisanterie']"
+translation_en-fr,denial,négation,"['déni', 'refus', 'dénégation', 'négation']"
+translation_en-fr,fluoride,fluorure,['fluorure']
+translation_en-fr,attribute,attribut,"['depending on which class it belongs', 'attribuer', 'épithète or déterminant', 'attribut']"
+translation_en-fr,documentation,documentation,['documentation']
+translation_en-fr,prostitute,prostitué,"['prostituée', 'se prostituer', 'fille des rues', 'fille de joie', 'prostitué']"
+translation_en-fr,foliage,feuillage,['feuillage']
+translation_en-fr,repetition,répétition,['répétition']
+translation_en-fr,modeling,modelage,"['mannequinat', 'modélisation', 'modelage']"
+translation_en-fr,resentment,ressentiment,"['agacement', 'rancune', 'ressentiment']"
+translation_en-fr,sermon,sermon,"['prêche', 'sermon']"
+translation_en-fr,pollen,pollen,['pollen']
+translation_en-fr,superintendent,surintendant,['surintendant']
+translation_en-fr,pastor,pasteur,['pasteur']
+translation_en-fr,venom,venin,['venin']
+letters_list,place,p l a c e,
+letters_list,family,f a m i l y,
+letters_list,point,p o i n t,
+letters_list,east,e a s t,
+letters_list,service,s e r v i c e,
+letters_list,run,r u n,
+letters_list,site,s i t e,
+letters_list,wife,w i f e,
+letters_list,hurricane,h u r r i c a n e,
+letters_list,league,l e a g u e,
+letters_list,section,s e c t i o n,
+letters_list,surface,s u r f a c e,
+letters_list,contract,c o n t r a c t,
+letters_list,fight,f i g h t,
+letters_list,guitar,g u i t a r,
+letters_list,ball,b a l l,
+letters_list,model,m o d e l,
+letters_list,press,p r e s s,
+letters_list,culture,c u l t u r e,
+letters_list,collection,c o l l e c t i o n,
+letters_list,foot,f o o t,
+letters_list,theory,t h e o r y,
+letters_list,invasion,i n v a s i o n,
+letters_list,quarter,q u a r t e r,
+letters_list,agreement,a g r e e m e n t,
+letters_list,personnel,p e r s o n n e l,
+letters_list,northwest,n o r t h w e s t,
+letters_list,editor,e d i t o r,
+letters_list,cricket,c r i c k e t,
+letters_list,lap,l a p,
+letters_list,description,d e s c r i p t i o n,
+letters_list,camera,c a m e r a,
+letters_list,mountain,m o u n t a i n,
+letters_list,principal,p r i n c i p a l,
+letters_list,regiment,r e g i m e n t,
+letters_list,corner,c o r n e r,
+letters_list,credit,c r e d i t,
+letters_list,suit,s u i t,
+letters_list,closing,c l o s i n g,
+letters_list,boundary,b o u n d a r y,
+letters_list,armament,a r m a m e n t,
+letters_list,signal,s i g n a l,
+letters_list,affect,a f f e c t,
+letters_list,baby,b a b y,
+letters_list,fantasy,f a n t a s y,
+letters_list,voting,v o t i n g,
+letters_list,reduction,r e d u c t i o n,
+letters_list,document,d o c u m e n t,
+letters_list,inning,i n n i n g,
+letters_list,lighter,l i g h t e r,
+letters_list,moon,m o o n,
+letters_list,explanation,e x p l a n a t i o n,
+letters_list,diamond,d i a m o n d,
+letters_list,custom,c u s t o m,
+letters_list,photograph,p h o t o g r a p h,
+letters_list,accordance,a c c o r d a n c e,
+letters_list,trap,t r a p,
+letters_list,performer,p e r f o r m e r,
+letters_list,morale,m o r a l e,
+letters_list,calm,c a l m,
+letters_list,boom,b o o m,
+letters_list,afford,a f f o r d,
+letters_list,admission,a d m i s s i o n,
+letters_list,timing,t i m i n g,
+letters_list,rendition,r e n d i t i o n,
+letters_list,breach,b r e a c h,
+letters_list,servant,s e r v a n t,
+letters_list,counterpart,c o u n t e r p a r t,
+letters_list,drag,d r a g,
+letters_list,shed,s h e d,
+letters_list,cantata,c a n t a t a,
+letters_list,choreography,c h o r e o g r a p h y,
+letters_list,rejection,r e j e c t i o n,
+letters_list,vector,v e c t o r,
+letters_list,bite,b i t e,
+letters_list,fare,f a r e,
+letters_list,groove,g r o o v e,
+letters_list,clearance,c l e a r a n c e,
+letters_list,precision,p r e c i s i o n,
+letters_list,simplicity,s i m p l i c i t y,
+letters_list,characterization,c h a r a c t e r i z a t i o n,
+letters_list,glory,g l o r y,
+letters_list,leisure,l e i s u r e,
+letters_list,simpler,s i m p l e r,
+letters_list,prequel,p r e q u e l,
+letters_list,baseman,b a s e m a n,
+letters_list,geography,g e o g r a p h y,
+letters_list,flu,f l u,
+letters_list,symbolism,s y m b o l i s m,
+letters_list,distributor,d i s t r i b u t o r,
+letters_list,judgement,j u d g e m e n t,
+letters_list,conquer,c o n q u e r,
+letters_list,strand,s t r a n d,
+letters_list,diversion,d i v e r s i o n,
+letters_list,gateway,g a t e w a y,
+letters_list,rhetoric,r h e t o r i c,
+letters_list,phosphate,p h o s p h a t e,
+letters_list,cheating,c h e a t i n g,
+letters_list,fumble,f u m b l e,
+letters_list,promoter,p r o m o t e r,
+second_word_letter,place,l,
+second_word_letter,family,a,
+second_word_letter,point,o,
+second_word_letter,east,a,
+second_word_letter,service,e,
+second_word_letter,run,u,
+second_word_letter,site,i,
+second_word_letter,wife,i,
+second_word_letter,hurricane,u,
+second_word_letter,league,e,
+second_word_letter,section,e,
+second_word_letter,surface,u,
+second_word_letter,contract,o,
+second_word_letter,fight,i,
+second_word_letter,guitar,u,
+second_word_letter,ball,a,
+second_word_letter,model,o,
+second_word_letter,press,r,
+second_word_letter,culture,u,
+second_word_letter,collection,o,
+second_word_letter,foot,o,
+second_word_letter,theory,h,
+second_word_letter,invasion,n,
+second_word_letter,quarter,u,
+second_word_letter,agreement,g,
+second_word_letter,personnel,e,
+second_word_letter,northwest,o,
+second_word_letter,editor,d,
+second_word_letter,cricket,r,
+second_word_letter,lap,a,
+second_word_letter,description,e,
+second_word_letter,camera,a,
+second_word_letter,mountain,o,
+second_word_letter,principal,r,
+second_word_letter,regiment,e,
+second_word_letter,corner,o,
+second_word_letter,credit,r,
+second_word_letter,suit,u,
+second_word_letter,closing,l,
+second_word_letter,boundary,o,
+second_word_letter,armament,r,
+second_word_letter,signal,i,
+second_word_letter,affect,f,
+second_word_letter,baby,a,
+second_word_letter,fantasy,a,
+second_word_letter,voting,o,
+second_word_letter,reduction,e,
+second_word_letter,document,o,
+second_word_letter,inning,n,
+second_word_letter,lighter,i,
+second_word_letter,moon,o,
+second_word_letter,explanation,x,
+second_word_letter,diamond,i,
+second_word_letter,custom,u,
+second_word_letter,photograph,h,
+second_word_letter,accordance,c,
+second_word_letter,trap,r,
+second_word_letter,performer,e,
+second_word_letter,morale,o,
+second_word_letter,calm,a,
+second_word_letter,boom,o,
+second_word_letter,afford,f,
+second_word_letter,admission,d,
+second_word_letter,timing,i,
+second_word_letter,rendition,e,
+second_word_letter,breach,r,
+second_word_letter,servant,e,
+second_word_letter,counterpart,o,
+second_word_letter,drag,r,
+second_word_letter,shed,h,
+second_word_letter,cantata,a,
+second_word_letter,choreography,h,
+second_word_letter,rejection,e,
+second_word_letter,vector,e,
+second_word_letter,bite,i,
+second_word_letter,fare,a,
+second_word_letter,groove,r,
+second_word_letter,clearance,l,
+second_word_letter,precision,r,
+second_word_letter,simplicity,i,
+second_word_letter,characterization,h,
+second_word_letter,glory,l,
+second_word_letter,leisure,e,
+second_word_letter,simpler,i,
+second_word_letter,prequel,r,
+second_word_letter,baseman,a,
+second_word_letter,geography,e,
+second_word_letter,flu,l,
+second_word_letter,symbolism,y,
+second_word_letter,distributor,i,
+second_word_letter,judgement,u,
+second_word_letter,conquer,o,
+second_word_letter,strand,t,
+second_word_letter,diversion,i,
+second_word_letter,gateway,a,
+second_word_letter,rhetoric,h,
+second_word_letter,phosphate,h,
+second_word_letter,cheating,h,
+second_word_letter,fumble,u,
+second_word_letter,promoter,r,
