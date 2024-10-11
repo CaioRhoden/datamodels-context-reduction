@@ -13,7 +13,7 @@ class DatamodelsRetriever(BaseRetriever):
         
         self.k = k
 
-    def create_collections(self, 
+    def create_collections_index(self, 
                            train_set: pd.DataFrame, 
                            save_path: str,
                            n_samples: int,
@@ -32,9 +32,8 @@ class DatamodelsRetriever(BaseRetriever):
         
         with h5py.File(f"{save_path}/test_collection.h5", 'w') as hf:
             hf.create_dataset('test_collection', data=test_collection)
+    
 
-    def get_collections_results(self, 
-                                dev_sample:)
 
     def retrieve(self, weights_path: str) -> pd.DataFrame:
 

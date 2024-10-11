@@ -16,13 +16,14 @@ class Llama3_1(BaseLLM):
             path = "../models/inmetrics/Meta-Llama-3-8B",
         ) -> None:
 
-        self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3.1-8B")
+        self.tokenizer = AutoTokenizer.from_pretrained("meta-llama/Meta-Llama-3.1-8B",force_download=True)
         accelerator = Accelerator()
         self.model = AutoModelForCausalLM.from_pretrained(
                 "meta-llama/Meta-Llama-3.1-8B", 
                 quantization_config=BitsAndBytesConfig(load_in_4bit=True), 
                 device_map={"": accelerator.process_index},
-                torch_dtype=torch.float16
+                torch_dtype=torch.float16,
+                force_download=True
             )
 
     

@@ -14,3 +14,4 @@ rouge_score
 langchain_community
 xformers
 chromadb
+h5py
