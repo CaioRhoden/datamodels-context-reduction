@@ -21,6 +21,7 @@ class DatamodelConfig:
     train_set: pd.DataFrame | None
     train_set_path: str | None
     collections_path: str | None
+    pre_collections_path: str | None
     instructions_path: str | None
     instructions: dict | None
     llm: BaseLLM | None
@@ -53,6 +54,7 @@ class Datamodels:
         self.train_set = config.train_set
         self.train_set_path = config.train_set_path
         self.collections_path = config.collections_path
+        self.pre_collections_path = config.pre_collections_path
         self.instructions_path = config.instructions_path
         self.instructions = config.instructions
         self.llm = config.llm
@@ -110,19 +112,30 @@ class Datamodels:
             self.instructions = json.load(f)
 
 
-    def create_collection(
+    def create_pre_collection(
         self,
         device: str = "cuda:0",
         start_idx: int = 0,
-        checkpoint: int = 50,
+        checkpoint: int = 10,
         input_column: str = "input",
         output_column: str = "output",
-        optinal_output_column: str|None = None
+        optinal_output_column: str|None = "possible_outputs"
     
     ):
 
         if self.train_collections_idx is None:
             raise ValueError("Train collection index not loaded")
+        
+        pre_collection_dict = {
+            "collection_idx": [],
+            "test_idx": [],
+            "input": [],
+            "predicted_output": [],
+            "true_output": [],
+        }
+
+        if optinal_output_column is not None:
+            pre_collection_dict["optinal_output"] = []
 
         for idx_row in range(start_idx, (start_idx + len(self.train_collections_idx[start_idx:]))):
 
@@ -133,23 +146,48 @@ class Datamodels:
             for dev_idx in range(len(self.test_set)):
                 prompt = self._fill_prompt_template(idx_row, dev_idx, input_column, output_column)
                 result = self.llm.run(prompt)
-                print(result)
 
-                
-            break
-            
+                # Add element to pre collection dict
+
+                pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optinal_output_column])
             
 
 
 
             ## Saving condition
             if idx_row % checkpoint == 0 and idx_row > start_idx:
-                print(demonstrations_str)
-                break
+
+                df = pd.DataFrame(pre_collection_dict)
+                print(f"Checkpoint {idx_row} saved")
+                df.to_pickle(f"{self.pre_collections_path}/pre_collection_{idx_row}.pickle")
+                
+                pre_collection_dict = {
+                    "collection_idx": [],
+                    "test_idx": [],
+                    "input": [],
+                    "predicted_output": [],
+                    "true_output": [],
+                }
+
+                if optinal_output_column is not None:
+                    pre_collection_dict["optinal_output"] = []
 
     def train_datamodels(self):
-        
-        
+        ## TODO: Implement Fast L1 model and see JAX Options
+        pass
+
+    
+    def _add_element_to_collection(self, pre_collection_dict, collection_idx, test_idx, input, predicted_output, true_output, optinal_output=None):
+
+        pre_collection_dict["collection_idx"].append(collection_idx)
+        pre_collection_dict["test_idx"].append(test_idx)
+        pre_collection_dict["input"].append(input)
+        pre_collection_dict["predicted_output"].append(predicted_output)
+        pre_collection_dict["true_output"].append(true_output)
+        pre_collection_dict["optinal_output"].append(optinal_output)
+
+        return pre_collection_dict
+
     
     def _fill_prompt_template(
             self,
@@ -162,12 +200,12 @@ class Datamodels:
         
         template = """
             Fill the expected Output according to the instruction
-            {instruction}
-        
+            Intruction: {instruction}
+
             Examples:
             {context}
 
-            Input:
+            User Input:
             {input}
 
             Output:
@@ -181,7 +219,8 @@ class Datamodels:
 
         
         input = self.test_set.loc[idx_test][input_column]
-        instruction = self.instructions["task"][self.test_set.loc[idx_test][task_column]]
+
+        instruction = self.instructions[self.test_set.loc[idx_test][task_column]]
         prompt = PromptTemplate.from_template(template).format(instruction=instruction, context=context, input=input)
 
         return prompt

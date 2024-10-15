@@ -14,13 +14,14 @@ class DatamodelsRetriever(BaseRetriever):
         self.k = k
 
     def create_collections_index(self, 
-                           train_set: pd.DataFrame, 
+                           train_set_path: str, 
                            save_path: str,
                            n_samples: int,
                            test_per: float,
                            
                            ) -> None:
 
+        train_set = pd.read_csv(train_set_path)
         random_indices = [np.random.choice(train_set.index, self.k, replace=False) for _ in range(n_samples)]
         random_indices_array = np.array(random_indices)
 
