@@ -25,8 +25,8 @@ class DatamodelsRetriever(BaseRetriever):
         random_indices = [np.random.choice(train_set.index, self.k, replace=False) for _ in range(n_samples)]
         random_indices_array = np.array(random_indices)
 
-        train_collection = random_indices_array[:int(test_per * n_samples)]
-        test_collection = random_indices_array[int(test_per * n_samples):]
+        test_collection = random_indices_array[:int(test_per * n_samples)]
+        train_collection = random_indices_array[int(test_per * n_samples):]
 
         with h5py.File(f"{save_path}/train_collection.h5", 'w') as hf:
             hf.create_dataset('train_collection', data=train_collection)

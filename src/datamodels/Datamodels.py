@@ -1,4 +1,6 @@
 from src.llms import BaseLLM
+from src.evaluator import BaseEvaluator
+
 import pandas as pd
 import numpy as np
 from dataclasses import dataclass
@@ -25,6 +27,7 @@ class DatamodelConfig:
     instructions_path: str | None
     instructions: dict | None
     llm: BaseLLM | None
+    evaluator: BaseEvaluator | None
     model: LinearRegression | None
 
 
@@ -58,7 +61,9 @@ class Datamodels:
         self.instructions_path = config.instructions_path
         self.instructions = config.instructions
         self.llm = config.llm
+        self.evaluator = config.evaluator
         self.model = config.model
+        
 
     
 
@@ -74,6 +79,20 @@ class Datamodels:
                 self.train_collections_idx = f["train_collection"][()]
             print("Loaded train collection index from ", self.train_collections_idx_path)
         return self.train_collections_idx
+    
+    def get_test_collection_index(self):
+        """
+        Loads the train collection index from the file if it has not been loaded yet.
+
+        Returns:
+            np.ndarray: The train collection index.
+        """
+        if self.test_collections_idx is None:
+            with h5py.File(self.test_collections_idx_path, "r") as f:
+                self.test_collections_idx = f["test_collection"][()]
+            print("Loaded train collection index from ", self.test_collections_idx_path)
+        return self.test_collections_idx
+
 
 
     def create_collection_index(self, path_collection):
@@ -115,7 +134,9 @@ class Datamodels:
     def create_pre_collection(
         self,
         device: str = "cuda:0",
+        type: str = "train",
         start_idx: int = 0,
+        end_idx: int = 1,
         checkpoint: int = 10,
         input_column: str = "input",
         output_column: str = "output",
@@ -137,10 +158,19 @@ class Datamodels:
         if optinal_output_column is not None:
             pre_collection_dict["optinal_output"] = []
 
-        for idx_row in range(start_idx, (start_idx + len(self.train_collections_idx[start_idx:]))):
+
+        if end_idx is None:
+            end_idx = len(self.train_collections_idx[start_idx:])
+
+        for idx_row in range(start_idx, end_idx):
+
+            print(f"Collection id: {idx_row}")
 
             ## Convert index to binary vector
-            binary_idx = self._convert_idx_to_binary(self.train_collections_idx[idx_row], self.train_set)
+            if type == "train":
+                binary_idx = self._convert_idx_to_binary(self.train_collections_idx[idx_row], self.train_set)
+            elif type == "test":
+                binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.train_set)
 
             ## Get the input output pairs and concatenate into a string
             for dev_idx in range(len(self.test_set)):
@@ -154,13 +184,16 @@ class Datamodels:
 
 
 
-            ## Saving condition
-            if idx_row % checkpoint == 0 and idx_row > start_idx:
+            ## Saving condition in checkpoint or end of indezes
+            if (idx_row % checkpoint == 0 and idx_row > start_idx) or idx_row == end_idx-1:
 
                 df = pd.DataFrame(pre_collection_dict)
                 print(f"Checkpoint {idx_row} saved")
-                df.to_pickle(f"{self.pre_collections_path}/pre_collection_{idx_row}.pickle")
                 
+                if type == "train":
+                    df.to_pickle(f"{self.pre_collections_path}/pre_collection_{idx_row}.pickle")
+                elif type == "test":
+                    df.to_pickle(f"{self.pre_collections_path}/test_pre_collection_{idx_row}.pickle")
                 pre_collection_dict = {
                     "collection_idx": [],
                     "test_idx": [],
@@ -171,6 +204,32 @@ class Datamodels:
 
                 if optinal_output_column is not None:
                     pre_collection_dict["optinal_output"] = []
+
+    def create_collection(
+        self,
+        batch_name: str,
+        device: str = "cuda:0",
+        pre_collection_batch: pd.DataFrame = None,
+
+
+    ):
+        def extract_output(text):
+            # Split the string and strip leading/trailing spaces and newlines
+            return text.split("Model Output:\n ", 1)[-1].strip()
+        
+        
+        
+        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy().to(device),  pre_collection_batch["predicted_output"].apply(extract_output).to_numpy().to(device))
+        pre_collection_batch["evaluation"] = evaluation
+        pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
+        collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
+        collection.to_pickle(f"{self.collections_path}/{batch_name}.pickle")
+
+
+
+        
+        
+
 
     def train_datamodels(self):
         ## TODO: Implement Fast L1 model and see JAX Options
@@ -208,7 +267,7 @@ class Datamodels:
             User Input:
             {input}
 
-            Output:
+            Model Output:
         """
 
         context = ""
@@ -225,10 +284,6 @@ class Datamodels:
 
         return prompt
 
-        
-        
-
-    
 
     def _convert_idx_to_binary(self, arr: np.ndarray, df: pd.DataFrame = None) -> np.ndarray:
         
