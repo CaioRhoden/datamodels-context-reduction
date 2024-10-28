@@ -1,7 +1,7 @@
 
 from src.utils import split_dev_set, subset_df
 from src.retriever import DatamodelsRetriever
-from src.datamodels import Datamodels, DatamodelConfig
+from src.datamodels_pipeline import Datamodels, DatamodelConfig
 from src.llms import Llama3_1
 from src.evaluator import Rouge_L_evaluator
 import pandas as pd
@@ -33,16 +33,12 @@ def run_collection():
 
 
     datamodel = Datamodels(config)
-    datamodel.get_test_set()
-    datamodel.get_train_set()
-    datamodel.get_train_collection_index()
-    datamodel.get_test_collection_index()
+    datamodel.set_test_set()
+    datamodel.set_train_set()
+    datamodel.set_train_collection_index()
+    datamodel.set_test_collection_index()
     datamodel.set_instructions_from_path()
 
-    print(datamodel.train_collections_idx.shape)
-    print("Start Creating Collection")
-    df = pd.read_pickle( "../../data/instruction-induction-data/datamodels_15_10_2024/pre_collections/15-10-2024/pre_collection_10.pickle")
-    datamodel.create_collection(batch_name="test", pre_collection_batch=df)
 
 
     # Specify the folder path
@@ -50,7 +46,8 @@ def run_collection():
 
     # Get a list of all files in the folder
     files = [f for f in os.listdir(folder_path) if os.path.isfile(os.path.join(folder_path, f))]
-    for i in range(40, len(files)):
+    for i in range(0, len(files)):
+        print(f"Creating collection for {files[i]}")
         df = pd.read_pickle(folder_path + files[i])
         f_name = os.path.splitext(os.path.basename(files[i]))[0]
         datamodel.create_collection(batch_name=f_name, pre_collection_batch=df)

@@ -1,7 +1,7 @@
 
 from src.utils import split_dev_set, subset_df
 from src.retriever import DatamodelsRetriever
-from src.datamodels import Datamodels, DatamodelConfig
+from src.datamodels_pipeline import Datamodels, DatamodelConfig
 from src.llms import Llama3_1
 import pandas as pd
 

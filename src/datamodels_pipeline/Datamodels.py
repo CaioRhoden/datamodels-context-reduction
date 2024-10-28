@@ -8,27 +8,23 @@ from sklearn.linear_model import LinearRegression
 from langchain.prompts import PromptTemplate
 import h5py
 import json
-
+import os
+import pickle
+import models.datamodels.datamodels.regression.write_dataset as write_dataset
 
 @dataclass
 class DatamodelConfig:
 
     k: int
-    train_collections_idx_path: str | None
+    datamodels_path: str | None
     train_collections_idx: np.ndarray | None
-    test_collections_idx_path: str | None
     test_collections_idx: np.ndarray | None
     test_set: pd.DataFrame | None
-    test_set_path: str | None
     train_set: pd.DataFrame | None
-    train_set_path: str | None
-    collections_path: str | None
-    pre_collections_path: str | None
-    instructions_path: str | None
     instructions: dict | None
     llm: BaseLLM | None
     evaluator: BaseEvaluator | None
-    model: LinearRegression | None
+
 
 
 
@@ -48,86 +44,63 @@ class Datamodels:
         TODO: Add customization for context instruction
         """
         self.k = config.k
-        self.train_collections_idx_path = config.train_collections_idx_path
+        self.datamodels_path = config.datamodels_path
         self.train_collections_idx = config.train_collections_idx
-        self.test_collections_idx_path = config.test_collections_idx_path
         self.test_collections_idx = config.test_collections_idx
         self.test_set = config.test_set
-        self.test_set_path = config.test_set_path
         self.train_set = config.train_set
-        self.train_set_path = config.train_set_path
-        self.collections_path = config.collections_path
-        self.pre_collections_path = config.pre_collections_path
-        self.instructions_path = config.instructions_path
         self.instructions = config.instructions
         self.llm = config.llm
         self.evaluator = config.evaluator
-        self.model = config.model
+        
+    
+    def set_collections_index(self):
+
+
+        """
+        Loads the train and test collections index from the datamodels path.
+
+        If the train or test collections index is not already loaded, it will be loaded from the datamodels path.
+        The loaded index is stored in the respective attribute of the class.
+
+        Parameters:
+            None
+
+        Returns:
+            None
+        """
+        if self.train_collections_idx is None and self.datamodels_path is not None:
+            with h5py.File(f"{self.datamodels_path}/train_collection.h5", "r") as f:
+                self.test_collections_idx = f["train_collection"][()]
+            print("Loaded train collection index")
+
+        if self.test_collections_idx is None and self.datamodels_path is not None:
+            with h5py.File(f"{self.datamodels_path}/test_collection.h5", "r") as f:
+                self.test_collections_idx = f["test_collection"][()]
+            print("Loaded test collection index")
         
 
-    
-
-    def get_train_collection_index(self):
-        """
-        Loads the train collection index from the file if it has not been loaded yet.
-
-        Returns:
-            np.ndarray: The train collection index.
-        """
-        if self.train_collections_idx is None:
-            with h5py.File(self.train_collections_idx_path, "r") as f:
-                self.train_collections_idx = f["train_collection"][()]
-            print("Loaded train collection index from ", self.train_collections_idx_path)
-        return self.train_collections_idx
-    
-    def get_test_collection_index(self):
-        """
-        Loads the train collection index from the file if it has not been loaded yet.
-
-        Returns:
-            np.ndarray: The train collection index.
-        """
-        if self.test_collections_idx is None:
-            with h5py.File(self.test_collections_idx_path, "r") as f:
-                self.test_collections_idx = f["test_collection"][()]
-            print("Loaded train collection index from ", self.test_collections_idx_path)
-        return self.test_collections_idx
-
-
-
-    def create_collection_index(self, path_collection):
-
-        pass
-
-    def get_test_set(self):
+        
+    def set_dataframes(self):
         """
         Loads the test set if it has not been loaded yet.
 
         Returns:
             pd.DataFrame: The test set.
         """
-        if self.test_set is None:
-            self.test_set = pd.read_csv(self.test_set_path)
-            print("Loaded test set from ", self.test_set_path)
-        return self.test_set
 
-    def get_train_set(self):
-        """
-        Loads the train set if it has not been loaded yet.
+        if self.train_set is None and self.datamodels_path is not None:
+            self.train_set = pd.read_csv(f"{self.datamodels_path}/train_set.csv")
+            print("Loaded train set")
 
-        Returns:
-            pd.DataFrame: The train set.
-        """
-
-        if self.train_set is None:
-            self.train_set = pd.read_csv(self.train_set_path)
-            print("Loaded train set from ", self.train_set_path)
-        return self.train_set
+        if self.test_set is None and self.datamodels_path is not None:
+            self.test_set = pd.read_csv(f"{self.datamodels_path}/test_set.csv")
+            print("Loaded test set")
 
     
     def set_instructions_from_path(self):
 
-        with open(self.instructions_path, "r") as f:
+        with open(f"{self.datamodels_path}/instructions.json", "r") as f:
             self.instructions = json.load(f)
 
 
@@ -147,16 +120,8 @@ class Datamodels:
         if self.train_collections_idx is None:
             raise ValueError("Train collection index not loaded")
         
-        pre_collection_dict = {
-            "collection_idx": [],
-            "test_idx": [],
-            "input": [],
-            "predicted_output": [],
-            "true_output": [],
-        }
-
-        if optinal_output_column is not None:
-            pre_collection_dict["optinal_output"] = []
+        pre_collection_dict = self._reset_pre_collection_dict(optinal_output_column)
+        checkpoint_count = 0
 
 
         if end_idx is None:
@@ -165,6 +130,7 @@ class Datamodels:
         for idx_row in range(start_idx, end_idx):
 
             print(f"Collection id: {idx_row}")
+            checkpoint_count += 1
 
             ## Convert index to binary vector
             if type == "train":
@@ -185,25 +151,21 @@ class Datamodels:
 
 
             ## Saving condition in checkpoint or end of indezes
-            if (idx_row % checkpoint == 0 and idx_row > start_idx) or idx_row == end_idx-1:
+            if checkpoint_count == checkpoint or idx_row == end_idx-1:
 
                 df = pd.DataFrame(pre_collection_dict)
                 print(f"Checkpoint {idx_row} saved")
                 
                 if type == "train":
-                    df.to_pickle(f"{self.pre_collections_path}/pre_collection_{idx_row}.pickle")
+                    df.to_pickle(f"{self.datamodels_path}/pre_collections/pre_collection_{idx_row}.pickle")
                 elif type == "test":
-                    df.to_pickle(f"{self.pre_collections_path}/test_pre_collection_{idx_row}.pickle")
-                pre_collection_dict = {
-                    "collection_idx": [],
-                    "test_idx": [],
-                    "input": [],
-                    "predicted_output": [],
-                    "true_output": [],
-                }
+                    df.to_pickle(f"{self.datamodels_path}/pre_collections/test_pre_collection_{idx_row}.pickle")
 
-                if optinal_output_column is not None:
-                    pre_collection_dict["optinal_output"] = []
+
+                pre_collection_dict = self._reset_pre_collection_dict(optinal_output_column)
+                checkpoint_count = 0
+            
+            
 
     def create_collection(
         self,
@@ -219,7 +181,7 @@ class Datamodels:
         
         
         
-        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy().to(device),  pre_collection_batch["predicted_output"].apply(extract_output).to_numpy().to(device))
+        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].apply(extract_output).to_numpy(), pre_collection_batch["optinal_output"].to_numpy())
         pre_collection_batch["evaluation"] = evaluation
         pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
         collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
@@ -233,7 +195,62 @@ class Datamodels:
 
     def train_datamodels(self):
         ## TODO: Implement Fast L1 model and see JAX Options
-        pass
+        ## Create .beton to be used for train datamodel
+        # self._load_collections_from_path(self.datamodels_path)
+        write_dataset(
+            data_dir=f"{self.datamodels_path}",
+            out_path=f"{self.datamodels_path}/estimations/",
+            x_name="X_train",
+            y_name="y_train",
+            completed_name="X_train"
+
+        )
+
+
+
+    def _load_collections_from_path(self):
+
+        input_samples_train = np.array([])
+        results_train = np.array([])
+        input_samples_test = np.array([])
+        results_test = np.array([])
+
+        for filename in os.listdir(f"{self.datamodels_path}/collections/"):
+            file = os.path.join(f"{self.datamodels_path}/collections/", filename)
+
+            with open(file, 'rb') as f:
+                collection = pickle.load(f)
+
+                if filename.startswith("test"):
+
+                    collection_input = collection["input"].to_numpy()
+                    input_samples_test = np.concatenate((input_samples_test, collection_input))
+
+                    collection_result = collection["evaluation"].to_numpy()
+                    results_test = np.concatenate((results_test, collection_result))
+
+                else:
+
+                    collection_input = collection["input"].to_numpy()
+                    input_samples_train = np.concatenate((input_samples_train, collection_input))
+
+                    collection_result = collection["evaluation"].to_numpy()
+                    results_train = np.concatenate((results_train, collection_result))
+
+
+
+        
+
+        np.save(f"{self.datamodels_path}/X_train.npy", input_samples_train)
+        np.save(f"{self.datamodels_path}/Y_train.npy", results_train)
+        np.save(f"{self.datamodels_path}/X_test.npy", input_samples_test)
+        np.save(f"{self.datamodels_path}/Y_test.npy", results_test)
+        
+
+
+
+
+    
 
     
     def _add_element_to_collection(self, pre_collection_dict, collection_idx, test_idx, input, predicted_output, true_output, optinal_output=None):
@@ -307,3 +324,17 @@ class Datamodels:
         indeces_df[arr] = 1
         return indeces_df
         
+    def _reset_pre_collection_dict(self, optional_column: str = None) -> dict:
+        pre_collection_dict = {
+            "collection_idx": [],
+            "test_idx": [],
+            "input": [],
+            "predicted_output": [],
+            "true_output": [],
+        }
+
+        if optional_column is not None:
+            pre_collection_dict["optinal_output"] = []
+
+
+        return pre_collection_dict
