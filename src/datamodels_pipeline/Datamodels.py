@@ -1,34 +1,26 @@
-from src.llms import BaseLLM
-from src.evaluator import BaseEvaluator
+from src.datamodels_pipeline.config import MemMapConfig, DatamodelConfig
 
 import pandas as pd
 import numpy as np
-from dataclasses import dataclass
-from sklearn.linear_model import LinearRegression
+import torch
+from ffcv.writer import DatasetWriter
+from ffcv.fields import FloatField, NDArrayField
 from langchain.prompts import PromptTemplate
+from src.datamodels_pipeline.models import LinearRegressor
 import h5py
 import json
 import os
 import pickle
-import models.datamodels.datamodels.regression.write_dataset as write_dataset
+from torch.utils.data import TensorDataset, random_split
+import torch.nn as nn
+import torch.optim as optim
 
-@dataclass
-class DatamodelConfig:
-
-    k: int
-    datamodels_path: str | None
-    train_collections_idx: np.ndarray | None
-    test_collections_idx: np.ndarray | None
-    test_set: pd.DataFrame | None
-    train_set: pd.DataFrame | None
-    instructions: dict | None
-    llm: BaseLLM | None
-    evaluator: BaseEvaluator | None
+from pathlib import Path
 
 
 
 
-class Datamodels:
+class DatamodelPipeline:
     
     def __init__(self, config: DatamodelConfig) -> None:
 
@@ -44,6 +36,7 @@ class Datamodels:
         TODO: Add customization for context instruction
         """
         self.k = config.k
+        self.num_models = config.num_models
         self.datamodels_path = config.datamodels_path
         self.train_collections_idx = config.train_collections_idx
         self.test_collections_idx = config.test_collections_idx
@@ -52,6 +45,7 @@ class Datamodels:
         self.instructions = config.instructions
         self.llm = config.llm
         self.evaluator = config.evaluator
+
         
     
     def set_collections_index(self):
@@ -113,14 +107,14 @@ class Datamodels:
         checkpoint: int = 10,
         input_column: str = "input",
         output_column: str = "output",
-        optinal_output_column: str|None = "possible_outputs"
+        optional_output_column: str|None = "possible_outputs"
     
     ):
 
         if self.train_collections_idx is None:
             raise ValueError("Train collection index not loaded")
         
-        pre_collection_dict = self._reset_pre_collection_dict(optinal_output_column)
+        pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
         checkpoint_count = 0
 
 
@@ -188,23 +182,98 @@ class Datamodels:
         collection.to_pickle(f"{self.collections_path}/{batch_name}.pickle")
 
 
+    def train_datamodels(
+            self,
+            epochs: int = 1,
+            batch_size: int = 100,
+            val_split: float = 0.2,
+            lr: float = 0.001,
+            random_seed: int = 42,
+            device: str = "cuda:0",
+                         
+        ):
+
+
+        train_dataset = torch.load(f"{self.datamodels_path}/datasets/train_dataset.pt")
+        test_dataset = torch.load(f"{self.datamodels_path}/datasets/test_dataset.pt")
+
+        stacked_weights = torch.zeros(len(train_dataset), len(train_dataset[0][0][0]))
+        stacked_bias =  torch.zeros(len(train_dataset))
+        
+
+
+        for idx in range(0, len(train_dataset)):
+            print(f"Idx: {idx}")
+            
+            dataset = train_dataset[idx]
+
+            ### Create val dataset
+            val_size = int(len(dataset) * val_split)
+            train_size = len(dataset) - val_size
+            
+            # Shuffle indexes
+            indices = torch.randperm(len(dataset[0]), generator=torch.Generator().manual_seed(random_seed))
+            dataset= (dataset[0][indices], dataset[1][indices])
+
+            train = (dataset[0][:train_size], dataset[1][:train_size])
+            val = (dataset[0][train_size:], dataset[1][train_size:])
+
+            ##Inititalize weights and bias
+            weights = torch.randn(len(dataset[0][0]), requires_grad=True) # Randomly initialized weights
+            bias = torch.randn(1, requires_grad=True)
+
+            model = LinearRegressor(weights, bias)
+            criterion = nn.MSELoss()
+            optimizer = optim.SGD([weights, bias], lr=lr)
+
+            for epoch in range(epochs):
+                total_loss = 0
+                total_mse = 0
+                for collection in range(len(train[0])):
+                    model.weights = weights
+                    model.bias = bias
+                    # Apply the mask to the weights
+                    output = model.forward(train[0][collection]) # Add batch dimension
+
+
+                    # Compute loss
+                    loss = criterion(output, dataset[1][collection].unsqueeze(0)).to(device)  # Add batch dimension to target
+
+                    # Backward pass and optimize
+                    optimizer.zero_grad()
+                    loss.backward()
+                    optimizer.step()
+
+                    total_loss += loss.item()
+                    
+            
+                for collection in range(len(val[0])):
+
+                    x = val[0][collection]
+                    y = val[1][collection]
+
+                    total_mse += model.evaluate(x, y)
+
+                print(f'Epoch [{epoch + 1}/{epochs}], Loss: {total_loss / len(train[0]):.4f}, Val MSE: {total_mse / len(val[0]):.4f}')
+
+            stacked_weights[idx] = weights
+            stacked_bias[idx] = bias
 
         
+        torch.save(stacked_weights, f"{self.datamodels_path}/estimations/weights.pt")
+        torch.save(stacked_bias, f"{self.datamodels_path}/estimations/bias.pt")
+
+
+            
+
+
+
+        
+
         
 
 
-    def train_datamodels(self):
-        ## TODO: Implement Fast L1 model and see JAX Options
-        ## Create .beton to be used for train datamodel
-        # self._load_collections_from_path(self.datamodels_path)
-        write_dataset(
-            data_dir=f"{self.datamodels_path}",
-            out_path=f"{self.datamodels_path}/estimations/",
-            x_name="X_train",
-            y_name="y_train",
-            completed_name="X_train"
-
-        )
+        
 
 
 
@@ -237,20 +306,31 @@ class Datamodels:
                     collection_result = collection["evaluation"].to_numpy()
                     results_train = np.concatenate((results_train, collection_result))
 
-
-
-        
-
-        np.save(f"{self.datamodels_path}/X_train.npy", input_samples_train)
-        np.save(f"{self.datamodels_path}/Y_train.npy", results_train)
-        np.save(f"{self.datamodels_path}/X_test.npy", input_samples_test)
-        np.save(f"{self.datamodels_path}/Y_test.npy", results_test)
-        
+        ## Convert mask arrays to bool
+        input_samples_train = np.array([list(arr) for arr in input_samples_train], dtype=np.bool_)
+        input_samples_test = np.array([list(arr) for arr in input_samples_test], dtype=np.bool_)
+        print(input_samples_train.shape, input_samples_train.dtype)
 
 
 
+        ## Reshape for input
+        X_train = input_samples_train.reshape(self.num_models, len(input_samples_train)//self.num_models, input_samples_train.shape[1])
+        y_train = results_train.reshape(self.num_models, len(results_train)//self.num_models)
+        X_test = input_samples_test.reshape(self.num_models, len(input_samples_test)//self.num_models, input_samples_test.shape[1])
+        y_test = results_test.reshape(self.num_models, len(results_test)//self.num_models)
 
-    
+        ## Create torch datasets and save them
+        X_train = torch.tensor(X_train, dtype=torch.bool)
+        y_train = torch.tensor(y_train, dtype=torch.float32)
+        X_test = torch.tensor(X_test, dtype=torch.bool)
+        y_test = torch.tensor(y_test, dtype=torch.float32)
+
+        train_dataset = TensorDataset(X_train, y_train)
+        test_dataset = TensorDataset(X_test, y_test)
+
+        torch.save(train_dataset, f"{self.datamodels_path}/datasets/train_dataset.pt")
+        torch.save(test_dataset, f"{self.datamodels_path}/datasets/test_dataset.pt")
+
 
     
     def _add_element_to_collection(self, pre_collection_dict, collection_idx, test_idx, input, predicted_output, true_output, optinal_output=None):
