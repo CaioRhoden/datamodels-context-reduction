@@ -65,7 +65,7 @@ class DatamodelPipeline:
         """
         if self.train_collections_idx is None and self.datamodels_path is not None:
             with h5py.File(f"{self.datamodels_path}/train_collection.h5", "r") as f:
-                self.test_collections_idx = f["train_collection"][()]
+                self.train_collections_idx = f["train_collection"][()]
             print("Loaded train collection index")
 
         if self.test_collections_idx is None and self.datamodels_path is not None:
