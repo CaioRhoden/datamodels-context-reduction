@@ -4,7 +4,7 @@ import h5py
 import numpy as np 
 
 
-class DatamodelsRetriever(BaseRetriever):
+class NaiveDatamodelsRetriever(BaseRetriever):
 
     def __init__(self,
                  k: int,
