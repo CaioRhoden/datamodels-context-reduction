@@ -1,7 +1,11 @@
+from abc import ABC
+from typing import List, Any
 
+from pyparsing import abstractmethod
 
-class BaseDataloader():
+class BaseDataloader(ABC):
 
+    
     def __init__(
             self,
             path: str,
@@ -9,19 +13,6 @@ class BaseDataloader():
 
         self.path = path
 
-    
-    def load_data(self):
-        """
-        Method to load data
-        """
-        
+    @abstractmethod
+    def get_documents(self) -> List[Any]:
         pass
-
-
-    def preprocess_data(self):
-        """Method to preprocess the data"""
-        pass
-
-    def get_data(self):
-        """Method to retrieve the processed data"""
-        pass	

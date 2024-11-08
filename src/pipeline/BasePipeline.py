@@ -45,13 +45,7 @@ class BasePipeline():
         # self.vector_store = vector_store,
         # self.model = model
 
-    def setup_context(self, documents: list) -> PromptTemplate:
 
-        context = "\n".join([f"{doc.page_content} \n" for doc in documents])
-
-
-
-        return context
 
 
 
@@ -60,7 +54,7 @@ class BasePipeline():
 
         
         retrieved_documents = self.retriever.retrieve(self.documents, k, input)
-        context = self.setup_context(retrieved_documents)
+        context = "\n".join([f"{doc.page_content} \n" for doc in retrieved_documents])
 
         template = """
             Fill the expected Output
@@ -94,17 +88,20 @@ class BasePipeline():
             inputs.append( test_data.loc[i]["input"])
             outputs.append( test_data.loc[i]["output"])
 
+            input = str(test_data.loc[i]["input"])
 
-            predicted.append(self.run(test_data.loc[i]["input"], k))
+            predicted.append(self.run(input, k))
 
             if i % checkpoints_step == 0 and i > checkpoint:
 
                 df = pd.DataFrame({"task": tasks, "input": inputs, "output": outputs, "predicted": predicted})
                 df.to_pickle(f"../../data/runs_id/{run_tag}/{i - checkpoints_step}_{i}.pickle")
                 tasks, inputs, outputs, predicted = [], [], [], []
-                
-        df = pd.DataFrame({"task": tasks, "input": inputs, "output": outputs, "predicted": predicted})
-        df.to_pickle(f"../../data/runs_id/{run_tag}/{i}_last.pickle")
+
+            elif i == len(test_data) - 1:
+         
+                df = pd.DataFrame({"task": tasks, "input": inputs, "output": outputs, "predicted": predicted})
+                df.to_pickle(f"../../data/runs_id/{run_tag}/{i - checkpoints_step}_{i}.pickle")
 
 
 
