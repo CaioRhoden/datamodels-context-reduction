@@ -13,8 +13,8 @@ def train_datamodels():
 
     config = DatamodelConfig(
         k = 8,
-        num_models= 105,
-        datamodels_path = "../../data/instruction-induction-data/datamodels/tiny_datamodels_07_11_2024",
+        num_models= 315,
+        datamodels_path = "../../data/instruction-induction-data/datamodels/datamodels_06_11_2024",
         train_collections_idx = None,
         test_collections_idx = None,
         test_set = None,
@@ -36,7 +36,7 @@ def train_datamodels():
         epochs=1000,
         batch_size=100,
         val_split=0.1,
-        lr=0.0001,
+        lr=0.001,
         random_seed=42,
     )
 

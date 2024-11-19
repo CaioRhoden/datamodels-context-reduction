@@ -179,20 +179,24 @@ class DatamodelPipeline:
         pre_collection_batch["evaluation"] = evaluation
         pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
         collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
-        collection.to_pickle(f"{self.collections_path}/{batch_name}.pickle")
+        collection.to_pickle(f"{self.datamodels_path}/collections/{batch_name}.pickle")
+
+    
 
 
     def train_datamodels(
             self,
             epochs: int = 1,
             batch_size: int = 100,
-            val_split: float = 0.2,
-            lr: float = 0.001,
+            val_split: float = 0.1,
+            lr: float = 0.01,
             random_seed: int = 42,
+            patience: int = 5,
             device: str = "cuda:0",
                          
         ):
 
+        self._load_collections_from_path()
 
         train_dataset = torch.load(f"{self.datamodels_path}/datasets/train_dataset.pt")
         test_dataset = torch.load(f"{self.datamodels_path}/datasets/test_dataset.pt")
@@ -211,13 +215,7 @@ class DatamodelPipeline:
             val_size = int(len(dataset) * val_split)
             train_size = len(dataset) - val_size
             
-            # Shuffle indexes
-            indices = torch.randperm(len(dataset[0]), generator=torch.Generator().manual_seed(random_seed))
-            dataset= (dataset[0][indices], dataset[1][indices])
-
-            train = (dataset[0][:train_size], dataset[1][:train_size])
-            val = (dataset[0][train_size:], dataset[1][train_size:])
-
+            
             ##Inititalize weights and bias
             weights = torch.randn(len(dataset[0][0]), requires_grad=True) # Randomly initialized weights
             bias = torch.randn(1, requires_grad=True)
@@ -226,9 +224,24 @@ class DatamodelPipeline:
             criterion = nn.MSELoss()
             optimizer = optim.SGD([weights, bias], lr=lr)
 
+            best_mse = float('inf')
+            early_stopping_counter = 0
+
+            indices = torch.randperm(len(dataset[0]), generator=torch.Generator())
+            dataset= (dataset[0][indices], dataset[1][indices])
+
+            train = (dataset[0][:train_size], dataset[1][:train_size])
+            val = (dataset[0][train_size:], dataset[1][train_size:])
+
             for epoch in range(epochs):
+
+                # Shuffle indexes
+                
+
+
                 total_loss = 0
                 total_mse = 0
+
                 for collection in range(len(train[0])):
                     model.weights = weights
                     model.bias = bias
@@ -253,8 +266,21 @@ class DatamodelPipeline:
                     y = val[1][collection]
 
                     total_mse += model.evaluate(x, y)
+                
+                mean_loss = round(total_loss / len(train[0]), 3)
+                mean_mse = round(total_mse / len(val[0]), 3)
 
-                print(f'Epoch [{epoch + 1}/{epochs}], Loss: {total_loss / len(train[0]):.4f}, Val MSE: {total_mse / len(val[0]):.4f}')
+                print(f'Epoch [{epoch + 1}/{epochs}], Loss: {mean_loss:.4f}, Val MSE: {mean_mse:.4f}')
+
+                if mean_mse < best_mse:
+                    best_mse = mean_mse
+                    early_stopping_counter = 0
+                else:
+                    early_stopping_counter += 1
+
+                if early_stopping_counter >= patience:
+                    print(f"Early stopping at epoch {epoch + 1}")
+                    break
 
             stacked_weights[idx] = weights
             stacked_bias[idx] = bias
@@ -285,6 +311,7 @@ class DatamodelPipeline:
         results_test = np.array([])
 
         for filename in os.listdir(f"{self.datamodels_path}/collections/"):
+            print("Collections under processing")
             file = os.path.join(f"{self.datamodels_path}/collections/", filename)
 
             with open(file, 'rb') as f:
@@ -327,6 +354,8 @@ class DatamodelPipeline:
 
         train_dataset = TensorDataset(X_train, y_train)
         test_dataset = TensorDataset(X_test, y_test)
+
+        print("Saving tensors")
 
         torch.save(train_dataset, f"{self.datamodels_path}/datasets/train_dataset.pt")
         torch.save(test_dataset, f"{self.datamodels_path}/datasets/test_dataset.pt")
