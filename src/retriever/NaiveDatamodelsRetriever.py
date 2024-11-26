@@ -21,7 +21,25 @@ class NaiveDatamodelsRetriever(BaseRetriever):
                            
                            ) -> None:
 
+        
+        
+        """
+        This function reads a CSV file containing the training dataset, randomly selects indices to create collections, and 
+        then splits these indices into train and test collections. The collections are saved as HDF5 files.
+
+        Parameters:
+            train_set_path (str): The file path to the training dataset in CSV format.
+            save_path (str): The directory path where the train and test collection indices will be saved.
+            n_samples (int): The number of sample indices to generate for the collections.
+            test_per (float): The proportion of samples to allocate to the test collection, 
+                            represented as a float between 0 and 1.
+
+        Returns:
+            None
+        """
+
         train_set = pd.read_csv(train_set_path)
+
         random_indices = [np.random.choice(train_set.index, self.k, replace=False) for _ in range(n_samples)]
         random_indices_array = np.array(random_indices)
 

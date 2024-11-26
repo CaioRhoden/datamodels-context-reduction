@@ -1,4 +1,4 @@
-from src.datamodels_pipeline.config import MemMapConfig, DatamodelConfig
+from src.datamodels.config import MemMapConfig, DatamodelConfig
 
 import pandas as pd
 import numpy as np
@@ -6,7 +6,7 @@ import torch
 from ffcv.writer import DatasetWriter
 from ffcv.fields import FloatField, NDArrayField
 from langchain.prompts import PromptTemplate
-from src.datamodels_pipeline.models import LinearRegressor
+from src.datamodels.models import LinearRegressor
 import h5py
 import json
 import os
@@ -14,6 +14,7 @@ import pickle
 from torch.utils.data import TensorDataset, random_split
 import torch.nn as nn
 import torch.optim as optim
+import datetime
 
 from pathlib import Path
 
@@ -104,10 +105,10 @@ class DatamodelPipeline:
         type: str = "train",
         start_idx: int = 0,
         end_idx: int = 1,
-        checkpoint: int = 10,
+        checkpoint: int = 50,
         input_column: str = "input",
         output_column: str = "output",
-        optional_output_column: str|None = "possible_outputs"
+        optional_output_column: str = "possible_outputs"
     
     ):
 
@@ -135,11 +136,12 @@ class DatamodelPipeline:
             ## Get the input output pairs and concatenate into a string
             for dev_idx in range(len(self.test_set)):
                 prompt = self._fill_prompt_template(idx_row, dev_idx, input_column, output_column)
-                result = self.llm.run(prompt)
+                text = self.llm.run(prompt)
+                result = text.split("Model Output:\n ", 1)[-1].strip()
 
                 # Add element to pre collection dict
 
-                pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optinal_output_column])
+                pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optional_output_column])
             
 
 
@@ -147,16 +149,18 @@ class DatamodelPipeline:
             ## Saving condition in checkpoint or end of indezes
             if checkpoint_count == checkpoint or idx_row == end_idx-1:
 
+                print(datetime.datetime.now())
+
                 df = pd.DataFrame(pre_collection_dict)
                 print(f"Checkpoint {idx_row} saved")
                 
                 if type == "train":
-                    df.to_pickle(f"{self.datamodels_path}/pre_collections/pre_collection_{idx_row}.pickle")
+                    df.to_feather(f"{self.datamodels_path}/pre_collections/pre_collection_{idx_row}.feather")
                 elif type == "test":
-                    df.to_pickle(f"{self.datamodels_path}/pre_collections/test_pre_collection_{idx_row}.pickle")
+                    df.to_feather(f"{self.datamodels_path}/pre_collections/test_pre_collection_{idx_row}.feather")
 
 
-                pre_collection_dict = self._reset_pre_collection_dict(optinal_output_column)
+                pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
                 checkpoint_count = 0
             
             
@@ -169,13 +173,10 @@ class DatamodelPipeline:
 
 
     ):
-        def extract_output(text):
-            # Split the string and strip leading/trailing spaces and newlines
-            return text.split("Model Output:\n ", 1)[-1].strip()
         
         
         
-        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].apply(extract_output).to_numpy(), pre_collection_batch["optinal_output"].to_numpy())
+        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].to_numpy(), pre_collection_batch["optinal_output"].to_numpy())
         pre_collection_batch["evaluation"] = evaluation
         pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
         collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
