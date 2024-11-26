@@ -3,8 +3,7 @@ from src.datamodels.config import MemMapConfig, DatamodelConfig
 import pandas as pd
 import numpy as np
 import torch
-from ffcv.writer import DatasetWriter
-from ffcv.fields import FloatField, NDArrayField
+
 from langchain.prompts import PromptTemplate
 from src.datamodels.models import LinearRegressor
 import h5py
