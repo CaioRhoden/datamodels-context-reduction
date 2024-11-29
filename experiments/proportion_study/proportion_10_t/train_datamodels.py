@@ -1,5 +1,6 @@
 
-from src.datamodels_pipeline import DatamodelPipeline, DatamodelConfig
+from src.datamodels.pipeline import DatamodelPipeline
+from src.datamodels.config import DatamodelConfig
 from src.llms import Llama3_1
 from src.evaluator import GleuEvaluator
 import pandas as pd
@@ -9,12 +10,13 @@ import os
 def train_datamodels():
     
     llama = Llama3_1()
+    data_dir =  "../../data/instruction-induction-data/datamodels/proportion_study/210_5"
 
 
     config = DatamodelConfig(
         k = 8,
         num_models= 105,
-        datamodels_path = "../../data/instruction-induction-data/datamodels/tiny_datamodels_07_11_2024",
+        datamodels_path = data_dir,
         train_collections_idx = None,
         test_collections_idx = None,
         test_set = None,
@@ -33,7 +35,7 @@ def train_datamodels():
 
     # Specify the folder path
     datamodel.train_datamodels(
-        epochs=1000,
+        epochs=4000,
         batch_size=100,
         val_split=0.1,
         lr=0.0001,
