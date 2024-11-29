@@ -32,34 +32,34 @@ class GleuEvaluator(BaseEvaluator):
         
         # Calculate Rouge-L for each pair of sentences
         results = []
-        if possible_outputs is None:
-            for pred, ref in zip(y_pred, y):
-                result = self.gleu.compute(predictions=[pred], references=[ref])
-                if result is not None:
-                    results.append(result["google_bleu"])
-                else:
-                    raise ValueError("Google BLEU cannot be computed.")
-        else:
-            for pred, ref, poss in zip(y_pred, y, possible_outputs):
-                result = self.gleu.compute(predictions=[pred], references=[ref])
-                if type(poss) is not float:
-                    poss = ast.literal_eval(poss)
-
-                    try:
-                        possible_preds = [self.gleu.compute(predictions=[pred], references=[p])["google_bleu"] for p in poss] # type: ignore
-                    except:
-                        raise ValueError("Google BLEU cannot be computed for possible outputs")
-                    
+        for idx in range(len(y_pred)):
+            if possible_outputs[idx] is None:
+                    result = self.gleu.compute(predictions=[y_pred[idx]], references=[y[idx]])
                     if result is not None:
-                         results.append(max(result["google_bleu"],
-                                        *possible_preds))
+                        results.append(result["google_bleu"])
                     else:
                         raise ValueError("Google BLEU cannot be computed.")
-                   
-                elif result is not None:
-                    results.append(result["google_bleu"])
+            else:
+                    result = self.gleu.compute(predictions=[y_pred[idx]], references=[y[idx]])
+                    poss = possible_outputs[idx]
+                    if type(poss) is not float:
+                        poss = ast.literal_eval(poss)
 
-                else:
-                    raise ValueError("Google BLEU cannot be computed.")
+                        try:
+                            possible_preds = [self.gleu.compute(predictions=[y_pred[idx]], references=[p])["google_bleu"] for p in poss] # type: ignore
+                        except:
+                            raise ValueError("Google BLEU cannot be computed for possible outputs")
+                        
+                        if result is not None:
+                            results.append(max(result["google_bleu"],
+                                            *possible_preds))
+                        else:
+                            raise ValueError("Google BLEU cannot be computed.")
+                    
+                    elif result is not None:
+                        results.append(result["google_bleu"])
+
+                    else:
+                        raise ValueError("Google BLEU cannot be computed.")
         
         return np.array(results)

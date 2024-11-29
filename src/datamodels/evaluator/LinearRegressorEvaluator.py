@@ -12,12 +12,12 @@ class LinearRegressorEvaluator(BaseDatamodelsEvaluator):
             bias_arr: torch.Tensor, 
             targets: torch.Tensor,
             inputs: torch.Tensor, 
-            metric: str
+            metric: str, 
+            device: torch.device | str = "cuda",
         ) -> None:
         
-        if torch.cuda.is_available():
-            torch.set_default_device("cuda")
-        
+
+        self.device = device
         self.weights_arr = weights_arr
         self.bias_arr = bias_arr
         self.targets = targets
@@ -49,36 +49,44 @@ class LinearRegressorEvaluator(BaseDatamodelsEvaluator):
         - Calculating the specified metric (e.g., MAPE) to assess model performance.
         """
 
+        if torch.cuda.is_available():
+            torch.set_default_device(self.device)
+        
+
 
         self.model = LinearRegressor(self.weights_arr[model_idx], self.bias_arr[model_idx])
         
         selected_index = []
-        
+
+
         ## Get Test Set
         curr_idx = model_idx
-        while curr_idx < self.test_set.size(0):
+        while curr_idx < self.inputs.size(0):
             selected_index.append(curr_idx)
             curr_idx += interval
-        test_subset = self.test_set[torch.tensor(selected_index)]
+
+        input_subset = self.inputs[torch.tensor(selected_index)]
+        target_subset = self.targets[torch.tensor(selected_index)].view(-1)
+        
         
         ## Get Preds
 
         with torch.no_grad():
-            preds = torch.zeros(len(test_subset))
-            for idx in range(0, len(test_subset)):
-                preds[idx] = self.model(test_subset[idx][0])
+            preds = torch.zeros(len(target_subset))
+            for idx in range(0, len(target_subset)):
+                preds[idx] = self.model.forward(input_subset[idx])
+
+            print(target_subset[0])
+            print(preds[0])
 
         ## Calculate Metrics
 
         match self.metric:
 
             ## Calculate MAPE
-            case "mape":
-                targets = test_subset[:, 1]
-                epsilon = 1e-8
-                targets = torch.where(targets == 0, torch.tensor(epsilon), targets)
+            case "mse":
 
-                result = torch.mean(torch.abs((preds - targets) / torch.abs(targets))) * 100
+                result = torch.mean((target_subset - preds) ** 2)
             
             ## Not identified metric
             case _:
@@ -91,5 +99,6 @@ class LinearRegressorEvaluator(BaseDatamodelsEvaluator):
 
         
 
-    # def batch_evaluate(self, models_idx: list[int] | str) -> torch.Tensor:
-    #     pass
+    def batch_evaluate(self, models_idx: list[int] | str, interval: int) -> torch.Tensor:
+        
+        return torch.tensor([self.evaluate(model_idx, interval) for model_idx in models_idx])

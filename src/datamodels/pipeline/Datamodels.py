@@ -167,19 +167,19 @@ class DatamodelPipeline:
     def create_collection(
         self,
         batch_name: str,
-        device: str = "cuda:0",
-        pre_collection_batch: pd.DataFrame = None,
+        pre_collection_batch: pd.DataFrame,
 
 
     ):
         
         
-        
+
         evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].to_numpy(), pre_collection_batch["optinal_output"].to_numpy())
         pre_collection_batch["evaluation"] = evaluation
         pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
         collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
-        collection.to_pickle(f"{self.datamodels_path}/collections/{batch_name}.pickle")
+        batch_name = batch_name.replace("pre_", "")
+        collection.to_feather(f"{self.datamodels_path}/collections/{batch_name}.feather")
 
     
 
@@ -187,11 +187,11 @@ class DatamodelPipeline:
     def train_datamodels(
             self,
             epochs: int = 1,
-            batch_size: int = 100,
             val_split: float = 0.1,
             lr: float = 0.01,
             random_seed: int = 42,
             patience: int = 5,
+            collections: int = 1,
             device: str = "cuda:0",
                          
         ):
@@ -199,7 +199,6 @@ class DatamodelPipeline:
         self._load_collections_from_path()
 
         train_dataset = torch.load(f"{self.datamodels_path}/datasets/train_dataset.pt")
-        test_dataset = torch.load(f"{self.datamodels_path}/datasets/test_dataset.pt")
 
         stacked_weights = torch.zeros(len(train_dataset), len(train_dataset[0][0][0]))
         stacked_bias =  torch.zeros(len(train_dataset))
