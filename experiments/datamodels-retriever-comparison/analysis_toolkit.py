@@ -113,3 +113,31 @@ def median_category_i_appeareance(df: pd.DataFrame, i: int = 1):
     None
     """
 
+def _sort_weights_and_estimations(row):
+    weights, estimations = row["weights"], row["estimation_task"]
+    # Sort indices of weights in descending order
+    sorted_indices = np.argsort(weights)[::-1]
+    # Reorder both weights and estimations based on sorted indices
+    sorted_weights = [weights[i] for i in sorted_indices]
+    sorted_estimations = [estimations[i] for i in sorted_indices]
+    return pd.Series({"weights": sorted_weights, "estimation_task": sorted_estimations})
+
+def _find_ith_appearance(row, i):
+    """
+    Finds the appearence of the i-th sample of the same category
+
+    Parameters:
+    row: pd.Series
+        The row of the dataframe containing the sample and task information.
+    i: int
+        The index of the sample to find the appearance of.  
+
+    Returns:
+    int
+        The index of the appearance of the i-th sample of the same category
+    """
+
+    occurrences = [idx for idx, value in enumerate(row["estimation_task"]) if value == row["task"]]
+    return occurrences[i - 1] if len(occurrences) >= i else -1
+
+
