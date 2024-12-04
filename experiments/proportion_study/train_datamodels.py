@@ -27,19 +27,18 @@ def train_datamodels():
     )
 
     datamodel = DatamodelPipeline(config)
-    datamodel.set_collections_index()
-    datamodel.set_dataframes()
-    datamodel.set_instructions_from_path()
-
-
 
     # Specify the folder path
     datamodel.train_datamodels(
-        epochs=4000,
-        batch_size=100,
-        val_split=0.1,
+        epochs=1000,
+        train_batches=1800,
+        val_batches=1000,
+        val_size=0.1,
         lr=0.0001,
         random_seed=42,
+        patience=25,
+        subset=40000,
+        device="cuda:0",
     )
 
 
