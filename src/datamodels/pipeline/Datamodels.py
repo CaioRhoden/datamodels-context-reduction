@@ -15,7 +15,10 @@ import torch.nn as nn
 import torch.optim as optim
 import datetime
 
+
 from pathlib import Path
+
+from torch.utils.data import Subset, random_split
 
 
 
@@ -145,7 +148,7 @@ class DatamodelPipeline:
 
 
 
-            ## Saving condition in checkpoint or end of indezes
+            ## Saving condition in checkpoint or end of indexes
             if checkpoint_count == checkpoint or idx_row == end_idx-1:
 
                 print(datetime.datetime.now())
@@ -187,69 +190,71 @@ class DatamodelPipeline:
     def train_datamodels(
             self,
             epochs: int = 1,
-            val_split: float = 0.1,
-            lr: float = 0.01,
+            train_batches: int = 1,
+            val_batches: int = 1,
+            val_size: int = 0.1,
+            lr: float = 0.0001,
             random_seed: int = 42,
             patience: int = 5,
-            collections: int = 1,
+            subset: int = 40000,
             device: str = "cuda:0",
                          
         ):
 
-        self._load_collections_from_path()
 
-        train_dataset = torch.load(f"{self.datamodels_path}/datasets/train_dataset.pt")
+        torch.manual_seed(random_seed)
 
-        stacked_weights = torch.zeros(len(train_dataset), len(train_dataset[0][0][0]))
-        stacked_bias =  torch.zeros(len(train_dataset))
+        ## Initialize place to save weights and bias
+        stacked_weights = torch.tensor([], device=device)
+        stacked_bias = torch.tensor([], device=device)
         
 
-
-        for idx in range(0, len(train_dataset)):
+        for idx in range(self.num_models):
             print(f"Idx: {idx}")
-            
-            dataset = train_dataset[idx]
 
-            ### Create val dataset
-            val_size = int(len(dataset) * val_split)
-            train_size = len(dataset) - val_size
-            
-            
-            ##Inititalize weights and bias
-            weights = torch.randn(len(dataset[0][0]), requires_grad=True) # Randomly initialized weights
-            bias = torch.randn(1, requires_grad=True)
+              
+            dataset = torch.load(f"{self.datamodels_path}/datasets/train/dt_{idx}.pt")
 
-            model = LinearRegressor(weights, bias)
+            ## Random Sampling
+            random_indices = torch.randperm(len(dataset))[:subset].tolist()
+            dataset = Subset(dataset, random_indices)
+            train_dt, val_dt = random_split(dataset, [1 - val_size, val_size], generator=torch.Generator().manual_seed(random_seed)) 
+
+            train = torch.utils.data.DataLoader(train_dt, batch_size=train_batches, shuffle=True)
+            val = torch.utils.data.DataLoader(val_dt, batch_size=val_batches, shuffle=True)
+
+
+            
+            ## Model Creation
+            model = LinearRegressor(len(dataset[0][0]), 1)
             criterion = nn.MSELoss()
-            optimizer = optim.SGD([weights, bias], lr=lr)
+            optimizer = optim.SGD(model.parameters(), lr=lr)
 
+            ## Earlt Stopping Config
             best_mse = float('inf')
             early_stopping_counter = 0
 
-            indices = torch.randperm(len(dataset[0]), generator=torch.Generator())
-            dataset= (dataset[0][indices], dataset[1][indices])
 
-            train = (dataset[0][:train_size], dataset[1][:train_size])
-            val = (dataset[0][train_size:], dataset[1][train_size:])
+
 
             for epoch in range(epochs):
 
                 # Shuffle indexes
                 
 
-
+            
                 total_loss = 0
                 total_mse = 0
 
-                for collection in range(len(train[0])):
-                    model.weights = weights
-                    model.bias = bias
-                    # Apply the mask to the weights
-                    output = model.forward(train[0][collection]) # Add batch dimension
+                for x_train_batch, y_train_batch in train:
 
+                    x_train_batch, y_train_batch = x_train_batch.to(device), y_train_batch.to(device)
+
+                    # Apply the mask to the weights
+                    y_pred = model(x_train_batch) # Add batch dimension
 
                     # Compute loss
-                    loss = criterion(output, dataset[1][collection].unsqueeze(0)).to(device)  # Add batch dimension to target
+                    loss = criterion(y_pred, y_train_batch).to(device)  # Add batch dimension to target
 
                     # Backward pass and optimize
                     optimizer.zero_grad()
@@ -259,15 +264,11 @@ class DatamodelPipeline:
                     total_loss += loss.item()
                     
             
-                for collection in range(len(val[0])):
-
-                    x = val[0][collection]
-                    y = val[1][collection]
-
-                    total_mse += model.evaluate(x, y)
+                for x_val_batch, y_val_batch in val:
+                    total_mse += model.evaluate(x_val_batch.to(device), y_val_batch.to(device))
                 
-                mean_loss = round(total_loss / len(train[0]), 3)
-                mean_mse = round(total_mse / len(val[0]), 3)
+                mean_loss = round(total_loss / len(train), 3)
+                mean_mse = round(total_mse / len(val), 3)
 
                 print(f'Epoch [{epoch + 1}/{epochs}], Loss: {mean_loss:.4f}, Val MSE: {mean_mse:.4f}')
 
@@ -281,8 +282,8 @@ class DatamodelPipeline:
                     print(f"Early stopping at epoch {epoch + 1}")
                     break
 
-            stacked_weights[idx] = weights
-            stacked_bias[idx] = bias
+            stacked_weights = torch.concat((stacked_weights, model.get_weights()), dim=0)
+            stacked_bias = torch.concat((stacked_bias, model.get_bias()), dim=0)
 
         
         torch.save(stacked_weights, f"{self.datamodels_path}/estimations/weights.pt")
@@ -302,21 +303,23 @@ class DatamodelPipeline:
 
 
 
-    def _load_collections_from_path(self):
+    def load_collections_from_path(self, test_flag: bool = True):
 
         input_samples_train = np.array([])
         results_train = np.array([])
-        input_samples_test = np.array([])
-        results_test = np.array([])
 
+        if test_flag:
+            input_samples_test = np.array([])
+            results_test = np.array([])
+
+        print("Collections under processing")
         for filename in os.listdir(f"{self.datamodels_path}/collections/"):
-            print("Collections under processing")
             file = os.path.join(f"{self.datamodels_path}/collections/", filename)
 
             with open(file, 'rb') as f:
-                collection = pickle.load(f)
+                collection = pd.read_feather(f)
 
-                if filename.startswith("test"):
+                if filename.startswith("test") and test_flag:
 
                     collection_input = collection["input"].to_numpy()
                     input_samples_test = np.concatenate((input_samples_test, collection_input))
@@ -324,40 +327,46 @@ class DatamodelPipeline:
                     collection_result = collection["evaluation"].to_numpy()
                     results_test = np.concatenate((results_test, collection_result))
 
-                else:
+                elif not filename.startswith("test"):
 
                     collection_input = collection["input"].to_numpy()
                     input_samples_train = np.concatenate((input_samples_train, collection_input))
 
                     collection_result = collection["evaluation"].to_numpy()
                     results_train = np.concatenate((results_train, collection_result))
+            
 
         ## Convert mask arrays to bool
-        input_samples_train = np.array([list(arr) for arr in input_samples_train], dtype=np.bool_)
-        input_samples_test = np.array([list(arr) for arr in input_samples_test], dtype=np.bool_)
-        print(input_samples_train.shape, input_samples_train.dtype)
+        input_samples_train = np.array([list(arr) for arr in input_samples_train], dtype=np.float32)
+
+
 
 
 
         ## Reshape for input
         X_train = input_samples_train.reshape(self.num_models, len(input_samples_train)//self.num_models, input_samples_train.shape[1])
         y_train = results_train.reshape(self.num_models, len(results_train)//self.num_models)
-        X_test = input_samples_test.reshape(self.num_models, len(input_samples_test)//self.num_models, input_samples_test.shape[1])
-        y_test = results_test.reshape(self.num_models, len(results_test)//self.num_models)
+        
 
         ## Create torch datasets and save them
-        X_train = torch.tensor(X_train, dtype=torch.bool)
-        y_train = torch.tensor(y_train, dtype=torch.float32)
-        X_test = torch.tensor(X_test, dtype=torch.bool)
-        y_test = torch.tensor(y_test, dtype=torch.float32)
+        for i in range(self.num_models):
+            train = torch.tensor(X_train[i], dtype=torch.float32)
+            test = torch.tensor(y_train[i], dtype=torch.float32)
+            train_dataset = TensorDataset(train, test)
+            torch.save(train_dataset, f"{self.datamodels_path}/datasets/train/dt_{i}.pt")
 
-        train_dataset = TensorDataset(X_train, y_train)
-        test_dataset = TensorDataset(X_test, y_test)
+        if test_flag:
 
-        print("Saving tensors")
+            print("Saving test tensors")
+            input_samples_test = np.array([list(arr) for arr in input_samples_test], dtype=np.float32)
+            X_test = input_samples_test.reshape(self.num_models, len(input_samples_test)//self.num_models, input_samples_test.shape[1])
+            y_test = results_test.reshape(self.num_models, len(results_test)//self.num_models)
 
-        torch.save(train_dataset, f"{self.datamodels_path}/datasets/train_dataset.pt")
-        torch.save(test_dataset, f"{self.datamodels_path}/datasets/test_dataset.pt")
+            for i in range(self.num_models):
+                train = torch.tensor(X_train[i], dtype=torch.float32)
+                test = torch.tensor(y_train[i], dtype=torch.float32)
+                train_dataset = TensorDataset(train, test)
+                torch.save(train_dataset, f"{self.datamodels_path}/datasets/test/dt_{i}.pt")
 
 
     
