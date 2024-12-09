@@ -54,7 +54,13 @@ class LinearRegressorEvaluator(BaseDatamodelsEvaluator):
         
 
 
-        self.model = LinearRegressor(self.weights_arr[model_idx], self.bias_arr[model_idx])
+        self.model = LinearRegressor(
+            in_features=self.inputs.size(1),
+            out_features=1,
+        )
+
+
+
         
         selected_index = []
 
@@ -72,12 +78,12 @@ class LinearRegressorEvaluator(BaseDatamodelsEvaluator):
         ## Get Preds
 
         with torch.no_grad():
+            self.model.linear.weight = torch.nn.Parameter(self.weights_arr[model_idx].to(self.device))
+            self.model.linear.bias = torch.nn.Parameter(self.bias_arr[model_idx].to(self.device))
             preds = torch.zeros(len(target_subset))
             for idx in range(0, len(target_subset)):
                 preds[idx] = self.model.forward(input_subset[idx])
 
-            print(target_subset[0])
-            print(preds[0])
 
         ## Calculate Metrics
 
