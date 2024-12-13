@@ -10,11 +10,11 @@ import os
 
 
 
-class Llama3_1(BaseLLM):
+class GPT2(BaseLLM):
 
     def __init__(
             self,
-            path = "../../models/caio.rhoden/llms/gpt2-large",
+            path = "../../models/llms/gpt2-large",
         ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(path)
@@ -23,6 +23,9 @@ class Llama3_1(BaseLLM):
         self.model = AutoModelForCausalLM.from_pretrained(
                 path, 
                 device_map={"": self.accelerator.process_index},
+                torch_dtype=torch.bfloat16,
+                use_safetensors=True,
+
             )
 
     
@@ -31,16 +34,10 @@ class Llama3_1(BaseLLM):
 
         pipe = pipeline("text-generation",
                         model = self.model,
-                        tokenizer = self.tokenizer,
-                        
-         
+                        tokenizer = self.tokenizer,     
                 )
-        output = pipe(input, max_new_tokens=15, )
+        
+        output = pipe( input, max_new_tokens=20, return_full_text=False)
 
         return output[0]["generated_text"]
-
-    def pipe(self, temperature: float = 0.7, max_length = 1024) -> HuggingFacePipeline:
-
-        pipe = pipeline("text-generation", model=self.model, tokenizer=self.tokenizer, temperature=temperature, max_length=max_length)
-        return HuggingFacePipeline(pipeline=pipe)
 

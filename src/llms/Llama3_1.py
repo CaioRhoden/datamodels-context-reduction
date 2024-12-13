@@ -14,7 +14,7 @@ class Llama3_1(BaseLLM):
 
     def __init__(
             self,
-            path = "../../models/caio.rhoden/Meta-Llama-3.1-8B",
+            path = "../../models/Meta-Llama-3.1-8B",
         ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(path)

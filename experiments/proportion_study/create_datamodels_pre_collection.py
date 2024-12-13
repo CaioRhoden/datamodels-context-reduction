@@ -2,7 +2,7 @@
 from src.utils import split_dev_set, subset_df
 from src.datamodels.pipeline import DatamodelPipeline
 from src.datamodels.config import DatamodelConfig
-from src.llms import Llama3_1
+from src.llms import GPT2
 from src.evaluator import GleuEvaluator
 import torch
 import argparse
@@ -13,12 +13,12 @@ import os
 
 def run_pre_collection(start_idx, end_idx, test_flag = False):
     
-    llama = Llama3_1()
+    llama = GPT2()
 
     config = DatamodelConfig(
         k = 8,
         num_models= 105,
-        datamodels_path = "../../data/instruction-induction-data/datamodels/proportion_study/210_5",
+        datamodels_path = "../../data/instruction-induction-data/datamodels/proportion_study/gpt2_420_5",
         train_collections_idx = None,
         test_collections_idx = None,
         test_set = None,
