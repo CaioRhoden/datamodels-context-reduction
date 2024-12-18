@@ -12,7 +12,7 @@ def extract_idx(file: str):
     return int(file.split("_")[-1].split(".")[0])
 
 def format_collection_filename(filename: str):
-    name = os.path.splitext(os.path.basename(filename))[0].replace("pre_", "")
+    name = os.path.splitext(os.path.basename(filename))[0].replace("pre_", "")+".feather"
     return name
 
 def run_collection(start_idx, end_idx, test_flag = False):
@@ -61,20 +61,21 @@ def run_collection(start_idx, end_idx, test_flag = False):
     else:
         ordered_files = sorted(train_files, key=extract_idx)
 
-    ## Select the non repeated collections
-    f_names = [format_collection_filename(ordered_files[i]) for i in range(len(ordered_files))]
-    f_names = [name for name in f_names if name not in collections]
-    end_idx = min(len(f_names), end_idx)
-
     if end_idx == -1:
         end_idx = len(ordered_files)
+
+    ## Select the non repeated collections
+    f_names = [format_collection_filename(ordered_files[i]) for i in range(len(ordered_files))][start_idx:end_idx]
+
+    f_names = [name for name in f_names if name not in collections]
+
     
 
     
-    for i in range(start_idx, end_idx):
-        print(f"Creating collection from pre_collection {i} of {end_idx}")
+    for i in range(len(f_names)):
+        print(f"Creating collection from pre_collection {f_names[i]}, {i} of {len(f_names)}")
 
-        df = pd.read_feather(f"{pre_collection_path}pre_{f_names[i]}.feather")
+        df = pd.read_feather(f"{pre_collection_path}pre_{f_names[i]}")
         datamodel.create_collection(batch_name=f"pre_{f_names[i]}", pre_collection_batch=df)
 
 
