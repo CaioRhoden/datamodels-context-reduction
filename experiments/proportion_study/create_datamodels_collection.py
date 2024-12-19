@@ -51,7 +51,6 @@ def run_collection(start_idx, end_idx, test_flag = False):
     # Get a list of all files in the folder
     files = [f for f in os.listdir(pre_collection_path) if os.path.isfile(os.path.join(pre_collection_path, f))]
     collections = [f for f in os.listdir(collection_path) if os.path.isfile(os.path.join(collection_path, f))]
-    print(len(files))
     
     test_files = [f for f in files if f.startswith("test")]
     train_files = [f for f in files if not f.startswith("test")]
@@ -68,7 +67,6 @@ def run_collection(start_idx, end_idx, test_flag = False):
     f_names = [format_collection_filename(ordered_files[i]) for i in range(len(ordered_files))][start_idx:end_idx]
 
     f_names = [name for name in f_names if name not in collections]
-
     
 
     
@@ -76,7 +74,7 @@ def run_collection(start_idx, end_idx, test_flag = False):
         print(f"Creating collection from pre_collection {f_names[i]}, {i} of {len(f_names)}")
 
         df = pd.read_feather(f"{pre_collection_path}pre_{f_names[i]}")
-        datamodel.create_collection(batch_name=f"pre_{f_names[i]}", pre_collection_batch=df)
+        datamodel.create_collection(batch_name=f"{f_names[i]}", pre_collection_batch=df)
 
 
 if __name__ == "__main__":

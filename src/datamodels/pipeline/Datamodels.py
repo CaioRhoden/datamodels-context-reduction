@@ -181,8 +181,7 @@ class DatamodelPipeline:
         pre_collection_batch["evaluation"] = evaluation
         pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
         collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
-        batch_name = batch_name.replace("pre_", "")
-        collection.to_feather(f"{self.datamodels_path}/collections/{batch_name}.feather")
+        collection.to_feather(f"{self.datamodels_path}/collections/{batch_name}")
 
     
 
