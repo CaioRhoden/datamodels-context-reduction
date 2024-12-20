@@ -14,6 +14,7 @@ from torch.utils.data import TensorDataset, random_split
 import torch.nn as nn
 import torch.optim as optim
 import datetime
+import wandb
 
 
 from pathlib import Path
@@ -191,11 +192,14 @@ class DatamodelPipeline:
             epochs: int = 1,
             train_batches: int = 1,
             val_batches: int = 1,
-            val_size: int = 0.1,
+            val_size: float = 0.1,
             lr: float = 0.0001,
             random_seed: int = 42,
             patience: int = 5,
             subset: int = 40000,
+            log: bool = False,
+            log_epochs: int = 10,
+            run_id: str = "generic",
             device: str = "cuda:0",
                          
         ):
@@ -233,6 +237,31 @@ class DatamodelPipeline:
             best_mse = float('inf')
             early_stopping_counter = 0
 
+            if log:
+                wandb.init(project="datamodels", 
+                           entity="datamodels",
+                           dir = f"logs/{run_id}",
+                           id = f"{run_id}_{idx}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}",
+                           name = f"{run_id}_{idx}",
+                           config = {
+                               "epochs": epochs,
+                               "train_batches": train_batches,
+                               "val_batches": val_batches,
+                               "val_size": val_size,
+                               "lr": lr,
+                               "random_seed": random_seed,
+                               "patience": patience,
+                               "subset": subset, 
+                               "model": str(model),
+                               "criterion": str(criterion),
+                               "optimizer": str(optimizer),
+                               "llm": str(self.llm)
+                            },
+                            tags=[f"task_{idx // 5}", run_id],
+
+
+                )
+
 
 
 
@@ -266,10 +295,13 @@ class DatamodelPipeline:
                 for x_val_batch, y_val_batch in val:
                     total_mse += model.evaluate(x_val_batch.to(device), y_val_batch.to(device))
                 
-                mean_loss = round(total_loss / len(train), 3)
-                mean_mse = round(total_mse / len(val), 3)
+                mean_loss = round(total_loss / len(train), 4)
+                mean_mse = round(total_mse / len(val), 4)
 
                 print(f'Epoch [{epoch + 1}/{epochs}], Loss: {mean_loss:.4f}, Val MSE: {mean_mse:.4f}')
+
+                if log and epoch % log_epochs == 0:
+                    wandb.log({"epoch": epoch, "mean_loss": mean_loss, "mean_metric": mean_mse})
 
                 if mean_mse < best_mse:
                     best_mse = mean_mse
@@ -278,6 +310,8 @@ class DatamodelPipeline:
                     early_stopping_counter += 1
 
                 if early_stopping_counter >= patience:
+                    if log:
+                        wandb.log({"early_stopping_counter": epoch, "epoch": epoch, "mean_loss": mean_loss, "mean_metric": mean_mse})
                     print(f"Early stopping at epoch {epoch + 1}")
                     break
 
@@ -285,8 +319,11 @@ class DatamodelPipeline:
             stacked_bias = torch.concat((stacked_bias, model.get_bias()), dim=0)
 
         
-        torch.save(stacked_weights, f"{self.datamodels_path}/estimations/weights.pt")
-        torch.save(stacked_bias, f"{self.datamodels_path}/estimations/bias.pt")
+            if log:
+                wandb.finish()
+
+        torch.save(stacked_weights, f"estimations/{run_id}/weights.pt")
+        torch.save(stacked_bias, f"estimations/{run_id}/bias.pt")
 
 
             
@@ -302,7 +339,7 @@ class DatamodelPipeline:
 
 
 
-    def load_collections_from_path(self, test_flag: bool = True):
+    def load_collections_from_path(self, test_flag: bool = False):
 
         input_samples_train = np.array([])
         results_train = np.array([])
@@ -333,7 +370,7 @@ class DatamodelPipeline:
 
                     collection_result = collection["evaluation"].to_numpy()
                     results_train = np.concatenate((results_train, collection_result))
-            
+
 
         ## Convert mask arrays to bool
         input_samples_train = np.array([list(arr) for arr in input_samples_train], dtype=np.float32)
