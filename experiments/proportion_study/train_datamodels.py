@@ -1,7 +1,7 @@
 
 from src.datamodels.pipeline import DatamodelPipeline
 from src.datamodels.config import DatamodelConfig
-from src.llms import Llama3_1
+from src.llms import Llama3_1, GPT2
 from src.evaluator import GleuEvaluator
 import pandas as pd
 
@@ -9,8 +9,8 @@ import os
 
 def train_datamodels():
     
-    llama = Llama3_1()
-    data_dir =  "../../data/instruction-induction-data/datamodels/proportion_study/210_5"
+    llama = GPT2()
+    data_dir =  "../../data/instruction-induction-data/datamodels/proportion_study/gpt2_420_5"
 
 
     config = DatamodelConfig(
@@ -28,16 +28,21 @@ def train_datamodels():
 
     datamodel = DatamodelPipeline(config)
 
+    # datamodel.load_collections_from_path()
+
     # Specify the folder path
     datamodel.train_datamodels(
         epochs=1000,
-        train_batches=1800,
-        val_batches=1000,
+        train_batches=200,
+        val_batches=10,
         val_size=0.1,
-        lr=0.0001,
+        lr=0.001,
         random_seed=42,
-        patience=25,
-        subset=40000,
+        patience=50,
+        subset=15000,
+        log=True,
+        log_epochs=10,
+        run_id="mse_gpt2",
         device="cuda:0",
     )
 
