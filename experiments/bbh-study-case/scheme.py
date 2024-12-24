@@ -1,5 +1,7 @@
 import argparse
 from src.utils import subset_df, split_dev_set
+from src.retriever import NaiveDatamodelsRetriever
+
 import pandas as pd
 import numpy as np
 
@@ -21,6 +23,18 @@ def get_reduced_dataset(task_quantity, dataset_name, random_seed=42):
     split_dev_set(df=train, saving_path=f"{path}", k_samples=10, task_column="task", prefix=f"{dataset_name}_")
     
     test.to_feather(f"{path}/test_{dataset_name}")
+
+
+    ## Create pre collections
+    retriever = NaiveDatamodelsRetriever(k=8)
+    retriever.create_collections_index(
+        "../../data/bbh/processed/bbh_sample_train_set.csv",
+        "../../data/bbh/datamodels/reduced_sample",
+        n_samples=10000,
+        test_per=0.05,
+
+    )
+
 
 
 

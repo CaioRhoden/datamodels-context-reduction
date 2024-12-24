@@ -13,10 +13,10 @@ def split_dev_set(df, saving_path, k_samples, task_column, prefix="", seed=42):
     train_set = df.drop(idxs).reset_index(drop=True)
 
     print("Saving dev set")
-    dev_set.to_csv(f"{saving_path}/{prefix}dev_set.feather", index=False)
+    dev_set.to_csv(f"{saving_path}/{prefix}dev_set.csv", index=False)
 
     print("Saving train set")
-    train_set.to_csv(f"{saving_path}/{prefix}train_set.feather", index=False)
+    train_set.to_csv(f"{saving_path}/{prefix}train_set.csv", index=False)
 
     return train_set, dev_set
 
