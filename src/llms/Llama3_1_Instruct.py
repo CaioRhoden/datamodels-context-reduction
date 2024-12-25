@@ -10,11 +10,11 @@ import os
 
 
 
-class Llama3_1(BaseLLM):
+class Llama3_1_Instruct(BaseLLM):
 
     def __init__(
             self,
-            path = "../../models/llms/Llama-3.1-8B",
+            path = "../../models/llms/Llama-3.1-8B-Instruct",
         ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(path)
@@ -30,16 +30,26 @@ class Llama3_1(BaseLLM):
     
     def run(self, input: str) -> str:
 
+        messages = [
+            {"role": "system", "content": "You have to complete the desired task from the user that will be passed with some examples. Be objective, without explanations"},
+            {"role": "user", "content": input},
+        ]
 
         pipe = pipeline("text-generation",
                         model = self.model,
                         tokenizer = self.tokenizer,
+                        return_full_text=False
                         
          
                 )
-        output = pipe(input, max_new_tokens=15, )
+        try:
+            output = pipe(input, max_new_tokens=200, )
+            result = output[0]["generated_text"]
+        except:
+            raise Exception("Output structure not as expected")
+        
 
-        return output[0]["generated_text"]
+        return result
 
     def pipe(self, temperature: float = 0.7, max_length = 1024) -> HuggingFacePipeline:
 
