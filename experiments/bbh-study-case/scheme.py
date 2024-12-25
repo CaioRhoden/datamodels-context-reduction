@@ -16,8 +16,9 @@ def get_reduced_dataset(task_quantity, dataset_name, random_seed=42):
     tasks = train["task"].unique()
     np.random.seed(random_seed)
     selected_tasks = np.random.choice(tasks, task_quantity, replace=False)
-    train = train[train["task"].isin(selected_tasks)]
-    test = test[test["task"].isin(selected_tasks)]
+    train = train[train["task"].isin(selected_tasks)].reset_index(drop=True)
+    train = subset_df(df=train, k_samples=50, task_column="task")
+    test = test[test["task"].isin(selected_tasks)].reset_index(drop=True)
 
     ## Save dataframe
     split_dev_set(df=train, saving_path=f"{path}", k_samples=10, task_column="task", prefix=f"{dataset_name}_")
@@ -28,7 +29,7 @@ def get_reduced_dataset(task_quantity, dataset_name, random_seed=42):
     ## Create pre collections
     retriever = NaiveDatamodelsRetriever(k=8)
     retriever.create_collections_index(
-        "../../data/bbh/processed/bbh_sample_train_set.csv",
+        "../../data/bbh/processed/bbh_train_set.csv",
         "../../data/bbh/datamodels/reduced_sample",
         n_samples=10000,
         test_per=0.05,
