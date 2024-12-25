@@ -1,7 +1,7 @@
 # Parts with long files o data
 experiments/impact-context-reduction/data
 data/runs_id/
-
+log/
 
 
 eda/execute_tasks_examples.csv
