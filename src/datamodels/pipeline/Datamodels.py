@@ -1,4 +1,4 @@
-from src.datamodels.config import MemMapConfig, DatamodelConfig
+from src.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
 
 import pandas as pd
 import numpy as np
@@ -14,8 +14,10 @@ from torch.utils.data import TensorDataset, random_split
 import torch.nn as nn
 import torch.optim as optim
 import datetime
+import wandb
 
 from pathlib import Path
+
 
 
 
@@ -107,7 +109,9 @@ class DatamodelPipeline:
         checkpoint: int = 50,
         input_column: str = "input",
         output_column: str = "output",
-        optional_output_column: str = "possible_outputs"
+        log: bool = False,
+        log_config: LogConfig | None = None,
+        optional_output_column: str | None = None
     
     ):
 
@@ -121,27 +125,34 @@ class DatamodelPipeline:
         if end_idx is None:
             end_idx = len(self.train_collections_idx[start_idx:])
 
+        
+
+
+
         for idx_row in range(start_idx, end_idx):
 
-            print(f"Collection id: {idx_row}")
+            start_time = datetime.datetime.now()
+
+
             checkpoint_count += 1
 
             ## Convert index to binary vector
             if type == "train":
                 binary_idx = self._convert_idx_to_binary(self.train_collections_idx[idx_row], self.train_set)
             elif type == "test":
-                binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.train_set)
+                binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.test_set)
 
             ## Get the input output pairs and concatenate into a string
             for dev_idx in range(len(self.test_set)):
                 prompt = self._fill_prompt_template(idx_row, dev_idx, input_column, output_column)
-                text = self.llm.run(prompt)
-                result = text.split("Model Output:\n ", 1)[-1].strip()
+                result = self.llm.run(prompt)
+
 
                 # Add element to pre collection dict
-
-                pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optional_output_column])
-            
+                if optional_output_column is not None:
+                    pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optional_output_column])
+                else:
+                    pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column])
 
 
 
@@ -161,6 +172,23 @@ class DatamodelPipeline:
 
                 pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
                 checkpoint_count = 0
+
+            if log and log_config is not None:
+                wandb.init( 
+                    project="datamodels_pre_collections", 
+                    dir="log/pre_collection/24_12_2024", 
+                    id="bbh_dl_21", 
+                    name="bbh_dl_21",
+                    config={
+                        "k": self.k,
+                        "num_models": self.num_models,
+                        "llm": "Llama3_1_8B-Instruct",
+                        "gpu": "Quadro RTX 8000",
+                    }, 
+                )
+                wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
+                wandb.finish()
+
             
             
 
@@ -369,7 +397,9 @@ class DatamodelPipeline:
         pre_collection_dict["input"].append(input)
         pre_collection_dict["predicted_output"].append(predicted_output)
         pre_collection_dict["true_output"].append(true_output)
-        pre_collection_dict["optinal_output"].append(optinal_output)
+        if optinal_output is not None:
+            print(optinal_output)
+            pre_collection_dict["optinal_output"].append(optinal_output)
 
         return pre_collection_dict
 
@@ -433,7 +463,7 @@ class DatamodelPipeline:
         indeces_df[arr] = 1
         return indeces_df
         
-    def _reset_pre_collection_dict(self, optional_column: str = None) -> dict:
+    def _reset_pre_collection_dict(self, optional_column: str | None = None) -> dict:
         pre_collection_dict = {
             "collection_idx": [],
             "test_idx": [],
