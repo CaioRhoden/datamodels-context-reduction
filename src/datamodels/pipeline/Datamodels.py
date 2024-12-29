@@ -1,4 +1,4 @@
-from src.datamodels.config import MemMapConfig, DatamodelConfig
+from src.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
 
 import pandas as pd
 import numpy as np
@@ -110,6 +110,7 @@ class DatamodelPipeline:
         input_column: str = "input",
         output_column: str = "output",
         log: bool = False,
+        log_config: LogConfig | None = None,
         optional_output_column: str | None = None
     
     ):
@@ -173,17 +174,19 @@ class DatamodelPipeline:
                 checkpoint_count = 0
 
             if log:
+
+                print(log_config.id)
+
+                if log_config is None:
+                    raise Exception("Please provide a log configuration.")
+                
                 wandb.init( 
-                    project="datamodels_pre_collections", 
-                    dir="log/pre_collection/24_12_2024", 
-                    id=f"{idx_row}_bbh_dl_28", 
-                    name=f"{idx_row}_bbh_dl_28",
-                    config={
-                        "k": self.k,
-                        "num_models": self.num_models,
-                        "llm": "Llama3_1_8B-Instruct",
-                        "gpu": "NVIDIA A100",
-                    }, 
+                    project = log_config.project, 
+                    dir = log_config.dir, 
+                    id = f"{idx_row}_{log_config.id}", 
+                    name = f"{idx_row}_{log_config.name}",
+                    config = log_config.config,
+                    tags = log_config.tags
                 )
                 wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
                 wandb.finish()
