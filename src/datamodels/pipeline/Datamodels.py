@@ -1,4 +1,4 @@
-from src.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
+from src.datamodels.config import MemMapConfig, DatamodelConfig
 
 import pandas as pd
 import numpy as np
@@ -110,7 +110,6 @@ class DatamodelPipeline:
         input_column: str = "input",
         output_column: str = "output",
         log: bool = False,
-        log_config: LogConfig | None = None,
         optional_output_column: str | None = None
     
     ):
@@ -173,17 +172,17 @@ class DatamodelPipeline:
                 pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
                 checkpoint_count = 0
 
-            if log and log_config is not None:
+            if log:
                 wandb.init( 
                     project="datamodels_pre_collections", 
                     dir="log/pre_collection/24_12_2024", 
-                    id="bbh_dl_21", 
-                    name="bbh_dl_21",
+                    id="bbh_dl_28", 
+                    name="bbh_dl_28",
                     config={
                         "k": self.k,
                         "num_models": self.num_models,
                         "llm": "Llama3_1_8B-Instruct",
-                        "gpu": "Quadro RTX 8000",
+                        "gpu": "NVIDIA A100",
                     }, 
                 )
                 wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})

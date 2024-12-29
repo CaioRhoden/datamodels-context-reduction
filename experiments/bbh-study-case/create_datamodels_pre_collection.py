@@ -1,7 +1,7 @@
 
 from src.utils import split_dev_set, subset_df
 from src.datamodels.pipeline import DatamodelPipeline
-from src.datamodels.config import DatamodelConfig, LogConfig
+from src.datamodels.config import DatamodelConfig
 from src.llms import Llama3_1_Instruct
 from src.evaluator import GleuEvaluator
 import torch
@@ -28,20 +28,20 @@ def run_pre_collection(start_idx, end_idx):
         evaluator=GleuEvaluator(),
     )
 
-    log_config = LogConfig(
-        project="datamodels_pre_collections",
-        dir="log/pre_collection/24_12_2024",
-        id="test_1",
-        name="test_1",
-        config={
-            "k": 8,
-            "num_models": 40,
-            "evaluator": "GleuEvaluator",
-            "llm": "Llama3_1_8B-Instruct",
-            "gpu": "Quadro RTX 8000",
-        },
-        tags=["bbh"],
-    )
+    # log_config = LogConfig(
+    #     project="datamodels_pre_collections",
+    #     dir="log/pre_collection/24_12_2024",
+    #     id="test_1",
+    #     name="test_1",
+    #     config={
+    #         "k": 8,
+    #         "num_models": 40,
+    #         "evaluator": "GleuEvaluator",
+    #         "llm": "Llama3_1_8B-Instruct",
+    #         "gpu": "Quadro RTX 8000",
+    #     },
+    #     tags=["bbh"],
+    # )
 
 
 
@@ -51,7 +51,7 @@ def run_pre_collection(start_idx, end_idx):
     datamodel.set_instructions_from_path()
 
     print("Start Creating Pre Collection")
-    datamodel.create_pre_collection(start_idx = start_idx, end_idx = end_idx, type="train", log_config=log_config, log=True)
+    datamodel.create_pre_collection(start_idx = start_idx, end_idx = end_idx, type="train", log=True)
 
 
 if __name__ == "__main__":
