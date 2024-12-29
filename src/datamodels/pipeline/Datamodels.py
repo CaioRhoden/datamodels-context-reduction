@@ -176,8 +176,8 @@ class DatamodelPipeline:
                 wandb.init( 
                     project="datamodels_pre_collections", 
                     dir="log/pre_collection/24_12_2024", 
-                    id="bbh_dl_28", 
-                    name="bbh_dl_28",
+                    id=f"{idx_row}_bbh_dl_28", 
+                    name=f"{idx_row}_bbh_dl_28",
                     config={
                         "k": self.k,
                         "num_models": self.num_models,
