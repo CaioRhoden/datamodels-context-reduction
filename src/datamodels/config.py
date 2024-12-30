@@ -28,5 +28,15 @@ class MemMapConfig:
     mode: str
 
 
+@dataclass
+class LogConfig:
+
+    project: str
+    dir: str
+    id: str
+    name: str
+    config: dict
+    tags: list
+
 
 

@@ -14,7 +14,7 @@ class Llama3_1(BaseLLM):
 
     def __init__(
             self,
-            path = "../../models/caio.rhoden/Meta-Llama-3.1-8B",
+            path = "../../models/llms/Llama-3.1-8B",
         ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(path)
@@ -22,7 +22,6 @@ class Llama3_1(BaseLLM):
         self.accelerator = Accelerator()
         self.model = AutoModelForCausalLM.from_pretrained(
                 path, 
-                quantization_config=BitsAndBytesConfig(load_in_4bit=True), 
                 device_map={"": self.accelerator.process_index},
                 torch_dtype=torch.bfloat16,
 
