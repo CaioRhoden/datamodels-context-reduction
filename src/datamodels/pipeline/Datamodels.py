@@ -142,36 +142,36 @@ class DatamodelPipeline:
             elif type == "test":
                 binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.test_set)
 
-            ## Get the input output pairs and concatenate into a string
-            for dev_idx in range(len(self.test_set)):
-                prompt = self._fill_prompt_template(idx_row, dev_idx, input_column, output_column)
-                result = self.llm.run(prompt)
+            # ## Get the input output pairs and concatenate into a string
+            # for dev_idx in range(len(self.test_set)):
+            #     prompt = self._fill_prompt_template(idx_row, dev_idx, input_column, output_column)
+            #     result = self.llm.run(prompt)
 
 
-                # Add element to pre collection dict
-                if optional_output_column is not None:
-                    pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optional_output_column])
-                else:
-                    pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column])
+            #     # Add element to pre collection dict
+            #     if optional_output_column is not None:
+            #         pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optional_output_column])
+            #     else:
+            #         pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column])
 
 
 
-            ## Saving condition in checkpoint or end of indezes
-            if checkpoint_count == checkpoint or idx_row == end_idx-1:
+            # ## Saving condition in checkpoint or end of indezes
+            # if checkpoint_count == checkpoint or idx_row == end_idx-1:
 
-                print(datetime.datetime.now())
+            #     print(datetime.datetime.now())
 
-                df = pd.DataFrame(pre_collection_dict)
-                print(f"Checkpoint {idx_row} saved")
+            #     df = pd.DataFrame(pre_collection_dict)
+            #     print(f"Checkpoint {idx_row} saved")
                 
-                if type == "train":
-                    df.to_feather(f"{self.datamodels_path}/pre_collections/pre_collection_{idx_row}.feather")
-                elif type == "test":
-                    df.to_feather(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
+            #     if type == "train":
+            #         df.to_feather(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather")
+            #     elif type == "test":
+            #         df.to_feather(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
 
 
-                pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
-                checkpoint_count = 0
+            #     pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
+            #     checkpoint_count = 0
 
             if log:
 
@@ -180,16 +180,20 @@ class DatamodelPipeline:
                 if log_config is None:
                     raise Exception("Please provide a log configuration.")
                 
-                wandb.init( 
-                    project = log_config.project, 
-                    dir = log_config.dir, 
-                    id = f"{idx_row}_{log_config.id}", 
-                    name = f"{idx_row}_{log_config.name}",
-                    config = log_config.config,
-                    tags = log_config.tags
-                )
-                wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
-                wandb.finish()
+                try:
+                    wandb.init( 
+                        project = log_config.project, 
+                        dir = log_config.dir, 
+                        id = f"{idx_row}_{log_config.id}", 
+                        name = f"{idx_row}_{log_config.name}",
+                        config = log_config.config,
+                        tags = log_config.tags
+                    )
+                    wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
+                    wandb.finish()
+
+                except:
+                    raise Exception("Wandb not initialized, please check your log configuration")
 
             
             
