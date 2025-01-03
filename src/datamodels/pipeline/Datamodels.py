@@ -167,7 +167,7 @@ class DatamodelPipeline:
                 if type == "train":
                     df.to_feather(f"{self.datamodels_path}/pre_collections/pre_collection_{idx_row}.feather")
                 elif type == "test":
-                    df.to_feather(f"{self.datamodels_path}/pre_collections/test_pre_collection_{idx_row}.feather")
+                    df.to_feather(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
 
 
                 pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
