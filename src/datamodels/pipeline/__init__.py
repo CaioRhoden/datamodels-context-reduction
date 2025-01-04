@@ -1,1 +1,2 @@
-from src.datamodels.pipeline.Datamodels import DatamodelPipeline
+from src.datamodels.pipeline.DatamodelsPipeline import DatamodelPipeline
+from src.datamodels.pipeline.BaseDatamodelsPipeline import BaseDatamodelsPipeline
