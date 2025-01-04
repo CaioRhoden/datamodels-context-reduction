@@ -1,5 +1,6 @@
 import ABC, abstractmethod
 from src.datamodels.modules.ModuleConfig import ModuleConfig
+from src.datamodels.pipeline.BaseDatamodelsPipeline import BaseDatamodelsPipeline
 
 class BaseModule(ABC):
     @abstractmethod
@@ -24,7 +25,7 @@ class BaseModule(ABC):
         pass
 
     @abstractmethod
-    def run(self):
+    def run(self, datamodel: BaseDatamodelsPipeline):
         """
         Executes the main functionality of the handler.
 
