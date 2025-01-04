@@ -1,1 +1,1 @@
-from src.datamodels.config import DatamodelConfig
+from src.datamodels.config import DatamodelConfig, LogConfig
