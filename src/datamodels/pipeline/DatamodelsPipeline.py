@@ -1,4 +1,4 @@
-from src.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
+from src.datamodels.config import DatamodelConfig, LogConfig
 
 import pandas as pd
 import numpy as np
@@ -27,78 +27,55 @@ class DatamodelPipeline:
     def __init__(self, config: DatamodelConfig) -> None:
 
         """
-        Initializes a new instance of the Datamodels class.
+        Initializes a new instance of the BaseDatamodelsPipeline class.
+        It's expected the following files in the datamodels path:
+        - train_collection.h5
+        - test_collection.h5
+        - train_set.feather
+        - test_set.feather
+        - instructions.json
 
         Parameters:
             config (DatamodelConfig): The configuration for the datamodels.
 
         Returns:
             None
-
-        TODO: Add customization for context instruction
         """
         self.k = config.k
         self.num_models = config.num_models
         self.datamodels_path = config.datamodels_path
-        self.train_collections_idx = config.train_collections_idx
-        self.test_collections_idx = config.test_collections_idx
-        self.test_set = config.test_set
-        self.train_set = config.train_set
-        self.instructions = config.instructions
-        self.llm = config.llm
-        self.evaluator = config.evaluator
 
-        
-    
-    def set_collections_index(self):
+        ## Initialize collections index
+        print("Initializing collections index")
 
+        with h5py.File(f"{self.datamodels_path}/train_collection.h5", "r") as f:
+            self.train_collections_idx = f["train_collection"][()]
+        print("Loaded train collection index")
 
-        """
-        Loads the train and test collections index from the datamodels path.
-
-        If the train or test collections index is not already loaded, it will be loaded from the datamodels path.
-        The loaded index is stored in the respective attribute of the class.
-
-        Parameters:
-            None
-
-        Returns:
-            None
-        """
-        if self.train_collections_idx is None and self.datamodels_path is not None:
-            with h5py.File(f"{self.datamodels_path}/train_collection.h5", "r") as f:
-                self.train_collections_idx = f["train_collection"][()]
-            print("Loaded train collection index")
-
-        if self.test_collections_idx is None and self.datamodels_path is not None:
-            with h5py.File(f"{self.datamodels_path}/test_collection.h5", "r") as f:
-                self.test_collections_idx = f["test_collection"][()]
-            print("Loaded test collection index")
+        with h5py.File(f"{self.datamodels_path}/test_collection.h5", "r") as f:
+            self.test_collections_idx = f["test_collection"][()]
+        print("Loaded test collection index")
         
 
-        
-    def set_dataframes(self):
-        """
-        Loads the test set if it has not been loaded yet.
+        ## Initialize dataframes
+        print("Initializing dataframes")
 
-        Returns:
-            pd.DataFrame: The test set.
-        """
+        self.train_set = pd.read_csv(f"{self.datamodels_path}/train_set.feather")
+        print("Loaded train set")
 
-        if self.train_set is None and self.datamodels_path is not None:
-            self.train_set = pd.read_csv(f"{self.datamodels_path}/train_set.csv")
-            print("Loaded train set")
+        self.test_set = pd.read_csv(f"{self.datamodels_path}/test_set.feather")
+        print("Loaded test set")
 
-        if self.test_set is None and self.datamodels_path is not None:
-            self.test_set = pd.read_csv(f"{self.datamodels_path}/test_set.csv")
-            print("Loaded test set")
 
-    
-    def set_instructions_from_path(self):
+        ## Initialize instructions
+        print("Initializing instructions")
 
         with open(f"{self.datamodels_path}/instructions.json", "r") as f:
             self.instructions = json.load(f)
-
+        print("Loaded instructions")
+        
+    
+    
 
     def create_pre_collection(
         self,
