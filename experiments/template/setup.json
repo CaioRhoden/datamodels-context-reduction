@@ -1,0 +1,12 @@
+{
+    "scheme": {
+        "train_file": "train.feather",
+        "test_file": "test.feather",
+        "tasks": 5,
+        "train_samples": 25,
+        "test_samples": 5,
+        "num_train_collections": 100,
+        "num_test_collections": 20
+
+    }
+}
