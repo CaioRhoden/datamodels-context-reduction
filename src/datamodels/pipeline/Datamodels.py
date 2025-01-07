@@ -140,38 +140,39 @@ class DatamodelPipeline:
             if type == "train":
                 binary_idx = self._convert_idx_to_binary(self.train_collections_idx[idx_row], self.train_set)
             elif type == "test":
-                binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.test_set)
+                print(self.test_collections_idx.shape)
+                binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.train_set)
 
-            # ## Get the input output pairs and concatenate into a string
-            # for dev_idx in range(len(self.test_set)):
-            #     prompt = self._fill_prompt_template(idx_row, dev_idx, input_column, output_column)
-            #     result = self.llm.run(prompt)
-
-
-            #     # Add element to pre collection dict
-            #     if optional_output_column is not None:
-            #         pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optional_output_column])
-            #     else:
-            #         pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column])
+            ## Get the input output pairs and concatenate into a string
+            for dev_idx in range(len(self.test_set)):
+                prompt = self._fill_prompt_template(idx_row, dev_idx, input_column, output_column)
+                result = self.llm.run(prompt)
 
 
+                # Add element to pre collection dict
+                if optional_output_column is not None:
+                    pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optional_output_column])
+                else:
+                    pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column])
 
-            # ## Saving condition in checkpoint or end of indezes
-            # if checkpoint_count == checkpoint or idx_row == end_idx-1:
 
-            #     print(datetime.datetime.now())
 
-            #     df = pd.DataFrame(pre_collection_dict)
-            #     print(f"Checkpoint {idx_row} saved")
+            ## Saving condition in checkpoint or end of indezes
+            if checkpoint_count == checkpoint or idx_row == end_idx-1:
+
+                print(datetime.datetime.now())
+
+                df = pd.DataFrame(pre_collection_dict)
+                print(f"Checkpoint {idx_row} saved")
                 
-            #     if type == "train":
-            #         df.to_feather(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather")
-            #     elif type == "test":
-            #         df.to_feather(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
+                if type == "train":
+                    df.to_feather(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather")
+                elif type == "test":
+                    df.to_feather(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
 
 
-            #     pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
-            #     checkpoint_count = 0
+                pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
+                checkpoint_count = 0
 
             if log:
 
@@ -207,13 +208,16 @@ class DatamodelPipeline:
 
     ):
         
+        try:
+            optional_output =  pre_collection_batch["optinal_output"].to_numpy()
+        except:
+            optional_output = None
         
-        
-        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].to_numpy(), pre_collection_batch["optinal_output"].to_numpy())
+        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].to_numpy(), optional_output)
         pre_collection_batch["evaluation"] = evaluation
         pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
         collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
-        collection.to_pickle(f"{self.datamodels_path}/collections/{batch_name}.pickle")
+        collection.to_feather(f"{self.datamodels_path}/collections/{batch_name}")
 
     
 

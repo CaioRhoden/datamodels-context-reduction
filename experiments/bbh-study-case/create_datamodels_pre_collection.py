@@ -11,13 +11,13 @@ import pandas as pd
 
 import os
 
-def run_pre_collection(start_idx, end_idx):
+def run_pre_collection(start_idx, end_idx, type):
     
     llama = Llama3_1_Instruct()
 
     config = DatamodelConfig(
         k = 8,
-        num_models= 160,
+        num_models= 40,
         datamodels_path = "../../data/bbh/datamodels/reduced_sample",
         train_collections_idx = None,
         test_collections_idx = None,
@@ -51,7 +51,7 @@ def run_pre_collection(start_idx, end_idx):
     datamodel.set_instructions_from_path()
 
     print("Start Creating Pre Collection")
-    datamodel.create_pre_collection(start_idx = start_idx, end_idx = end_idx, type="train", log=True, log_config=log_config)
+    datamodel.create_pre_collection(start_idx = start_idx, end_idx = end_idx, type=type, log=True, log_config=log_config)
 
 
 if __name__ == "__main__":
@@ -62,4 +62,4 @@ if __name__ == "__main__":
 
     args = parser.parse_args()
 
-    run_pre_collection(args.start_idx, args.end_idx)
+    run_pre_collection(args.start_idx, args.end_idx, args.type)
