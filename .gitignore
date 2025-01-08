@@ -2,6 +2,8 @@
 experiments/impact-context-reduction/data
 data/runs_id/
 log/
+models
+data
 
 
 eda/execute_tasks_examples.csv
