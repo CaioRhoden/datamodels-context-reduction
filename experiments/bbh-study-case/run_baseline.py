@@ -1,4 +1,4 @@
-from src.llms import GPT2
+from src.llms import GPT2, Llama3_1_Instruct
 import argparse
 from src.pipeline import BaselinePipeline
 import pandas as pd
@@ -8,6 +8,9 @@ def main(llm: str, start: int = 0, checkpoint: int = 0):
     match llm:
         case "gpt2":
             llm = GPT2()
+
+        case "llama3-1-instruct":
+            llm = Llama3_1_Instruct()
     
 
     path = "../../data/instruction-induction-data/baselines/GPT2/"
@@ -15,7 +18,7 @@ def main(llm: str, start: int = 0, checkpoint: int = 0):
 
     pipeline = BaselinePipeline(path, llm, instructions)
 
-    df = pd.read_csv("../../data/instruction-induction-data/datamodels/proportion_study/210_5/test_set.csv")
+    df = pd.read_csv("../../data/instruction-induction-data/datamodels/proportion_study/gpt2_420_5/test_set.csv")
 
     pipeline.run_tests(df, checkpoint, start)
 
