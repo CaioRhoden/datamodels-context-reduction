@@ -28,8 +28,10 @@ def train_datamodels():
 
     datamodel = DatamodelPipeline(config)
 
+    print("Loading datasets")
     # datamodel.load_collections_from_path()
 
+    print("Training datamodels")
     # Specify the folder path
     datamodel.train_datamodels(
         epochs=1000,
@@ -41,8 +43,8 @@ def train_datamodels():
         patience=50,
         subset=9500,
         log=True,
-        log_epochs=25,
-        run_id="bbh_dl_27",
+        log_epochs=20,
+        run_id="bbh",
         device="cuda:0",
     )
 

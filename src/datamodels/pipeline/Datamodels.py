@@ -17,6 +17,8 @@ import datetime
 import wandb
 
 from pathlib import Path
+from torch.utils.data import Subset, random_split
+
 
 
 
@@ -222,7 +224,7 @@ class DatamodelPipeline:
     
 
 
-        def train_datamodels(
+    def train_datamodels(
             self,
             epochs: int = 1,
             train_batches: int = 1,
@@ -237,7 +239,7 @@ class DatamodelPipeline:
             run_id: str = "generic",
             device: str = "cuda:0",
                          
-        ):
+    ):
 
 
             torch.manual_seed(random_seed)
@@ -266,6 +268,7 @@ class DatamodelPipeline:
                 ## Model Creation
                 model = LinearRegressor(len(dataset[0][0]), 1)
                 criterion = nn.MSELoss()
+                print(model.parameters())
                 optimizer = optim.SGD(model.parameters(), lr=lr)
 
                 ## Earlt Stopping Config
@@ -273,10 +276,9 @@ class DatamodelPipeline:
                 early_stopping_counter = 0
 
                 if log:
-                    wandb.init(project="datamodels", 
-                            entity="datamodels",
+                    wandb.init(project="bbh_reduced_sample_training", 
                             dir = f"logs/{run_id}",
-                            id = f"{run_id}_{idx}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}",
+                            id = f"{run_id}_{idx}",
                             name = f"{run_id}_{idx}",
                             config = {
                                 "epochs": epochs,
@@ -290,7 +292,8 @@ class DatamodelPipeline:
                                 "model": str(model),
                                 "criterion": str(criterion),
                                 "optimizer": str(optimizer),
-                                "llm": str(self.llm)
+                                "llm": str(self.llm),
+                                "endtime": datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                                 },
                                 tags=[f"task_{idx // 5}", run_id],
 
@@ -384,27 +387,25 @@ class DatamodelPipeline:
             results_test = np.array([])
 
         print("Collections under processing")
-        for filename in os.listdir(f"{self.datamodels_path}/collections/"):
-            file = os.path.join(f"{self.datamodels_path}/collections/", filename)
+        for filename in os.listdir(f"{self.datamodels_path}/collections/train/"):
+            file = os.path.join(f"{self.datamodels_path}/collections/train/", filename)
 
             with open(file, 'rb') as f:
                 collection = pd.read_feather(f)
 
-                if filename.startswith("test") and test_flag:
+                # collection_input = collection["input"].to_numpy()
+                # input_samples_test = np.concatenate((input_samples_test, collection_input))
 
-                    collection_input = collection["input"].to_numpy()
-                    input_samples_test = np.concatenate((input_samples_test, collection_input))
+                # collection_result = collection["evaluation"].to_numpy()
+                # results_test = np.concatenate((results_test, collection_result))
 
-                    collection_result = collection["evaluation"].to_numpy()
-                    results_test = np.concatenate((results_test, collection_result))
+                # elif not filename.startswith("test"):
 
-                elif not filename.startswith("test"):
+                collection_input = collection["input"].to_numpy()
+                input_samples_train = np.concatenate((input_samples_train, collection_input))
 
-                    collection_input = collection["input"].to_numpy()
-                    input_samples_train = np.concatenate((input_samples_train, collection_input))
-
-                    collection_result = collection["evaluation"].to_numpy()
-                    results_train = np.concatenate((results_train, collection_result))
+                collection_result = collection["evaluation"].to_numpy()
+                results_train = np.concatenate((results_train, collection_result))
 
 
         ## Convert mask arrays to bool
