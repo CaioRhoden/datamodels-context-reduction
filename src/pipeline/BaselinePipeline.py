@@ -32,10 +32,13 @@ class BaselinePipeline(BasePipeline):
     def run(self, input: str, instruction: str) -> str:
 
         template = template = """
-            {instruction}
+            Fill the expected Output according to the instruction
+            Intruction: {instruction}
 
-            Input: {input}
-            Output:
+            User Input: 
+            {input}
+
+            Model Output:
         """
 
         
