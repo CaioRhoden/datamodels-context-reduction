@@ -38,7 +38,8 @@ class Llama3_1_Instruct(BaseLLM):
         pipe = pipeline("text-generation",
                         model = self.model,
                         tokenizer = self.tokenizer,
-                        return_full_text=False
+                        return_full_text=False,
+                         eos_token_id=self.tokenizer.eos_token_id
                         
          
                 )
