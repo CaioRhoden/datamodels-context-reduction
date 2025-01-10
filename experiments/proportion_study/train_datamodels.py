@@ -28,21 +28,21 @@ def train_datamodels():
 
     datamodel = DatamodelPipeline(config)
 
-    # datamodel.load_collections_from_path()
+    datamodel.load_collections_from_path()
 
     # Specify the folder path
     datamodel.train_datamodels(
         epochs=1000,
-        train_batches=200,
-        val_batches=10,
+        train_batches=150,
+        val_batches=5,
         val_size=0.1,
         lr=0.001,
         random_seed=42,
         patience=50,
         subset=15000,
         log=True,
-        log_epochs=10,
-        run_id="mse_gpt2",
+        log_epochs=25,
+        run_id="instruction_gpt2",
         device="cuda:0",
     )
 

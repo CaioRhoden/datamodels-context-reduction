@@ -238,10 +238,9 @@ class DatamodelPipeline:
             early_stopping_counter = 0
 
             if log:
-                wandb.init(project="datamodels", 
-                           entity="datamodels",
+                wandb.init(project="gpt2-instruction-induction", 
                            dir = f"logs/{run_id}",
-                           id = f"{run_id}_{idx}_{datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}",
+                           id = f"{run_id}_{idx}",
                            name = f"{run_id}_{idx}",
                            config = {
                                "epochs": epochs,
@@ -255,7 +254,8 @@ class DatamodelPipeline:
                                "model": str(model),
                                "criterion": str(criterion),
                                "optimizer": str(optimizer),
-                               "llm": str(self.llm)
+                               "llm": str(self.llm),
+                               "endtime": {datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')}
                             },
                             tags=[f"task_{idx // 5}", run_id],
 
