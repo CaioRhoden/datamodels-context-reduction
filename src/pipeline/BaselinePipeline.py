@@ -53,7 +53,6 @@ class BaselinePipeline(BasePipeline):
             inputs.append( data.loc[i]["input"])
 
             input = str(data.loc[i]["input"])
-            print(self.instructions[data.loc[i]["task"]])
 
             predicted.append(self.run(input, self.instructions[data.loc[i]["task"]]))
 
