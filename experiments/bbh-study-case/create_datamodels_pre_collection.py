@@ -2,7 +2,7 @@
 from src.utils import split_dev_set, subset_df
 from src.datamodels.pipeline import DatamodelPipeline
 from src.datamodels.config import DatamodelConfig, LogConfig
-from src.llms import Llama3_1_Instruct
+from src.llms import Llama3_1_Instruct, GPT2
 from src.evaluator import GleuEvaluator
 import torch
 import argparse
@@ -13,12 +13,12 @@ import os
 
 def run_pre_collection(start_idx, end_idx, type):
     
-    llama = Llama3_1_Instruct()
+    llama = GPT2()
 
     config = DatamodelConfig(
         k = 8,
         num_models= 40,
-        datamodels_path = "../../data/bbh/datamodels/reduced_sample",
+        datamodels_path = "../../data/bbh/datamodels/reduced_sample_gpt2",
         train_collections_idx = None,
         test_collections_idx = None,
         test_set = None,
@@ -29,18 +29,18 @@ def run_pre_collection(start_idx, end_idx, type):
     )
 
     log_config = LogConfig(
-        project="datamodels_pre_collections",
-        dir="log/pre_collection/24_12_2024",
-        id="bbh",
-        name="bbh_dl_28",
+        project="bbh-gp2",
+        dir="log/bbh_gpt2",
+        id="bbh_gpt2",
+        name="bbh_gpt2",
         config={
             "k": 8,
             "num_models": 40,
             "evaluator": "GleuEvaluator",
-            "llm": "Llama3_1_8B-Instruct",
-            "gpu": "NVIDIA A100",
+            "llm": "GPT2",
+            "gpu": "Quadro RTX500",
         },
-        tags=["bbh", "dl-28"],
+        tags=["bbh", "dl-27", "pre_collections"],
     )
 
 
@@ -51,7 +51,7 @@ def run_pre_collection(start_idx, end_idx, type):
     datamodel.set_instructions_from_path()
 
     print("Start Creating Pre Collection")
-    datamodel.create_pre_collection(start_idx = start_idx, end_idx = end_idx, type=type, log=True, log_config=log_config)
+    datamodel.create_pre_collection(start_idx = start_idx, end_idx = end_idx, type=type, log=True, log_config=log_config, checkpoint=25)
 
 
 if __name__ == "__main__":
