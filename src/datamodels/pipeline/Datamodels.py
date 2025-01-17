@@ -17,6 +17,8 @@ import datetime
 import wandb
 
 from pathlib import Path
+from torch.utils.data import Subset, random_split
+
 
 
 
@@ -140,7 +142,8 @@ class DatamodelPipeline:
             if type == "train":
                 binary_idx = self._convert_idx_to_binary(self.train_collections_idx[idx_row], self.train_set)
             elif type == "test":
-                binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.test_set)
+                print(self.test_collections_idx.shape)
+                binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.train_set)
 
             ## Get the input output pairs and concatenate into a string
             for dev_idx in range(len(self.test_set)):
@@ -165,9 +168,9 @@ class DatamodelPipeline:
                 print(f"Checkpoint {idx_row} saved")
                 
                 if type == "train":
-                    df.to_feather(f"{self.datamodels_path}/pre_collections/pre_collection_{idx_row}.feather")
+                    df.to_feather(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather")
                 elif type == "test":
-                    df.to_feather(f"{self.datamodels_path}/pre_collections/test_pre_collection_{idx_row}.feather")
+                    df.to_feather(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
 
 
                 pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
@@ -180,16 +183,20 @@ class DatamodelPipeline:
                 if log_config is None:
                     raise Exception("Please provide a log configuration.")
                 
-                wandb.init( 
-                    project = log_config.project, 
-                    dir = log_config.dir, 
-                    id = f"{idx_row}_{log_config.id}", 
-                    name = f"{idx_row}_{log_config.name}",
-                    config = log_config.config,
-                    tags = log_config.tags
-                )
-                wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
-                wandb.finish()
+                try:
+                    wandb.init( 
+                        project = log_config.project, 
+                        dir = log_config.dir, 
+                        id = f"{idx_row}_{log_config.id}", 
+                        name = f"{idx_row}_{log_config.name}",
+                        config = log_config.config,
+                        tags = log_config.tags
+                    )
+                    wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
+                    wandb.finish()
+
+                except:
+                    raise Exception("Wandb not initialized, please check your log configuration")
 
             
             
@@ -203,13 +210,16 @@ class DatamodelPipeline:
 
     ):
         
+        try:
+            optional_output =  pre_collection_batch["optinal_output"].to_numpy()
+        except:
+            optional_output = None
         
-        
-        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].to_numpy(), pre_collection_batch["optinal_output"].to_numpy())
+        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].to_numpy(), optional_output)
         pre_collection_batch["evaluation"] = evaluation
         pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
         collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
-        collection.to_pickle(f"{self.datamodels_path}/collections/{batch_name}.pickle")
+        collection.to_feather(f"{self.datamodels_path}/collections/{batch_name}")
 
     
 
@@ -217,107 +227,141 @@ class DatamodelPipeline:
     def train_datamodels(
             self,
             epochs: int = 1,
-            batch_size: int = 100,
-            val_split: float = 0.1,
-            lr: float = 0.01,
+            train_batches: int = 1,
+            val_batches: int = 1,
+            val_size: float = 0.1,
+            lr: float = 0.0001,
             random_seed: int = 42,
             patience: int = 5,
+            subset: int = 40000,
+            log: bool = False,
+            log_epochs: int = 10,
+            run_id: str = "generic",
             device: str = "cuda:0",
                          
-        ):
-
-        self._load_collections_from_path()
-
-        train_dataset = torch.load(f"{self.datamodels_path}/datasets/train_dataset.pt")
-        test_dataset = torch.load(f"{self.datamodels_path}/datasets/test_dataset.pt")
-
-        stacked_weights = torch.zeros(len(train_dataset), len(train_dataset[0][0][0]))
-        stacked_bias =  torch.zeros(len(train_dataset))
-        
+    ):
 
 
-        for idx in range(0, len(train_dataset)):
-            print(f"Idx: {idx}")
+            torch.manual_seed(random_seed)
+
+            ## Initialize place to save weights and bias
+            stacked_weights = torch.tensor([], device=device)
+            stacked_bias = torch.tensor([], device=device)
             
-            dataset = train_dataset[idx]
 
-            ### Create val dataset
-            val_size = int(len(dataset) * val_split)
-            train_size = len(dataset) - val_size
-            
-            
-            ##Inititalize weights and bias
-            weights = torch.randn(len(dataset[0][0]), requires_grad=True) # Randomly initialized weights
-            bias = torch.randn(1, requires_grad=True)
+            for idx in range(self.num_models):
+                print(f"Idx: {idx}")
 
-            model = LinearRegressor(weights, bias)
-            criterion = nn.MSELoss()
-            optimizer = optim.SGD([weights, bias], lr=lr)
-
-            best_mse = float('inf')
-            early_stopping_counter = 0
-
-            indices = torch.randperm(len(dataset[0]), generator=torch.Generator())
-            dataset= (dataset[0][indices], dataset[1][indices])
-
-            train = (dataset[0][:train_size], dataset[1][:train_size])
-            val = (dataset[0][train_size:], dataset[1][train_size:])
-
-            for epoch in range(epochs):
-
-                # Shuffle indexes
                 
+                dataset = torch.load(f"{self.datamodels_path}/datasets/train/dt_{idx}.pt")
+
+                ## Random Sampling
+                random_indices = torch.randperm(len(dataset))[:subset].tolist()
+                dataset = Subset(dataset, random_indices)
+                train_dt, val_dt = random_split(dataset, [1 - val_size, val_size], generator=torch.Generator().manual_seed(random_seed)) 
+
+                train = torch.utils.data.DataLoader(train_dt, batch_size=train_batches, shuffle=True)
+                val = torch.utils.data.DataLoader(val_dt, batch_size=val_batches, shuffle=True)
 
 
-                total_loss = 0
-                total_mse = 0
+                
+                ## Model Creation
+                model = LinearRegressor(len(dataset[0][0]), 1)
+                criterion = nn.MSELoss()
+                print(model.parameters())
+                optimizer = optim.SGD(model.parameters(), lr=lr)
 
-                for collection in range(len(train[0])):
-                    model.weights = weights
-                    model.bias = bias
-                    # Apply the mask to the weights
-                    output = model.forward(train[0][collection]) # Add batch dimension
+                ## Earlt Stopping Config
+                best_mse = float('inf')
+                early_stopping_counter = 0
+
+                if log:
+                    wandb.init(project="bbh_reduced_sample_training", 
+                            dir = f"logs/{run_id}",
+                            id = f"{run_id}_{idx}",
+                            name = f"{run_id}_{idx}",
+                            config = {
+                                "epochs": epochs,
+                                "train_batches": train_batches,
+                                "val_batches": val_batches,
+                                "val_size": val_size,
+                                "lr": lr,
+                                "random_seed": random_seed,
+                                "patience": patience,
+                                "subset": subset, 
+                                "model": str(model),
+                                "criterion": str(criterion),
+                                "optimizer": str(optimizer),
+                                "llm": str(self.llm),
+                                "endtime": datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
+                                },
+                                tags=[f"task_{idx // 5}", run_id],
 
 
-                    # Compute loss
-                    loss = criterion(output, dataset[1][collection].unsqueeze(0)).to(device)  # Add batch dimension to target
+                    )
 
-                    # Backward pass and optimize
-                    optimizer.zero_grad()
-                    loss.backward()
-                    optimizer.step()
 
-                    total_loss += loss.item()
+
+
+                for epoch in range(epochs):
+
+                    # Shuffle indexes
                     
-            
-                for collection in range(len(val[0])):
 
-                    x = val[0][collection]
-                    y = val[1][collection]
-
-                    total_mse += model.evaluate(x, y)
                 
-                mean_loss = round(total_loss / len(train[0]), 3)
-                mean_mse = round(total_mse / len(val[0]), 3)
+                    total_loss = 0
+                    total_mse = 0
 
-                print(f'Epoch [{epoch + 1}/{epochs}], Loss: {mean_loss:.4f}, Val MSE: {mean_mse:.4f}')
+                    for x_train_batch, y_train_batch in train:
 
-                if mean_mse < best_mse:
-                    best_mse = mean_mse
-                    early_stopping_counter = 0
-                else:
-                    early_stopping_counter += 1
+                        x_train_batch, y_train_batch = x_train_batch.to(device), y_train_batch.to(device)
 
-                if early_stopping_counter >= patience:
-                    print(f"Early stopping at epoch {epoch + 1}")
-                    break
+                        # Apply the mask to the weights
+                        y_pred = model(x_train_batch) # Add batch dimension
 
-            stacked_weights[idx] = weights
-            stacked_bias[idx] = bias
+                        # Compute loss
+                        loss = criterion(y_pred, y_train_batch).to(device)  # Add batch dimension to target
 
-        
-        torch.save(stacked_weights, f"{self.datamodels_path}/estimations/weights.pt")
-        torch.save(stacked_bias, f"{self.datamodels_path}/estimations/bias.pt")
+                        # Backward pass and optimize
+                        optimizer.zero_grad()
+                        loss.backward()
+                        optimizer.step()
+
+                        total_loss += loss.item()
+                        
+                
+                    for x_val_batch, y_val_batch in val:
+                        total_mse += model.evaluate(x_val_batch.to(device), y_val_batch.to(device))
+                    
+                    mean_loss = round(total_loss / len(train), 4)
+                    mean_mse = round(total_mse / len(val), 4)
+
+                    print(f'Epoch [{epoch + 1}/{epochs}], Loss: {mean_loss:.4f}, Val MSE: {mean_mse:.4f}')
+
+                    if log and epoch % log_epochs == 0:
+                        wandb.log({"epoch": epoch, "mean_loss": mean_loss, "mean_metric": mean_mse})
+
+                    if mean_mse < best_mse:
+                        best_mse = mean_mse
+                        early_stopping_counter = 0
+                    else:
+                        early_stopping_counter += 1
+
+                    if early_stopping_counter >= patience:
+                        if log:
+                            wandb.log({"early_stopping_counter": epoch, "epoch": epoch, "mean_loss": mean_loss, "mean_metric": mean_mse})
+                        print(f"Early stopping at epoch {epoch + 1}")
+                        break
+
+                stacked_weights = torch.concat((stacked_weights, model.get_weights()), dim=0)
+                stacked_bias = torch.concat((stacked_bias, model.get_bias()), dim=0)
+
+            
+                if log:
+                    wandb.finish()
+
+            torch.save(stacked_weights, f"estimations/{run_id}/weights.pt")
+            torch.save(stacked_bias, f"estimations/{run_id}/bias.pt")
 
 
             
@@ -333,62 +377,68 @@ class DatamodelPipeline:
 
 
 
-    def _load_collections_from_path(self):
+    def load_collections_from_path(self, test_flag: bool = False):
 
         input_samples_train = np.array([])
         results_train = np.array([])
-        input_samples_test = np.array([])
-        results_test = np.array([])
 
-        for filename in os.listdir(f"{self.datamodels_path}/collections/"):
-            print("Collections under processing")
-            file = os.path.join(f"{self.datamodels_path}/collections/", filename)
+        if test_flag:
+            input_samples_test = np.array([])
+            results_test = np.array([])
+
+        print("Collections under processing")
+        for filename in os.listdir(f"{self.datamodels_path}/collections/train/"):
+            file = os.path.join(f"{self.datamodels_path}/collections/train/", filename)
 
             with open(file, 'rb') as f:
-                collection = pickle.load(f)
+                collection = pd.read_feather(f)
 
-                if filename.startswith("test"):
+                # collection_input = collection["input"].to_numpy()
+                # input_samples_test = np.concatenate((input_samples_test, collection_input))
 
-                    collection_input = collection["input"].to_numpy()
-                    input_samples_test = np.concatenate((input_samples_test, collection_input))
+                # collection_result = collection["evaluation"].to_numpy()
+                # results_test = np.concatenate((results_test, collection_result))
 
-                    collection_result = collection["evaluation"].to_numpy()
-                    results_test = np.concatenate((results_test, collection_result))
+                # elif not filename.startswith("test"):
 
-                else:
+                collection_input = collection["input"].to_numpy()
+                input_samples_train = np.concatenate((input_samples_train, collection_input))
 
-                    collection_input = collection["input"].to_numpy()
-                    input_samples_train = np.concatenate((input_samples_train, collection_input))
+                collection_result = collection["evaluation"].to_numpy()
+                results_train = np.concatenate((results_train, collection_result))
 
-                    collection_result = collection["evaluation"].to_numpy()
-                    results_train = np.concatenate((results_train, collection_result))
 
         ## Convert mask arrays to bool
-        input_samples_train = np.array([list(arr) for arr in input_samples_train], dtype=np.bool_)
-        input_samples_test = np.array([list(arr) for arr in input_samples_test], dtype=np.bool_)
-        print(input_samples_train.shape, input_samples_train.dtype)
+        input_samples_train = np.array([list(arr) for arr in input_samples_train], dtype=np.float32)
+
+
 
 
 
         ## Reshape for input
         X_train = input_samples_train.reshape(self.num_models, len(input_samples_train)//self.num_models, input_samples_train.shape[1])
         y_train = results_train.reshape(self.num_models, len(results_train)//self.num_models)
-        X_test = input_samples_test.reshape(self.num_models, len(input_samples_test)//self.num_models, input_samples_test.shape[1])
-        y_test = results_test.reshape(self.num_models, len(results_test)//self.num_models)
+        
 
         ## Create torch datasets and save them
-        X_train = torch.tensor(X_train, dtype=torch.bool)
-        y_train = torch.tensor(y_train, dtype=torch.float32)
-        X_test = torch.tensor(X_test, dtype=torch.bool)
-        y_test = torch.tensor(y_test, dtype=torch.float32)
+        for i in range(self.num_models):
+            train = torch.tensor(X_train[i], dtype=torch.float32)
+            test = torch.tensor(y_train[i], dtype=torch.float32)
+            train_dataset = TensorDataset(train, test)
+            torch.save(train_dataset, f"{self.datamodels_path}/datasets/train/dt_{i}.pt")
 
-        train_dataset = TensorDataset(X_train, y_train)
-        test_dataset = TensorDataset(X_test, y_test)
+        if test_flag:
 
-        print("Saving tensors")
+            print("Saving test tensors")
+            input_samples_test = np.array([list(arr) for arr in input_samples_test], dtype=np.float32)
+            X_test = input_samples_test.reshape(self.num_models, len(input_samples_test)//self.num_models, input_samples_test.shape[1])
+            y_test = results_test.reshape(self.num_models, len(results_test)//self.num_models)
 
-        torch.save(train_dataset, f"{self.datamodels_path}/datasets/train_dataset.pt")
-        torch.save(test_dataset, f"{self.datamodels_path}/datasets/test_dataset.pt")
+            for i in range(self.num_models):
+                train = torch.tensor(X_train[i], dtype=torch.float32)
+                test = torch.tensor(y_train[i], dtype=torch.float32)
+                train_dataset = TensorDataset(train, test)
+                torch.save(train_dataset, f"{self.datamodels_path}/datasets/test/dt_{i}.pt")
 
 
     

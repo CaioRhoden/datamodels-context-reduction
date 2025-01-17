@@ -11,7 +11,7 @@ import pandas as pd
 
 import os
 
-def run_pre_collection(start_idx, end_idx):
+def run_pre_collection(start_idx, end_idx, type="train"):
     
     llama = Llama3_1()
 
@@ -35,14 +35,15 @@ def run_pre_collection(start_idx, end_idx):
     datamodel.set_instructions_from_path()
 
     print("Start Creating Pre Collection")
-    datamodel.create_pre_collection(start_idx = start_idx, end_idx = end_idx, type="train")
+    datamodel.create_pre_collection(start_idx = start_idx, end_idx = end_idx, type=type)
 
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Pass start and end index")
     parser.add_argument("-s", "--start_idx", type=int, help="Start index")
     parser.add_argument("-e", "--end_idx", type=int, help="End index")
+    parser.add_argument("-t", "--type", type=str, help="Type")
 
     args = parser.parse_args()
 
-    run_pre_collection(args.start_idx, args.end_idx)
+    run_pre_collection(args.start_idx, args.end_idx, args.type)
