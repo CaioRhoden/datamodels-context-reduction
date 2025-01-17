@@ -4,7 +4,7 @@ import numpy as np
 import torch
 from collections import Counter
 from matplotlib import pyplot as plt
-from sklearn.preprocessing import minmax_scale
+from sklearn.preprocessing import minmax_scale, StandardScaler
 
 import seaborn as sns
 def split_dev_set(df, saving_path, k_samples, task_column, prefix="", seed=42):
@@ -55,7 +55,7 @@ def show_tasks_by_sample(df: pd.DataFrame, sample_idx: int, top_k: int = 10):
     -------
     None
     """
-    top_samples = np.argsort(df.loc[sample_idx]["weights"])[:top_k]
+    top_samples = np.flip(np.argsort(df.loc[sample_idx]["weights"]))[:top_k]
 
 
     tasks = []
@@ -81,12 +81,14 @@ def show_tasks_by_sample(df: pd.DataFrame, sample_idx: int, top_k: int = 10):
     return top_samples
 
 
-def compare_i_most_high_samples(df: pd.DataFrame, train_df: pd.DataFrame, sample_idx: int, i: int):
+## Individual 
 
-    top_samples = np.argsort(df.loc[sample_idx]["weights"])[:i]
+def compare_i_most_high_samples(df: pd.DataFrame, train_df: pd.DataFrame, sample_idx: int, i: int):
+    top_samples = np.flip(np.argsort(df.loc[sample_idx]["weights"]))[:i]
 
     sample_input = df.loc[sample_idx]["input"]
     sample_output = df.loc[sample_idx]["output"]
+
 
     i_most_input = train_df.loc[top_samples[i-1]]["input"]
     i_most_output = train_df.loc[top_samples[i-1]]["output"]
@@ -95,6 +97,34 @@ def compare_i_most_high_samples(df: pd.DataFrame, train_df: pd.DataFrame, sample
     print(f"Sample {sample_idx} output: {sample_output}")
     print(f"{i} Most influential input: {i_most_input}")
     print(f"{i} Most influential output: {i_most_output}")
+
+
+def plot_individual_heatmap_task_indication(
+        weights: np.ndarray, 
+        num_tasks: int,
+        title: str,
+        y_label: str,
+        x_label: str,
+        
+        ):
+    # weights = minmax_scale(weights)  # Normalize weights
+    scaler = StandardScaler()
+    weights = scaler.fit_transform(weights.reshape(-1, 1)).reshape(-1)
+    weights_rsh = weights.reshape(num_tasks, len(weights)//num_tasks)
+    plt.figure(figsize=(10, 5))  # Adjust figure size for better readability
+    sns.heatmap(
+        weights_rsh,
+        cmap="coolwarm",      # Choose a color scheme
+        cbar=True,           # Include a color bar
+        annot=False,         # Optionally, set to True to display values
+        xticklabels=True,    # Add x-axis labels
+        yticklabels=True     # Add y-axis labels
+    )
+    plt.title(title)
+    plt.xlabel(x_label)
+    plt.ylabel(y_label)
+    plt.show()
+
 
 
 
@@ -108,16 +138,42 @@ def plot_hist_weights(df: pd.DataFrame, top_k: int = 10, sample_idx: int = 0):
     plt.xlabel('Weight')
 
 
-def median_category_i_appeareance(df: pd.DataFrame, i: int = 1):
 
+## Global 
+
+def median_category_i_appearance(df: pd.DataFrame, i: int = 1):
+
+    def _find_ith_appearance(row, i):
+        occurrences = [idx for idx, value in enumerate(row["estimation_task"]) if value == row["task"]]
+        return occurrences[i - 1] if len(occurrences) >= i else -1
+    
     df[["weights", "estimation_task"]] = df.apply(_sort_weights_and_estimations, axis=1)
     df[f"{i}th_appearance_index"] = df.apply(lambda row: _find_ith_appearance(row, i), axis=1)
 
-    median_values = df.groupby("task")[f"{i}th_appearance_index"].median()
+    # Calculate median values
+    median_values = df.groupby("task")[f"{i}th_appearance_index"].median().sort_values()
 
-    # Plot the horizontal bar chart
+    # Prepare the data for Seaborn
+    median_df = median_values.reset_index()
+    median_df.columns = ["task", "median_index"]
+
+    unique_tasks = sorted(median_df["task"].unique())
+    palette = sns.color_palette("Set2", len(unique_tasks))
+    task_colors = dict(zip(unique_tasks, palette))
+
+    # Plot with Seaborn
     plt.figure(figsize=(8, 5))
-    median_values.sort_values().plot(kind="barh", color="lightsalmon", edgecolor="black")
+    ax = sns.barplot(
+        data=median_df, 
+        y="task", 
+        x="median_index", 
+        palette=task_colors, 
+        edgecolor="black"
+    )
+
+    # Customize the plot
+    for container in ax.containers:
+        ax.bar_label(container, fmt="%.2f", label_type="edge", padding=3)
 
     # Customize the plot
     plt.title(f"Median {i}-th Appearance Index by Task")
@@ -129,20 +185,95 @@ def median_category_i_appeareance(df: pd.DataFrame, i: int = 1):
     plt.tight_layout()
     plt.show()
 
-    """
-    Bar plot with the mean quantity of examples to appear the i-th sample of the same cateogry
 
-    Parameters
-    ----------
-    df : pd.DataFrame
-        The dataframe containing the sample and task information.
-    n : int, optional
-        The number of top tasks to plot. Defaults to 10.
+def median_same_task_first_quarter(df: pd.DataFrame):
 
-    Returns
-    -------
-    None
-    """
+    def count_same_task_first_quarter(row):
+        train_size = len(row["weights"])
+        quarter_size = train_size // 4  # Calculate the first quarter size
+        count =  sum(
+            a == row["task"]
+            for a in row["estimation_task"][:quarter_size]
+        )
+
+        return (count/quarter_size)
+
+
+
+    df[["weights", "estimation_task"]] = df.apply(_sort_weights_and_estimations, axis=1)
+    df["count_same_task_first_quarter"] = df.apply(lambda row: count_same_task_first_quarter(row), axis=1)
+
+    # Calculate median values
+    median_values = df.groupby("task")["count_same_task_first_quarter"].median().sort_values()
+
+    # Prepare the data for Seaborn
+    median_df = median_values.reset_index()
+    median_df.columns = ["task", "median_index"]
+
+    unique_tasks = sorted(median_df["task"].unique())
+    palette = sns.color_palette("Set2", len(unique_tasks))
+    task_colors = dict(zip(unique_tasks, palette))
+
+    # Plot with Seaborn
+    plt.figure(figsize=(8, 5))
+    ax = sns.barplot(
+        data=median_df, 
+        y="task", 
+        x="median_index", 
+        palette=task_colors, 
+        edgecolor="black"
+    )
+
+    # Customize the plot
+    for container in ax.containers:
+        ax.bar_label(container, fmt="%.2f", label_type="edge", padding=3)
+
+    # Customize the plot
+    plt.title(f"Median Same Task First Quarter Index by Task")
+    plt.xlabel("Median Index")
+    plt.ylabel("Task")
+    plt.grid(axis="x", linestyle="--", alpha=0.7)
+
+    # Show the plot
+    plt.tight_layout()
+    plt.show()
+
+
+def plot_barh(df: pd.DataFrame, x_axis: str, y_axis: str, title: str):
+
+    plot_df = df.groupby(x_axis)[y_axis].sum().reset_index()
+
+    unique_tasks = sorted(plot_df[y_axis].unique())
+    palette = sns.color_palette("Set2", len(unique_tasks))
+    task_colors = dict(zip(unique_tasks, palette))
+
+
+    plt.figure(figsize=(8, 5))
+    ax = sns.barplot(
+        data=plot_df, 
+        y=y_axis, 
+        x=x_axis, 
+        palette=task_colors, 
+        edgecolor="black"
+    )
+
+    # Customize the plot
+    for container in ax.containers:
+        ax.bar_label(container, fmt="%.4f", label_type="edge", padding=3)
+
+    # Customize the plot
+    plt.title(title)
+    plt.xlabel(x_axis)
+    plt.ylabel(y_axis)
+    plt.grid(axis="x", linestyle="--", alpha=0.7)
+
+    # Show the plot
+    plt.tight_layout()
+    plt.show()
+
+
+
+## Aux
 
 def _sort_weights_and_estimations(row):
     weights, estimations = row["weights"], row["estimation_task"]
@@ -153,38 +284,4 @@ def _sort_weights_and_estimations(row):
     sorted_estimations = [estimations[i] for i in sorted_indices]
     return pd.Series({"weights": sorted_weights, "estimation_task": sorted_estimations})
 
-def _find_ith_appearance(row, i):
-    """
-    Finds the appearence of the i-th sample of the same category
 
-    Parameters:
-    row: pd.Series
-        The row of the dataframe containing the sample and task information.
-    i: int
-        The index of the sample to find the appearance of.  
-
-    Returns:
-    int
-        The index of the appearance of the i-th sample of the same category
-    """
-
-    occurrences = [idx for idx, value in enumerate(row["estimation_task"]) if value == row["task"]]
-    return occurrences[i - 1] if len(occurrences) >= i else -1
-
-
-def plot_individual_weights_heatmap(weights, num_tasks):
-    weights = minmax_scale(weights)  # Normalize weights
-    weights_rsh = weights.reshape(num_tasks, len(weights)//num_tasks)
-    plt.figure(figsize=(10, 5))  # Adjust figure size for better readability
-    sns.heatmap(
-        weights_rsh,
-        cmap="coolwarm",      # Choose a color scheme
-        cbar=True,           # Include a color bar
-        annot=False,         # Optionally, set to True to display values
-        xticklabels=True,    # Add x-axis labels
-        yticklabels=True     # Add y-axis labels
-    )
-    plt.title("Weights by Task")
-    plt.xlabel("Tasks")
-    plt.ylabel("Tain Samples")
-    plt.show()
