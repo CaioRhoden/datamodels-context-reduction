@@ -18,7 +18,7 @@ def run_pre_collection(start_idx, end_idx, type):
     config = DatamodelConfig(
         k = 8,
         num_models= 40,
-        datamodels_path = "../../data/bbh/datamodels/reduced_sample_gpt2",
+        datamodels_path = "../../data/bbh/datamodels/reduced_sample",
         train_collections_idx = None,
         test_collections_idx = None,
         test_set = None,
@@ -29,18 +29,18 @@ def run_pre_collection(start_idx, end_idx, type):
     )
 
     log_config = LogConfig(
-        project="bbh-gp2",
-        dir="log/bbh_gpt2",
-        id="bbh_gpt2",
-        name="bbh_gpt2",
+        project="bbh_pre_collection",
+        dir="log",
+        id="bbh_pre_collection",
+        name="bbh_pre_collection",
         config={
             "k": 8,
             "num_models": 40,
             "evaluator": "GleuEvaluator",
-            "llm": "GPT2",
+            "llm": "Llama-3.1-8B-Instruct",
             "gpu": "Quadro RTX500",
         },
-        tags=["bbh", "dl-27", "pre_collections"],
+        tags=["bbh", "dl-28", "pre_collections"],
     )
 
 

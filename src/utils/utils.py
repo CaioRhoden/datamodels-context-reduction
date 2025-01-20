@@ -146,12 +146,12 @@ def median_category_i_appearance(df: pd.DataFrame, i: int = 1):
     def _find_ith_appearance(row, i):
         occurrences = [idx for idx, value in enumerate(row["estimation_task"]) if value == row["task"]]
         return occurrences[i - 1] if len(occurrences) >= i else -1
-    
-    df[["weights", "estimation_task"]] = df.apply(_sort_weights_and_estimations, axis=1)
-    df[f"{i}th_appearance_index"] = df.apply(lambda row: _find_ith_appearance(row, i), axis=1)
+    _df = df.copy()
+    _df[["weights", "estimation_task"]] = _df.apply(_sort_weights_and_estimations, axis=1)
+    _df[f"{i}th_appearance_index"] = _df.apply(lambda row: _find_ith_appearance(row, i), axis=1)
 
     # Calculate median values
-    median_values = df.groupby("task")[f"{i}th_appearance_index"].median().sort_values()
+    median_values = _df.groupby("task")[f"{i}th_appearance_index"].median().sort_values()
 
     # Prepare the data for Seaborn
     median_df = median_values.reset_index()
@@ -199,12 +199,12 @@ def median_same_task_first_quarter(df: pd.DataFrame):
         return (count/quarter_size)
 
 
-
-    df[["weights", "estimation_task"]] = df.apply(_sort_weights_and_estimations, axis=1)
-    df["count_same_task_first_quarter"] = df.apply(lambda row: count_same_task_first_quarter(row), axis=1)
+    _df = df.copy()
+    _df[["weights", "estimation_task"]] = _df.apply(_sort_weights_and_estimations, axis=1)
+    _df["count_same_task_first_quarter"] = _df.apply(lambda row: count_same_task_first_quarter(row), axis=1)
 
     # Calculate median values
-    median_values = df.groupby("task")["count_same_task_first_quarter"].median().sort_values()
+    median_values = _df.groupby("task")["count_same_task_first_quarter"].median().sort_values()
 
     # Prepare the data for Seaborn
     median_df = median_values.reset_index()
