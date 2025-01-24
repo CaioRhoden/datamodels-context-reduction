@@ -2,6 +2,7 @@
 experiments/impact-context-reduction/data
 data/runs_id/
 log/
+logs/
 models
 data
 logs/
