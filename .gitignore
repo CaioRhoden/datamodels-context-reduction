@@ -4,6 +4,7 @@ data/runs_id/
 log/
 models
 data
+logs/
 
 
 eda/execute_tasks_examples.csv
