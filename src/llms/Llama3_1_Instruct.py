@@ -44,13 +44,14 @@ class Llama3_1_Instruct(BaseLLM):
          
                 )
         try:
-            output = pipe(input, max_new_tokens=200, )
+            output = pipe(input, max_new_tokens=20, )
             result = output[0]["generated_text"]
         except:
             raise Exception("Output structure not as expected")
         
 
         return result
+    
 
     def pipe(self, temperature: float = 0.7, max_length = 1024) -> HuggingFacePipeline:
 
