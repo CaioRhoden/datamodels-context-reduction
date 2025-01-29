@@ -17,7 +17,7 @@ class GPT2(BaseLLM):
             path = "../../models/llms/gpt2-large",
         ) -> None:
 
-        self.tokenizer = AutoTokenizer.from_pretrained(path)
+        self.tokenizer = AutoTokenizer.from_pretrained(path, max_length=1024, truncation=True)
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
         self.accelerator = Accelerator()
         self.model = AutoModelForCausalLM.from_pretrained(
@@ -35,9 +35,10 @@ class GPT2(BaseLLM):
         pipe = pipeline("text-generation",
                         model = self.model,
                         tokenizer = self.tokenizer,
-                        return_full_text=False
+                        return_full_text=False,
+                        
                 )
         
-        output = pipe( input, max_new_tokens=20, return_full_text=False)
+        output = pipe( input, max_new_tokens=20, return_full_text=False, max_length=1024)
 
         return output[0]["generated_text"]
