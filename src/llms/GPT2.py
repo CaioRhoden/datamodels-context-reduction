@@ -39,6 +39,7 @@ class GPT2(BaseLLM):
                         
                 )
         
-        output = pipe( input, max_new_tokens=20, return_full_text=False, max_length=1024)
+        tokenizer_kwargs = {'padding': True, 'truncation': True, 'max_length': 1024}
+        output = pipe( input, max_new_tokens=20, return_full_text=False, **tokenizer_kwargs)
 
         return output[0]["generated_text"]
