@@ -19,5 +19,5 @@ class BasePipeline(ABC):
         pass
 
     @abstractmethod
-    def run_tests(self, data: pd.DataFrame, checkpoints_step: int, checkpoint: int, k: int) -> None:
+    def run_tests(self, data: pd.DataFrame, checkpoint: int, k: int) -> None:
        pass

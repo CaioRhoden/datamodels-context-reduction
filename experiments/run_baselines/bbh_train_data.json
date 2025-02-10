@@ -1,0 +1,8 @@
+{
+    "llm_type": "llama-parser",
+    "dataset": "../../data/bbh/processed/train.feather",
+    "instructions": "../../data/bbh/processed/instructions.json",
+    "saving_path": "../../data/baseline_runs/bbh_llama_parser",
+    "run_instructions": false,
+    "start": 0
+}
