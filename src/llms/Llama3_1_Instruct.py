@@ -28,10 +28,10 @@ class Llama3_1_Instruct(BaseLLM):
             )
 
     
-    def run(self, input: str) -> str:
+    def run(self, prompt: str,  input: str, config_params: dict) -> str:
 
         messages = [
-            {"role": "system", "content": "You have to complete the desired task from the user that will be passed with some examples. Be objective, without explanations"},
+            {"role": "system", "content": "You are a coding generation tool that will solve a problem using Python"},
             {"role": "user", "content": input},
         ]
 
@@ -39,18 +39,16 @@ class Llama3_1_Instruct(BaseLLM):
                         model = self.model,
                         tokenizer = self.tokenizer,
                         return_full_text=False,
-                         eos_token_id=self.tokenizer.eos_token_id
+                        eos_token_id=self.tokenizer.eos_token_id,
                         
          
                 )
-        try:
-            output = pipe(input, max_new_tokens=20, )
-            result = output[0]["generated_text"]
-        except:
-            raise Exception("Output structure not as expected")
+        
+        output = pipe(input, **config_params)
+        return output
         
 
-        return result
+        
     
 
     def pipe(self, temperature: float = 0.7, max_length = 1024) -> HuggingFacePipeline:
