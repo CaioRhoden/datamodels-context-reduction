@@ -23,6 +23,7 @@ class Llama3_1_Instruct(BaseLLM):
         self.model = AutoModelForCausalLM.from_pretrained(
                 path, 
                 device_map={"": self.accelerator.process_index},
+                load_in_8bit=True,
                 torch_dtype=torch.bfloat16,
 
             )
