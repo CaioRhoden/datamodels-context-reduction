@@ -107,145 +107,15 @@ else:
                                   argdefs=defaults, closure=closure)
         newf.__dict__.update(f.__dict__)
         return newf
-    def argspec(f):
-        return inspect.getargspec(f)
-    eval(compile('def _exec(m,g): exec m in g', '<exec>', 'exec'))
-
-def _gettypes(args):
-    return tuple(map(type, args))
-
-oargspec = inspect.getargspec
-
-def _argspec(func):
-    return __targspec(func, oargspec)
-
-inspect.getargspec = _argspec
-
-try:
-    import IPython
-except ImportError:
-    IPython = None
-else:
-    # Replace IPython's argspec
-    oipyargspec = IPython.core.oinspect.getargspec
-    def _ipyargspec(func):
-        return __targspec(func, oipyargspec, '__orig_arg_ipy__')
-    IPython.core.oinspect.getargspec = _ipyargspec
-
-class overload(object):
-    '''Simple function overloading in Python.'''
-    _items = {}
-    _types = {}
-    @classmethod
-    def argc(self, argc=None):
-        '''Overloads a function based on the specified argument count.
-
-           :param argc: The argument count. Defaults to ``None``. If ``None`` is given, automatically compute the argument count from the given function.
-
-           .. note::
-
-              Keyword argument counts are NOT checked! In addition, when the argument count is automatically calculated, the keyword argument count is also ignored!
-
-           Example::
-
-               @overload.argc()
-               def func(a):
-                   print 'Function 1 called'
-
-               @overload.argc()
-               def func(a, b):
-                   print 'Function 2 called'
-
-               func(1) # Calls first function
-               func(1, 2) # Calls second function
-               func() # Raises error
-               '''
-        # Python 2 UnboundLocalError fix
-        argc = {'argc': argc}
-        def _wrap(f):
-            def _newf(*args, **kwargs):
-                if len(args) not in self._items[f.__name__]:
-                    raise TypeError("No overload of function '%s' that takes %d args" % (f.__name__, len(args)))
-                return self._items[f.__name__][len(args)](*args, **kwargs)
-            if f.__name__ not in self._items:
-                self._items[f.__name__] = {}
-            if argc['argc'] is None:
-                argc['argc'] = len(argspec(f).args)
-            self._items[f.__name__][argc['argc']] = f
-            _newf.__name__ = f.__name__
-            _newf.__doc__ = f.__doc__
-            _newf.__is_overload__ = True
-            _newf.__orig_arg__ = argspec(f)
-            if IPython:
-                _newf.__orig_arg_ipy__ = IPython.core.oinspect.getargspec(f)
-            return _newf
-        return _wrap
-    @classmethod
-    def args(self, *argtypes, **kw):
-        '''Overload a function based on the specified argument types.
-
-           :param argtypes: The argument types. If None is given, get the argument types from the function annotations(Python 3 only)
-           :param kw: Can only contain 1 argument, `is_cls`. If True, the function is assumed to be part of a class.
-
-           Example::
-
-               @overload.args(str)
-               def func(s):
-                   print 'Got string'
-
-               @overload.args(int, str)
-               def func(i, s):
-                   print 'Got int and string'
-
-               @overload.args()
-               def func(i:int): # A function annotation example
-                   print 'Got int'
-
-               func('s')
-               func(1)
-               func(1, 's')
-               func(True) # Raises error
-            '''
-
-        # Python 2 UnboundLocalError fix...again!
-        argtypes = {'args': tuple(argtypes)}
-        def _wrap(f):
-            def _newf(*args):
-                if len(kw) == 0:
-                    cargs = args
-                elif len(kw) == 1 and 'is_cls' in kw and kw['is_cls']:
-                    cargs = args[1:]
-                else:
-                    raise ValueError('Invalid keyword args specified')
-                if _gettypes(cargs) not in self._types[f.__name__]:
-                    raise TypeError("No overload of function '%s' that takes '%s' types and %d arg(s)" % (f.__name__, _gettypes(cargs), len(cargs)))
-                return self._types[f.__name__][_gettypes(cargs)](*args)
-            if f.__name__ not in self._types:
-                self._types[f.__name__] = {}
-            if len(argtypes['args']) == 1 and argtypes['args'][0] is None:
-                aspec = argspec(f)
-                argtypes['args'] = tuple(map(lambda x: x[1], sorted(
-                    aspec.annotations.items(), key=lambda x: aspec.args.index(x[0]))))
-            self._types[f.__name__][argtypes['args']] = f
-            _newf.__name__ = f.__name__
-            _newf.__doc__ = f.__doc__
-            _newf.__is_overload__ = True
-            _newf.__orig_arg__ = argspec(f)
-            if IPython:
-                _newf.__orig_arg_ipy__ = IPython.core.oinspect.getargspec(f)
-            return _newf
-        return _wrap
 
 class _RuntimeModule(object):
     'Create a module object at runtime and insert it into sys.path. If called, same as :py:func:`from_objects`.'
     def __call__(self, *args, **kwargs):
         return self.from_objects(*args, **kwargs)
     @staticmethod
-    @overload.argc(1)
     def from_objects(module_name_for_code_eval, **d):
         return _RuntimeModule.from_objects(module_name_for_code_eval, '', **d)
     @staticmethod
-    @overload.argc(2)
     def from_objects(module_name_for_code_eval, docstring, **d):
         '''Create a module at runtime from `d`.
 
@@ -262,11 +132,9 @@ class _RuntimeModule(object):
         sys.modules[module_name_for_code_eval] = module
         return module
     @staticmethod
-    @overload.argc(2)
     def from_string(module_name_for_code_eval, s):
         return _RuntimeModule.from_string(module_name_for_code_eval, '', s)
     @staticmethod
-    @overload.argc(3)
     def from_string(module_name_for_code_eval, docstring, s):
         '''Create a module at runtime from `s``.
 
