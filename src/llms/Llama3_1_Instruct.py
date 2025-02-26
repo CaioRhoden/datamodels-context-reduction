@@ -33,7 +33,7 @@ class Llama3_1_Instruct(BaseLLM):
 
         messages = [
             {"role": "system", "content": "You are a coding generation tool that will solve a problem using Python"},
-            {"role": "user", "content": input},
+            {"role": "user", "content": prompt},
         ]
 
         pipe = pipeline("text-generation",
@@ -45,7 +45,7 @@ class Llama3_1_Instruct(BaseLLM):
          
                 )
         
-        output = pipe(input, **config_params)
+        output = pipe(messages, **config_params)
         return output
         
 

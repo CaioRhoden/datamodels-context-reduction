@@ -51,7 +51,7 @@ def run_taco(num_generations: int, train_input: pl.DataFrame):
                 "num_return_sequences": num_generations
             }
 
-            prompt = f"\nQUESTION: \n{input_example} \n Please write a Python program."
+            prompt = f"Please write a Python program \nQUESTION: \n{input_example} \n ANSWER: \n."
             output = llm.run(prompt=prompt, input=input_example, config_params=config)
 
             for res in output:
