@@ -14,7 +14,7 @@ class Llama3_1_Instruct(BaseLLM):
 
     def __init__(
             self,
-            path = "../../models/llms/Llama-3.1-8B-Instruct",
+            path = "../../../models/llms/Llama-3.1-8B-Instruct",
         ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(path)
@@ -23,7 +23,6 @@ class Llama3_1_Instruct(BaseLLM):
         self.model = AutoModelForCausalLM.from_pretrained(
                 path, 
                 device_map={"": self.accelerator.process_index},
-                load_in_8bit=True,
                 torch_dtype=torch.bfloat16,
 
             )
