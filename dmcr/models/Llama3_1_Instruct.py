@@ -14,7 +14,7 @@ class Llama3_1_Instruct(BaseLLM):
 
     def __init__(
             self,
-            path = "../../models/llms/Llama-3.1-8B-Instruct",
+            path = "../../../models/llms/Llama-3.1-8B-Instruct",
         ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(path)
