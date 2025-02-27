@@ -1,10 +1,11 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "3"
+os.environ["CUDA_VISIBLE_DEVICES"] = "2"
 
 import polars as pl
 import torch
 import numpy as np
 import json
+import datetime
 
 ## LLM
 from src.llms import Llama3_1_Instruct
@@ -30,7 +31,7 @@ if torch.cuda.is_available():
 device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
 
-def run_taco(num_generations: int, train_input: pl.DataFrame):
+def run_taco(num_generations: int, num_sequences: int, train_input: pl.DataFrame):
     
     PATH = "../../data/TACO/processed"
 
@@ -38,28 +39,38 @@ def run_taco(num_generations: int, train_input: pl.DataFrame):
     llm = Llama3_1_Instruct()
 
     for idx in range(len(train_input)):
-
-        sample_idx = train_input[idx].select("sample_idx").unique().to_numpy().squeeze(1)[0]
+        print(f"Generating Iteration {idx}")
+        print(f"Time: {datetime.datetime.now()}")
+        sample_idx = int(train_input[idx].select("id").unique().to_numpy().squeeze(1)[0])
         input_example = train_input[idx].select("input").unique().to_numpy().squeeze(1)[0]
-        outputs = []
-        for i in range(20//num_generations):
+        difficulty = train_input[idx].select("difficulty").unique().to_numpy().squeeze(1)[0]
+        outputs = {
+            "id": sample_idx,
+            "input": input_example,
+            "difficulty": difficulty,
+            "generations": [],
+        }
+        for i in range(num_generations//num_sequences):
+
+            
 
             config = {
-                "temperature": 0.7,
-                "max_length": 2048,
+                "temperature": 0.5,
+                "max_length": 1024,
                 "top_p": 0.95,
-                "num_return_sequences": num_generations
+                "top_k": 50,
+                "num_return_sequences": num_sequences
             }
 
             prompt = f"Please write a Python program \nQUESTION: \n{input_example} \n ANSWER: \n."
             output = llm.run(prompt=prompt, input=input_example, config_params=config)
 
             for res in output:
-                outputs.append(res)
+                outputs["generations"].append(res)
 
-        json.dump(outputs, open(f"raw_outputs_{sample_idx}.json", "w"))
+        json.dump(outputs, open(f"outputs/raw_outputs_{sample_idx}.json", "w", encoding="utf-8"))
 
 if __name__ == "__main__":
     PATH = "../../data/TACO/processed"
-    train_input = pl.read_ipc(f"{PATH}/train.feather").filter(pl.col("id").is_in([4,5]))
-    run_taco(20, train_input)
+    train_input = pl.read_ipc(f"{PATH}/train.feather").group_by(pl.col("difficulty")).head(20)
+    run_taco(20, 20, train_input)
