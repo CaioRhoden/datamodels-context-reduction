@@ -53,7 +53,7 @@ class Llama3_1_Instruct(BaseLLM):
         return result
     
 
-    def pipe(self, temperature: float = 0.7, max_length = 1024) -> HuggingFacePipeline:
+    def pipe(self, temperature: float = 0.7, max_length = 2048) -> HuggingFacePipeline:
 
         pipe = pipeline("text-generation", model=self.model, tokenizer=self.tokenizer, temperature=temperature, max_length=max_length)
         return HuggingFacePipeline(pipeline=pipe)
