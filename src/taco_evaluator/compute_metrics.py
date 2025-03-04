@@ -156,7 +156,7 @@ def compute_metrics(results, k_list=[1, 10, 100]):
 
 
 
-def compute(generation_file: str, taco, k_pass:list=[1, 10, 100], debug=False):
+def compute(generation_file: str, taco, k_pass:list=[1, 10, 100], debug=False, file="taco_metrics.json", return_dict = False):
     # Initialize evaluation dataset with the same setup with generation
     # difficulties = ['ALL']
     # difficulties = ["EASY", "MEDIUM", "MEDIUM_HARD", "HARD", "VERY_HARD"] 
@@ -174,4 +174,8 @@ def compute(generation_file: str, taco, k_pass:list=[1, 10, 100], debug=False):
     # results = evaluate_generations_parallel(generations, taco)
     metrics = compute_metrics(results, k_list=k_pass)
 
-    json.dump(metrics, open('taco_metrics.json', 'w'), indent=4)
+    if not return_dict:
+        json.dump(metrics, open('taco_metrics.json', 'w'), indent=4)
+    
+    else:
+        return metrics

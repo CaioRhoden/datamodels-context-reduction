@@ -55,6 +55,7 @@ def run_test(sample, test=None, debug=False):
             method_name = in_outs["fn_name"]
     inputs_list = []
     outputs_list = []
+
     for index, inputs in enumerate(in_outs["inputs"]):
         outputs = in_outs["outputs"][index]
         inputs, outputs = process_input_output(inputs, outputs)
