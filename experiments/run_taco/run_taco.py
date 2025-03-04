@@ -1,5 +1,5 @@
 import os
-os.environ["CUDA_VISIBLE_DEVICES"] = "2"
+os.environ["CUDA_VISIBLE_DEVICES"] = "0"
 
 import polars as pl
 import torch
@@ -55,8 +55,8 @@ def run_taco(num_generations: int, num_sequences: int, train_input: pl.DataFrame
             
 
             config = {
-                "temperature": 0.5,
-                "max_length": 1024,
+                "temperature": 0.7,
+                "max_length": 2048,
                 "top_p": 0.95,
                 "top_k": 50,
                 "num_return_sequences": num_sequences
@@ -73,4 +73,4 @@ def run_taco(num_generations: int, num_sequences: int, train_input: pl.DataFrame
 if __name__ == "__main__":
     PATH = "../../data/TACO/processed"
     train_input = pl.read_ipc(f"{PATH}/train.feather").group_by(pl.col("difficulty")).head(20)
-    run_taco(20, 20, train_input)
+    run_taco(200, 20, train_input)
