@@ -1,6 +1,6 @@
 from dataclasses import dataclass
 from dmcr.models import BaseLLM
-from dmcr.evaluator import BaseEvaluator
+from dmcr.evaluators import BaseEvaluator
 import numpy as np
 import pandas as pd
 

@@ -1,4 +1,4 @@
-from dmcr.dataloader.BaseDataloader import BaseDataloader
+from dmcr.dataloaders.BaseDataloader import BaseDataloader
 # from src.vector_store import BaseVectorStore
 # from langchain.embeddings import HuggingFaceBgeEmbeddings
 from dmcr.models import BaseLLM
@@ -8,8 +8,8 @@ import pandas as pd
 
 
 
-from dmcr.retriever import BaseRetriever
-from dmcr.pipeline.BasePipeline import BasePipeline
+from dmcr.retrievers import BaseRetriever
+from dmcr.pipelines.BasePipeline import BasePipeline
 # from ..models import BaseModel
 
 

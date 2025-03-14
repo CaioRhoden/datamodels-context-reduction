@@ -1,4 +1,4 @@
-from dmcr.retriever import BaseRetriever
+from dmcr.retrievers import BaseRetriever
 from langchain_community.retrievers import BM25Retriever
 
 class BM25(BaseRetriever):

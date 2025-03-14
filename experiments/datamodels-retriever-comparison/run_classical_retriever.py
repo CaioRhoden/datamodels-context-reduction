@@ -1,7 +1,7 @@
-from src.pipeline.BasePipeline import BasePipeline
-from src.dataloader import PartialCSVDataLoader
-from src.retriever import BM25
-from src.llms import Llama3_1
+from dmcr.pipelines.BasePipeline import BasePipeline
+from dmcr.dataloaders import PartialCSVDataLoader
+from dmcr.retrievers import BM25
+from dmcr.models import Llama3_1
 import pandas as pd
 
 

@@ -1,9 +1,9 @@
 
-from src.utils import split_dev_set, subset_df
-from src.datamodels.pipeline import DatamodelPipeline
-from src.datamodels.config import DatamodelConfig, LogConfig
-from src.llms import Llama3_1_Instruct, GPT2
-from src.evaluator import GleuEvaluator
+from dmcr.utils import split_dev_set, subset_df
+from dmcr.datamodels.pipeline import DatamodelPipeline
+from dmcr.datamodels.config import DatamodelConfig, LogConfig
+from dmcr.models import Llama3_1_Instruct, GPT2
+from dmcr.evaluators import GleuEvaluator
 import torch
 import argparse
 

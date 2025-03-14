@@ -1,7 +1,7 @@
 
-from src.datamodels_pipeline import DatamodelPipeline, DatamodelConfig
-from src.llms import Llama3_1
-from src.evaluator import GleuEvaluator
+from dmcr.datamodels_pipeline import DatamodelPipeline, DatamodelConfig
+from dmcr.models import Llama3_1
+from dmcr.evaluators import GleuEvaluator
 import pandas as pd
 
 import os
