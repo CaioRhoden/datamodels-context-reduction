@@ -1,6 +1,6 @@
 import argparse
-from src.utils import subset_df, split_dev_set
-from src.retriever import NaiveDatamodelsRetriever
+from dmcr.utils import subset_df, split_dev_set
+from dmcr.retrievers import NaiveDatamodelsRetriever
 
 import pandas as pd
 import numpy as np
