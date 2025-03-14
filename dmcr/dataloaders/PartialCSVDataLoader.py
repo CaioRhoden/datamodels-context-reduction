@@ -1,4 +1,4 @@
-from dmcr.dataloader import BaseDataloader
+from dmcr.dataloaders import BaseDataloader
 import pandas as pd
 from langchain_community.document_loaders import DataFrameLoader
 from typing import List, Any

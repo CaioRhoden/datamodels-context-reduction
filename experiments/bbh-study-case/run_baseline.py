@@ -1,6 +1,6 @@
-from src.llms import GPT2, Llama3_1_Instruct
+from dmcr.models import GPT2, Llama3_1_Instruct
 import argparse
-from src.pipeline import BaselinePipeline
+from dmcr.pipelines import BaselinePipeline
 import pandas as pd
 
 def main(llm: str, start: int = 0, checkpoint: int = 0):

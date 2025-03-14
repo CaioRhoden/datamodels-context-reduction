@@ -15,10 +15,10 @@ The csv files will contain the columns 'test_idx', 'task', 'input', 'output', 'i
 
 
 
-from src.llms import GPT2, Llama3_1_Instruct, ParserLlama, BaseLLM
-from src.utils import BaselineConfig
+from dmcr.models import GPT2, Llama3_1_Instruct, ParserLlama, BaseLLM
+from dmcr.utils import BaselineConfig
 import argparse
-from src.pipeline import BaselinePipeline
+from dmcr.pipelines import BaselinePipeline
 import pandas as pd
 import json
 

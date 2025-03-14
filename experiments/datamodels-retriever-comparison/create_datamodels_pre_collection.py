@@ -1,8 +1,8 @@
 
-from src.utils import split_dev_set, subset_df
-from src.datamodels_pipeline import DatamodelPipeline, DatamodelConfig
-from src.llms import Llama3_1
-from src.evaluator import Rouge_L_evaluator
+from dmcr.utils import split_dev_set, subset_df
+from dmcr.datamodels_pipeline import DatamodelPipeline, DatamodelConfig
+from dmcr.models import Llama3_1
+from dmcr.evaluators import Rouge_L_evaluator
 import torch
 
 import pandas as pd

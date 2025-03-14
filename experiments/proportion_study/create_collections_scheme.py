@@ -1,6 +1,6 @@
 
-from src.utils import split_dev_set, subset_df
-from src.retriever import NaiveDatamodelsRetriever
+from dmcr.utils import split_dev_set, subset_df
+from dmcr.retrievers import NaiveDatamodelsRetriever
 import pandas as pd
 
 
