@@ -1,11 +1,11 @@
-from src.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
+from dmcr.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
 
 import pandas as pd
 import numpy as np
 import torch
 
 from langchain.prompts import PromptTemplate
-from src.datamodels.models import LinearRegressor
+from dmcr.datamodels.models import LinearRegressor
 import h5py
 import json
 import os

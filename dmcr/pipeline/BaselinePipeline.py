@@ -1,5 +1,5 @@
-from src.llms import BaseLLM
-from src.pipeline import BasePipeline
+from dmcr.models import BaseLLM
+from dmcr.pipeline import BasePipeline
 
 import torch
 from langchain.prompts import PromptTemplate

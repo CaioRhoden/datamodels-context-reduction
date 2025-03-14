@@ -1,6 +1,6 @@
 import pandas as pd
 import numpy as np
-from src.evaluator import BaseEvaluator
+from dmcr.evaluator import BaseEvaluator
 import evaluate
 import ast
 

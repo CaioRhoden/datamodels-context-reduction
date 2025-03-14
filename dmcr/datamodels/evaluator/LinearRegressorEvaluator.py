@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 import torch
-from src.datamodels.models import LinearRegressor
-from src.datamodels.evaluator.BaseDatamodelsEvaluator import BaseDatamodelsEvaluator
+from dmcr.datamodels.models import LinearRegressor
+from dmcr.datamodels.evaluator.BaseDatamodelsEvaluator import BaseDatamodelsEvaluator
 
 
 class LinearRegressorEvaluator(BaseDatamodelsEvaluator):

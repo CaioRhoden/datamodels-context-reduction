@@ -1,0 +1,1 @@
+from dmcr.datamodels.config import DatamodelConfig

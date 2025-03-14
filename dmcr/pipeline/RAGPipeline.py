@@ -1,15 +1,15 @@
-from src.dataloader.BaseDataloader import BaseDataloader
+from dmcr.dataloader.BaseDataloader import BaseDataloader
 # from src.vector_store import BaseVectorStore
 # from langchain.embeddings import HuggingFaceBgeEmbeddings
-from src.llms import BaseLLM
+from dmcr.models import BaseLLM
 import torch
 from langchain.prompts import PromptTemplate
 import pandas as pd
 
 
 
-from src.retriever import BaseRetriever
-from src.pipeline.BasePipeline import BasePipeline
+from dmcr.retriever import BaseRetriever
+from dmcr.pipeline.BasePipeline import BasePipeline
 # from ..models import BaseModel
 
 

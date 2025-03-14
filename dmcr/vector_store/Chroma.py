@@ -1,4 +1,4 @@
-from src.vector_store import BaseVectorStore
+from dmcr.vector_store import BaseVectorStore
 from langchain.vectorstores import Chroma
 
 

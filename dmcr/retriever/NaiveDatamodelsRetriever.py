@@ -1,4 +1,4 @@
-from src.retriever import BaseRetriever
+from dmcr.retriever import BaseRetriever
 import pandas as pd
 import h5py
 import numpy as np 
