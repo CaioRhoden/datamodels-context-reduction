@@ -1,0 +1,463 @@
+id,input
+1380,"Given an integer R which represents the radius of a circle that has (0,0) as its centre, find the total number of lattice points on the circumference. Lattice Points are points with coordinates as integers in 2-D space.
+Example 1:
+Input: R = 5
+Output: 12
+Explanation: (0,5), (0,-5), (5,0), 
+(-5,0), (3,4), (-3,4), (-3,-4), (3,-4), 
+(4,3), (-4,3), (-4,-3), (4,-3).
+Example 2:
+Input: R = 88
+Output: 4
+Explanation: (0,88), (88,0), (0,-88), 
+(-88,0)
+Your Task:  
+You don't need to read input or print anything. Your task is to complete the function latticePoints() which takes R as input and returns the number of lattice points.
+Expected Time Complexity: O(RsqrtR)
+Expected Auxiliary Space: O(1)
+Constraints:
+0 ≤ R ≤ 10^{4}
+#User function Template for python3
+
+
+
+class Solution:
+
+    def latticePoints(self, r):
+
+        # code here "
+1643,"Given two rectangles, find if the given two rectangles overlap or not. A rectangle is denoted by providing the x and y coordinates of two points: the left top corner and the right bottom corner of the rectangle. Two rectangles sharing a side are considered overlapping. (L1 and R1 are the extreme points of the first rectangle and L2 and R2 are the extreme points of the second rectangle).
+Note: It may be assumed that the rectangles are parallel to the coordinate axis.
+Example 1:
+Input:
+L1=(0,10)
+R1=(10,0)
+L2=(5,5)
+R2=(15,0)
+Output:
+1
+Explanation:
+The rectangles overlap.
+Example 2:
+Input:
+L1=(0,2)
+R1=(1,1)
+L2=(-2,0)
+R2=(0,-3)
+Output:
+0
+Explanation:
+The rectangles do not overlap.
+Your Task:
+You don't need to read input or print anything. Your task is to complete the function doOverlap() which takes the points L1, R1, L2, and R2 as input parameters and returns 1 if the rectangles overlap. Otherwise, it returns 0.
+Expected Time Complexity:O(1)
+Expected Auxillary Space:O(1)
+Constraints:
+-10^{9}<=x-coordinate,y-coordinate<=10^{9}
+#User function Template for python3
+
+class Solution:
+    
+    def doOverlap(self, L1, R1, L2, R2):
+        #code here"
+2467,"Given an array A[] of N elements, You'd like to know how many triangles can be formed with side lengths equal to adjacent elements from A[].
+Construct an array of integers of length N - 2 where ith element is equal to 1 if it is possible to form a triangle with side lengths A[i], A[i+1], and A[i+2]. otherwise 0.
+Note: A triangle can be formed with side lengths a, b and c if a+b>c and a+c>b and b+c>a.
+Example 1:
+Input:
+N = 4
+A[] = {1, 2, 2, 4}
+Output:
+1 0
+Explanation:
+output[0] = 1 because we can form a 
+triangle with side lengths 1,2 and 2.
+output[1] = 0 because 2+2<4 so, we cannot 
+form a triangle with side lengths 2,2 and 4.
+Example 2:
+Input: 
+N = 5
+A[] = {2, 10, 2, 10, 2}
+Output:
+0 1 0
+Explanation:
+output[0] = 0 because 2+2<10 so, we cannot
+form a triangle with side lengths 2, 10 and 2. 
+output[1] = 1 we can form a triangle with 
+side lengths 10,2 and 10. 
+output[1] = 0 because 2+2<10 so, we can
+form a triangle with side lengths 2, 10 and 2. 
+Your Task:
+You dont need to read input or print anything. Your task is to complete the function canMakeTriangle() which takes the array A and the integer N as the input parameters, and returns the array of answers.
+Expected Time Complexity: O(N)
+Expected Auxiliary Space: O(N)
+Constraints:
+3 ≤ N ≤ 10^{5 }
+1 ≤ arr[i] ≤ 10^{9}
+#User function Template for python3
+
+class Solution:
+
+    def canMakeTriangle(self, A, N): 
+
+        #code here
+
+"
+4661,"Given the coordinates of the endpoints(p1-q1 and p2-q2) of the two line-segments. Check if they intersect or not.
+Example 1:
+Input:
+p1=(1,1)
+q1=(10,1)
+p2=(1,2)
+q2=(10,2)
+Output:
+0
+Explanation:
+The two line segments formed 
+by p1-q1 and p2-q2 do not intersect.
+Example 2:
+Input:
+p1=(10,0)
+q1=(0,10)
+p2=(0,0)
+q2=(10,10)
+Output:
+1
+Explanation:
+The two line segments formed 
+by p1-q1 and p2-q2 intersect.
+Your Task:
+You don't need to read input or print anything. Your task is to complete the function doIntersect() which takes the four points as input parameters and returns 1 if the line segments intersect. Otherwise, it returns 0.
+Expected Time Complexity:O(1)
+Expected Auxillary Space:O(1)
+ 
+Constraints:
+-10^{6}<=X,Y(for all points)<=10^{6}
+#User function Template for python3
+
+
+
+class Solution:
+
+    def doIntersect(self, p1, q1, p2, q2):
+
+        #code here
+
+   "
+9576,"Given two points P(a, b) and Q(c, d) in the coordinate plane, find the equation of the line passing through both the points.
+Example 1:
+Input: P = (3, 2)
+Q = (2, 6)
+Output: 4x+1y=14
+Explaination: Using the formula to get
+line equation from two points we can
+get it.
+Example 2:
+Input: P = (3, 2)
+Q = (5, 7)
+Output: 5x-2y=11
+Explaination: If we use the formula to
+get line equation from two points we
+get this equation.
+Your Task:
+You do not need to read input or print anything. Your task is to complete the function getLine() which takes the values a, b, c and d as input parameters and returns a string which represents the equation.
+Expected Time Complexity: O(1)
+Expected Auxiliary Space: O(1)
+Constraints:
+1 ≤ a, b, c, d ≤ 10^{5}
+#User function Template for python3
+
+class Solution:
+    def getLine(self, a, b, c, d):
+        # code here"
+10057,"Given the coordinates of the centres of two circles (X1, Y1) and (X2, Y2) as well as the radii of the respective circles R1 and R2.Find the floor of the area of their intersection.
+Note: Use the value of Pi as 3.14
+Example 1:
+Input:
+X1=0,Y1=0,R1=4
+X2=6,Y2=0,R2=4
+Output:
+7
+Explanation:
+The intersecting area equals 7.25298806.
+So,Answer is 7.
+Example 2:
+Input:
+X1=0,Y1=0,R1=5
+X2=11,Y2=0,R2=5
+Output:
+0
+Explanation:
+The circles don't intersect.
+Your Task:
+You don't need to read input or print anything. Your task is to complete the function intersectionArea() which takes the coordinates of the centers as well as the radii(X1, Y1, R1, X2, Y2, R2) as input parameters and returns the area of intersection of the two circles.
+Expected Time Complexity:O(LogN)
+Expected Auxillary Space:O(1)
+Constraints:
+-10^{9}<=X1,Y1,X2,Y2<=10^{9}
+1<=R1,R2<=10^{9}
+#User function Template for python3
+
+class Solution:
+    def intersectionArea(self,X1,Y1,R1,X2,Y2,R2):
+        #code here"
+10237,"Consider a rectangle ABCD. Given the co-ordinates of the mid points of side AD and BC (p and q respectively) along with their length L (AD = BC = L). Find the co-ordinates of the 4 points A, B, C and D.
+Example 1:
+Input: L = 2, points = {{1,0},{1,2}}
+Output: {{0,0},{0,2},{2,0},{2,2}}
+Explanation: 
+Example 2:
+Input: L = 2.8284, points: {{1,1}, {-1,-1}}
+Output: {{-2,0},{0,-2},{0,2},{2,0}}
+Explanation: 
+Your Task:
+You don't need to read or print anything. Your task is to compelete the function findCornerPoints() which takes a vector of two points (p and q), and length l as input parameters and returns a vector containing the floor value of the corner points of the rectangle in sorted order.
+ 
+Expected Time Complexity: O(1)
+Expected Space Complexity: O(1)
+ 
+Constraints:
+1 <= L <= 10^{5}
+1 <= p, q <= L
+#User function Template for python3
+
+
+
+class Solution:
+
+	def findCornerPoints(self, L, points):
+
+		#Code here"
+10649,"On a N * N grid, we place some 1 * 1 * 1 cubes that are axis-aligned with the x, y, and z axes.
+Each value v = grid[i][j] represents a tower of v cubes placed on top of grid cell (i, j).
+Now we view the projection of these cubes onto the xy, yz, and zx planes.
+A projection is like a shadow, that maps our 3 dimensional figure to a 2 dimensional plane. 
+Here, we are viewing the ""shadow"" when looking at the cubes from the top, the front, and the side.
+Return the total area of all three projections.
+ 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Example 1:
+Input: [[2]]
+Output: 5
+
+
+Example 2:
+Input: [[1,2],[3,4]]
+Output: 17
+Explanation: 
+Here are the three projections (""shadows"") of the shape made with each axis-aligned plane.
+
+
+
+Example 3:
+Input: [[1,0],[0,2]]
+Output: 8
+
+
+Example 4:
+Input: [[1,1,1],[1,0,1],[1,1,1]]
+Output: 14
+
+
+Example 5:
+Input: [[2,2,2],[2,1,2],[2,2,2]]
+Output: 21
+
+ 
+
+
+
+Note:
+
+1 <= grid.length = grid[0].length <= 50
+0 <= grid[i][j] <= 50
+class Solution:
+    def projectionArea(self, grid: List[List[int]]) -> int:
+        "
+10745,"An axis-aligned rectangle is represented as a list [x1, y1, x2, y2], where (x1, y1) is the coordinate of its bottom-left corner, and (x2, y2) is the coordinate of its top-right corner. Its top and bottom edges are parallel to the X-axis, and its left and right edges are parallel to the Y-axis.
+Two rectangles overlap if the area of their intersection is positive. To be clear, two rectangles that only touch at the corner or edges do not overlap.
+Given two axis-aligned rectangles rec1 and rec2, return true if they overlap, otherwise return false.
+ 
+Example 1:
+Input: rec1 = [0,0,2,2], rec2 = [1,1,3,3]
+Output: true
+Example 2:
+Input: rec1 = [0,0,1,1], rec2 = [1,0,2,1]
+Output: false
+Example 3:
+Input: rec1 = [0,0,1,1], rec2 = [2,2,3,3]
+Output: false
+
+ 
+Constraints:
+
+rect1.length == 4
+rect2.length == 4
+-109 <= rec1[i], rec2[i] <= 109
+rec1[0] <= rec1[2] and rec1[1] <= rec1[3]
+rec2[0] <= rec2[2] and rec2[1] <= rec2[3]
+class Solution:
+    def isRectangleOverlap(self, rec1: List[int], rec2: List[int]) -> bool:
+        "
+13095,"Note: This POTD is a part of Geek Summer Carnival. Solve all POTD consecutively from 5th to 10th April and get a chance to win exclusive discount vouchers on our GfG courses.
+Geek has a ticket to the Geek Summer Carnival. The ticket has a positive integer B written on it. B denotes the base of a right-angled isosceles triangle. 
+Geek can avail discounts on X courses in the carnival.
+X is the maximum number of squares of size 2x2 units that can fit in the given right-angled isosceles triangle. 
+Find X. 
+Example 1:
+Input:
+B = 8
+Output:
+6 
+Explanation: 
+Example 2:
+Input:
+B = 2
+Output:
+0
+Your Task:
+You don't need to read input or print anything. Complete the function countSquare() that takes integer b as input parameter and returns the number of possible squares that can fit into the isosceles triangle. 
+Expected Time Complexity: O(1)
+Expected Auxiliary Space: O(1)
+ 
+Constraints:
+1 <= B <= 1000
+#User function Template for python3
+
+
+
+class Solution:
+
+    def countShare(self,B):
+
+        #code here"
+13691,"A boomerang is a set of 3 points that are all distinct and not in a straight line.
+Given a list of three points in the plane, return whether these points are a boomerang.
+ 
+Example 1:
+Input: [[1,1],[2,3],[3,2]]
+Output: true
+
+
+Example 2:
+Input: [[1,1],[2,2],[3,3]]
+Output: false
+
+ 
+Note:
+
+points.length == 3
+points[i].length == 2
+0 <= points[i][j] <= 100
+class Solution:
+    def isBoomerang(self, points: List[List[int]]) -> bool:
+        "
+21225,"Given a number N, the task is to find the number of diagonals in N sided convex polygon.
+Example 1:
+Input: N = 5
+Output: 5
+Example 2:
+Input: N = 6
+Output: 9
+Your Task:  
+You don't need to read input or print anything. Your task is to complete the function diagonals() which takes N as input and returns the number of possible diagonals.
+Expected Time Complexity: O(1)
+Expected Auxiliary Space: O(1)
+Constraints:
+3 ≤ N ≤ 10^{9}
+#User function Template for python3
+
+
+
+class Solution:
+
+    def diagonals(self, n):
+
+        # code here "
+21825,"Given a circular sheet of radius, R. Find the total number of rectangles with integral length and width that can be cut from the sheet, one at a time.
+Example 1:
+Input:
+R=1
+Output:
+1
+Explanation:
+Only 1 rectangle of dimensions 1x1.
+Example 2:
+Input:
+R=2
+Output:
+8
+Explanation:
+The 8 possible rectangles are 
+(1x1)(1x2)(1x3)(2x1)(2x2)(2x3)(3x1)(3x2).
+Your Task:
+You don't need to read input or print anything. Your task is to complete the function rectanglesInCircle() which takes an integer R as the radius and returns the number of rectangles that can fit on the circle.
+Expected Time Complexity:O(R^{2})
+Expected Auxillary Space:O(1)
+Constraints:
+1<=R<=1000
+#User function template for Python
+
+class Solution:
+    def rectanglesInCircle(self,R):
+        #code here"
+22549,"Given coordinates of 2 points on a cartesian plane, find the distance between them rounded up to nearest integer. 
+Example 1:
+Input: 0 0 2 -2
+Output: 3
+Explanation: Distance between (0, 0) 
+and (2, -2) is 3.
+Example 2:
+Input: -20 23 -15 68
+Output: 45
+Explanation: Distance between (-20, 23) 
+and (-15, 68) is 45.
+Your Task:
+You don't need to read or print anything. Your task is to complete the function distance() which takes x1, y1, x2 and y2 as input parameter and returns the distance between the given two points.
+Expected Time Complexity: O(1)
+Expected Space Complexity: O(1)
+Constraints:
+-1000 <= x1, y1, x2, y2 <= 1000
+#User function Template for python3
+
+class Solution:
+	def distance(self, x1, y1, x2, y2):
+		# Code here"

@@ -1,4 +1,4 @@
-from dmcr.models import BaseLLM
+from src.llms import BaseLLM
 from transformers import AutoTokenizer, AutoModelForCausalLM
 from langchain_huggingface import HuggingFacePipeline
 from transformers import pipeline
@@ -10,11 +10,11 @@ import os
 
 
 
-class Llama3_1_Instruct(BaseLLM):
+class GenericIntructModelHF(BaseLLM):
 
     def __init__(
             self,
-            path = "../../../models/llms/Llama-3.1-8B-Instruct",
+            path: str,
             quantization = False,
         ) -> None:
 
@@ -40,10 +40,10 @@ class Llama3_1_Instruct(BaseLLM):
                 )
 
     
-    def run(self, prompt: str,  input: str, config_params: dict) -> str:
+    def run(self, prompt: str,  instruction: str, config_params: dict) -> str:
 
         messages = [
-            {"role": "system", "content": "You are a coding generation tool that will solve a problem using Python"},
+            {"role": "system", "content": instruction},
             {"role": "user", "content": prompt},
         ]
 
@@ -58,13 +58,8 @@ class Llama3_1_Instruct(BaseLLM):
         
         output = pipe(messages, **config_params)
         return output
-        
-
-        
     
-
-    def pipe(self, temperature: float = 0.7, max_length = 2048) -> HuggingFacePipeline:
-
-        pipe = pipeline("text-generation", model=self.model, tokenizer=self.tokenizer, temperature=temperature, max_length=max_length)
-        return HuggingFacePipeline(pipeline=pipe)
-
+    def delete_model(self):
+        self.accelerator.wait_for_everyone()
+        self.accelerator.free_memory()
+        
