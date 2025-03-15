@@ -132,7 +132,7 @@ def calculate_1_pass(results: Dict[str, list], device="cuda:0"):
 
 
 
-def compute_1_pass_by_test(generation_file: str, taco, debug=False, file="taco_1_pass_metrics.json", return_dict = False):
+def compute_1_pass_by_test(generation_file: str, taco, debug=False, file="taco_1_pass_metrics.json", return_dict = False, return_results = False):
     # Initialize evaluation dataset with the same setup with generation
     # difficulties = ['ALL']
     # difficulties = ["EASY", "MEDIUM", "MEDIUM_HARD", "HARD", "VERY_HARD"] 
@@ -149,10 +149,13 @@ def compute_1_pass_by_test(generation_file: str, taco, debug=False, file="taco_1
     # You can use evaluate_generations_parallel to parallel executing multiple outputs for each problem
     # results = evaluate_generations_parallel(generations, taco)
     metrics = calculate_1_pass(results)
-    return metrics
+     
 
-    # if not return_dict:
-    #     json.dump(metrics, open(file, 'w'), indent=4)
+    if not return_dict:
+        json.dump(metrics, open(file, 'w'), indent=4)
     
-    # else:
-    #     return metrics
+    else:
+        return metrics
+
+    if return_results:
+        return metrics, results
