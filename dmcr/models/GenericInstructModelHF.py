@@ -10,7 +10,7 @@ import os
 
 
 
-class GenericIntructModelHF(BaseLLM):
+class GenericInstructModelHF(BaseLLM):
 
     def __init__(
             self,

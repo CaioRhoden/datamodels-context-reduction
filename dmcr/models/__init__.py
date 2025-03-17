@@ -5,3 +5,4 @@ from dmcr.models.Llama3_1_Instruct import Llama3_1_Instruct
 from dmcr.models.GPT2 import GPT2
 from dmcr.models.GPT2Parser import GPT2Parser
 from dmcr.models.ParserLlama import ParserLlama
+from dmcr.models.GenericInstructModelHF import GenericInstructModelHF
