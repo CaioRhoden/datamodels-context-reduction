@@ -25,7 +25,8 @@ dependencies = [
     "seaborn (==0.13.2)",
     "torch (==2.5.0)",
     "transformers (==4.46.1)",
-    "wandb (==0.19.8)"
+    "wandb (==0.19.8)",
+    "bitsandbytes (==0.45.3)"
 ]
 
 
