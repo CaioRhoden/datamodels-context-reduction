@@ -1,25 +1,30 @@
-from dmcr.retrievers import BaseRetriever
+from dmcr.datamodels.setter.BaseSetter import BaseSetter
+from dmcr.datamodels.setter.SetterConfig import NaiveSetterConfig
 import pandas as pd
 import h5py
 import numpy as np 
 
 
-class NaiveDatamodelsRetriever(BaseRetriever):
+class NaiveSetter(BaseSetter):
 
     def __init__(self,
-                 k: int,
+                load_path: str,
+                save_path: str,
+                k: int,
+                n_samples: int,
+                test_samples: int
                  
                 ) -> None:
         
-        self.k = k
+        self.config = NaiveSetterConfig(
+            load_path=load_path,
+            save_path=save_path,
+            k=k,
+            n_samples=n_samples,
+            test_samples=test_samples
+        )
 
-    def create_collections_index(self, 
-                           train_set_path: str, 
-                           save_path: str,
-                           n_samples: int,
-                           test_per: float,
-                           
-                           ) -> None:
+    def set(self) -> None:
 
         
         
@@ -37,23 +42,19 @@ class NaiveDatamodelsRetriever(BaseRetriever):
         Returns:
             None
         """
+        
+        train_set = pd.read_csv(self.config.load_path)
 
-        train_set = pd.read_csv(train_set_path)
-
-        random_indices = [np.random.choice(train_set.index, self.k, replace=False) for _ in range(n_samples)]
+        random_indices = [np.random.choice(train_set.index, self.k, replace=False) for _ in range(self.config.n_samples)]
         random_indices_array = np.array(random_indices)
 
-        test_collection = random_indices_array[:int(test_per * n_samples)]
-        train_collection = random_indices_array[int(test_per * n_samples):]
 
-        with h5py.File(f"{save_path}/train_collection.h5", 'w') as hf:
+        test_collection = random_indices_array[:int(self.config.test_samples)]
+        train_collection = random_indices_array[int(self.config.test_samples):]
+
+        with h5py.File(f"{self.config.save_path}/train_collection.h5", 'w') as hf:
             hf.create_dataset('train_collection', data=train_collection)
         
-        with h5py.File(f"{save_path}/test_collection.h5", 'w') as hf:
+        with h5py.File(f"{self.config.save_path}/test_collection.h5", 'w') as hf:
             hf.create_dataset('test_collection', data=test_collection)
     
-
-
-    def retrieve(self, weights_path: str) -> pd.DataFrame:
-
-        pass
