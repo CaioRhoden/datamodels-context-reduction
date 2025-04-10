@@ -1,6 +1,6 @@
 
 from dmcr.utils import split_dev_set, subset_df
-from dmcr.retrievers import NaiveDatamodelsRetriever
+from dmcr.datamodels.setter import NaiveSetter
 import pandas as pd
 
 
@@ -17,14 +17,14 @@ def run_pre_collection():
         task_column="task",
     )
 
-    retriever = NaiveDatamodelsRetriever(k=8)
-    retriever.create_collections_index(
-        "../../data/instruction-induction-data/datamodels/datamodels_06_11_2024/train_set.csv",
-        "../../data/instruction-induction-data/datamodels/datamodels_06_11_2024",
+    retriever = NaiveSetter(
+        load_path= "../../data/instruction-induction-data/datamodels/datamodels_06_11_2024/train_set.csv",
+        save_path="../../data/instruction-induction-data/datamodels/datamodels_06_11_2024",
         n_samples=1500,
-        test_per=0.1,
-
+        test_samples=150,
+        k=8
     )
+    retriever.set()
 
 if __name__ == "__main__":
     run_pre_collection()

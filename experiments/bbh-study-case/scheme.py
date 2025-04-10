@@ -1,6 +1,6 @@
 import argparse
 from dmcr.utils import subset_df, split_dev_set
-from dmcr.retrievers import NaiveDatamodelsRetriever
+from dmcr.datamodels.setter import NaiveSetter
 
 import pandas as pd
 import numpy as np
@@ -27,15 +27,7 @@ def get_reduced_dataset(task_quantity, dataset_name, random_seed=42):
 
 
     ## Create pre collections
-    retriever = NaiveDatamodelsRetriever(k=8)
-    retriever.create_collections_index(
-        "../../data/bbh/processed/bbh_train_set.csv",
-        "../../data/bbh/datamodels/reduced_sample",
-        n_samples=10000,
-        test_per=0.05,
-
-    )
-
+    
 
 
 
