@@ -25,7 +25,7 @@ from torch.utils.data import Subset, random_split
 
 
 
-class DatamodelNQPipeline:
+class DatamodelsNQPipeline:
     
     def __init__(self, config: DatamodelConfig) -> None:
 
