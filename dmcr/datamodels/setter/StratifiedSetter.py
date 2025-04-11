@@ -77,7 +77,7 @@ class StratifiedSetter(BaseSetter):
         ### Read data
         target_set = pl.read_ipc(self.config.load_path_target)
         random_set = pl.read_ipc(self.config.load_path_random)
-        train = pl.concatenate([target_set, random_set])
+        train = pl.concat([target_set, random_set], how="diagonal")
         target_size = len(target_set)
 
 
