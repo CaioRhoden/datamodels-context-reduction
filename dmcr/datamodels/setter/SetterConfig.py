@@ -8,8 +8,8 @@ class NaiveSetterConfig:
     n_samples: int
     test_samples: int
 
-    
-class StratifiedNaiveSetterConfig:
+@dataclass
+class StratifiedSetterConfig:
     load_path_target: str
     load_path_random: str
     save_path: str
@@ -20,5 +20,6 @@ class StratifiedNaiveSetterConfig:
     n_test_mix: int
     n_samples_random: int
     n_test_random: int
-
+    index_col: str
+    seed: int
     
