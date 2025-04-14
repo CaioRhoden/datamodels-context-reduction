@@ -112,7 +112,9 @@ class DatamodelsNQPipeline:
         start_idx: int = 0,
         end_idx: int = -1,
         checkpoint: int = 50,
-        input_column: str = "input",
+        title_column: str = "title",
+        text_column: str = "text",
+        question_column: str = "question",
         output_column: str = "output",
         log: bool = False,
         log_config: LogConfig | None = None,
@@ -151,7 +153,7 @@ class DatamodelsNQPipeline:
 
             ## Get the input output pairs and concatenate into a string
             for dev_idx in range(len(self.test_set)):
-                prompt = self._fill_prompt_template(idx_row, dev_idx, input_column, output_column)
+                prompt = self._fill_prompt_template(idx_row, dev_idx, title_column, text_column, question_column)
                 if self.llm is GenericInstructModelHF:
                     result = self.llm.run(prompt, instructions=self.instruction)
 
