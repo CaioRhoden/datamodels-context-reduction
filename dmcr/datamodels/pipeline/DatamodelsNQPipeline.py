@@ -2,6 +2,7 @@ from dmcr.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
 from dmcr.models import GenericInstructModelHF
 
 import pandas as pd
+import polars as pl
 import numpy as np
 import torch
 
@@ -43,20 +44,19 @@ class DatamodelsNQPipeline:
         self.k = config.k
         self.num_models = config.num_models
         self.datamodels_path = config.datamodels_path
-        self.train_collections_idx_path = config.train_collections_idx
-        self.test_collections_idx_path = config.test_collections_idx
         self.test_set_path = config.test_set
         self.train_set_path = config.train_set
         self.instruction = config.instructions
         self.llm = config.llm
         self.evaluator = config.evaluator
+        self.model_configs = config.model_configs
 
 
         self._set_collections_index()
         self._set_dataframes()
 
-        if config.instructions is not str:
-            self._set_instructions_from_path()  
+        self._verify_repo_structure()
+
 
         
     
@@ -83,7 +83,15 @@ class DatamodelsNQPipeline:
             self.test_collections_idx = f["test_collection"][()]
         print("Loaded test collection index")
         
-
+    def _verify_repo_structure(self):
+        if not os.path.exists(f"{self.datamodels_path}/train_set.csv"):
+            raise Exception("Train set not found in datamodels path")
+        if not os.path.exists(f"{self.datamodels_path}/test_set.csv"):
+            raise Exception("Test set not found in datamodels path")
+        if not os.path.exists(f"{self.datamodels_path}/train_collection.h5"):
+            raise Exception("Train collection not found in datamodels path")
+        if not os.path.exists(f"{self.datamodels_path}/test_collection.h5"):
+            raise Exception("Test collection not found in datamodels path")
         
     def _set_dataframes(self):
         """
@@ -103,7 +111,7 @@ class DatamodelsNQPipeline:
     def _set_instructions_from_path(self):
 
         with open(f"{self.datamodels_path}/instructions.json", "r") as f:
-            self.instructions = json.load(f)
+            self.instruction = json.load(f)
 
 
     def create_pre_collection(
@@ -128,6 +136,10 @@ class DatamodelsNQPipeline:
         
         pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
         checkpoint_count = 0
+
+        if self.train_collections_idx is None or self.test_collections_idx is None:
+            raise Exception("Combinations for pre-collections creation not present")
+
 
 
         if end_idx == -1:
@@ -154,8 +166,12 @@ class DatamodelsNQPipeline:
             ## Get the input output pairs and concatenate into a string
             for dev_idx in range(len(self.test_set)):
                 prompt = self._fill_prompt_template(idx_row, dev_idx, title_column, text_column, question_column)
-                if self.llm is GenericInstructModelHF:
-                    result = self.llm.run(prompt, instructions=self.instruction)
+                print(isinstance(self.llm, GenericInstructModelHF))
+                if isinstance(self.llm, GenericInstructModelHF):
+                    result = self.llm.run(prompt, instruction=str(self.instruction), config_params=self.model_configs)
+
+                else:
+                    result = self.llm.run(prompt)
 
 
                 # Add element to pre collection dict
@@ -172,13 +188,22 @@ class DatamodelsNQPipeline:
 
                 print(datetime.datetime.now())
 
-                df = pd.DataFrame(pre_collection_dict)
+                df = pl.DataFrame(pre_collection_dict)
                 print(f"Checkpoint {idx_row} saved")
                 
+                if not os.path.exists(f"{self.datamodels_path}/pre_collections"):
+                    os.mkdir(f"{self.datamodels_path}/pre_collections")
+                
+                if not os.path.exists(f"{self.datamodels_path}/pre_collections/train"):
+                    os.mkdir(f"{self.datamodels_path}/pre_collections/train")
+
+                if not os.path.exists(f"{self.datamodels_path}/pre_collections/test"):
+                    os.mkdir(f"{self.datamodels_path}/pre_collections/test")
+
                 if type == "train":
-                    df.to_feather(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather")
+                    df.write_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather")
                 elif type == "test":
-                    df.to_feather(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
+                    df.write_ipc(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
 
 
                 pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)

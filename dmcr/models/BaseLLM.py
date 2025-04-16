@@ -4,5 +4,5 @@ class BaseLLM:
         pass
         
     
-    def run(self, input: str) -> str:
+    def run(self, input: str) -> None:
         pass

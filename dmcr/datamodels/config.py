@@ -18,6 +18,7 @@ class DatamodelConfig:
     instructions: dict | str | None
     llm: BaseLLM | None
     evaluator: BaseEvaluator | None
+    model_configs: dict
 
 @dataclass
 class MemMapConfig:

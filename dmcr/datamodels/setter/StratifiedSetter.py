@@ -120,5 +120,5 @@ class StratifiedSetter(BaseSetter):
         with h5py.File(f"{self.config.save_path}/test_collection.h5", 'w') as hf:
             hf.create_dataset('test_collection', data=test_collection)
 
-        train.write_csv(f"{self.config.save_path}/train.csv")
+        train.write_csv(f"{self.config.save_path}/train_set.csv")
     
