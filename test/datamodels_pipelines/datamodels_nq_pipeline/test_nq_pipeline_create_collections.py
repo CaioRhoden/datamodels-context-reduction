@@ -6,6 +6,7 @@ from dmcr.datamodels.pipeline import DatamodelsNQPipeline
 from dmcr.datamodels import DatamodelConfig
 from dmcr.evaluators import Rouge_L_evaluator
 from dmcr.models import GenericInstructModelHF
+from dmcr.utils.test_utils import clean_temp_folders
 import tempfile
 import os
 import shutil
@@ -17,6 +18,7 @@ class TestNQPipelineCollectionCreation:
     def setup_class(cls):
 
         ## CREATE TEMP DATA FOR PIPELINE
+        clean_temp_folders()
 
         tmp_path = tempfile.mkdtemp(dir=os.getcwd())
         cls.datamodels_path = tmp_path
@@ -52,6 +54,7 @@ class TestNQPipelineCollectionCreation:
     @classmethod
     def teardown_class(cls):
         shutil.rmtree(cls.datamodels_path)
+        clean_temp_folders()
 
     def test_output_train_generated(self):
         assert os.path.exists(f"{self.datamodels_path}/collections/train/unit_test.feather")
