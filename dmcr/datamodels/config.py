@@ -11,14 +11,7 @@ class DatamodelConfig:
     k: int
     num_models: int
     datamodels_path: str | None
-    train_collections_idx: np.ndarray | None
-    test_collections_idx: np.ndarray | None
-    test_set: pd.DataFrame | None
-    train_set: pd.DataFrame | None
-    instructions: dict | str | None
-    llm: BaseLLM | None
-    evaluator: BaseEvaluator | None
-    model_configs: dict
+
 
 @dataclass
 class MemMapConfig:

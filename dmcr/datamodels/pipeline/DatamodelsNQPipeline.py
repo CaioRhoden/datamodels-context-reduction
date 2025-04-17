@@ -1,5 +1,6 @@
 from dmcr.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
-from dmcr.models import GenericInstructModelHF
+from dmcr.evaluators import BaseEvaluator
+from dmcr.models import BaseLLM, GenericInstructModelHF
 
 import pandas as pd
 import polars as pl
@@ -28,7 +29,7 @@ from torch.utils.data import Subset, random_split
 
 class DatamodelsNQPipeline:
     
-    def __init__(self, config: DatamodelConfig) -> None:
+    def __init__(self, config: DatamodelConfig, test_flag=False) -> None:
 
         """
         Initializes a new instance of the Datamodels class.
@@ -44,18 +45,15 @@ class DatamodelsNQPipeline:
         self.k = config.k
         self.num_models = config.num_models
         self.datamodels_path = config.datamodels_path
-        self.test_set_path = config.test_set
-        self.train_set_path = config.train_set
-        self.instruction = config.instructions
-        self.llm = config.llm
-        self.evaluator = config.evaluator
-        self.model_configs = config.model_configs
 
 
-        self._set_collections_index()
-        self._set_dataframes()
 
-        self._verify_repo_structure()
+        
+
+        if not test_flag:
+            self._verify_repo_structure()
+            self._set_collections_index()
+            self._set_dataframes()
 
 
         
@@ -107,16 +105,14 @@ class DatamodelsNQPipeline:
         self.test_set = pd.read_csv(f"{self.datamodels_path}/test_set.csv")
         print("Loaded test set")
 
-    
-    def _set_instructions_from_path(self):
 
-        with open(f"{self.datamodels_path}/instructions.json", "r") as f:
-            self.instruction = json.load(f)
 
 
     def create_pre_collection(
         self,
-        type: str,
+        mode: str,
+        instruction: dict | str,
+        llm: BaseLLM,
         start_idx: int = 0,
         end_idx: int = -1,
         checkpoint: int = 50,
@@ -126,6 +122,8 @@ class DatamodelsNQPipeline:
         output_column: str = "output",
         log: bool = False,
         log_config: LogConfig | None = None,
+        model_configs: dict | None = None,
+        
         
         optional_output_column: str | None = None
     
@@ -157,21 +155,21 @@ class DatamodelsNQPipeline:
             checkpoint_count += 1
 
             ## Convert index to binary vector
-            if type == "train":
+            if mode == "train":
                 binary_idx = self._convert_idx_to_binary(self.train_collections_idx[idx_row], self.train_set)
-            elif type == "test":
+            elif mode == "test":
                 print(self.test_collections_idx.shape)
                 binary_idx = self._convert_idx_to_binary(self.test_collections_idx[idx_row], self.train_set)
 
             ## Get the input output pairs and concatenate into a string
             for dev_idx in range(len(self.test_set)):
                 prompt = self._fill_prompt_template(idx_row, dev_idx, title_column, text_column, question_column)
-                print(isinstance(self.llm, GenericInstructModelHF))
-                if isinstance(self.llm, GenericInstructModelHF):
-                    result = self.llm.run(prompt, instruction=str(self.instruction), config_params=self.model_configs)
+                if isinstance(llm, GenericInstructModelHF):
+                    result = llm.run(prompt, instruction=str(instruction), config_params=model_configs)[0]["generated_text"]
+
 
                 else:
-                    result = self.llm.run(prompt)
+                    result = llm.run(prompt)
 
 
                 # Add element to pre collection dict
@@ -200,9 +198,9 @@ class DatamodelsNQPipeline:
                 if not os.path.exists(f"{self.datamodels_path}/pre_collections/test"):
                     os.mkdir(f"{self.datamodels_path}/pre_collections/test")
 
-                if type == "train":
+                if mode == "train":
                     df.write_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather")
-                elif type == "test":
+                elif mode == "test":
                     df.write_ipc(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
 
 
@@ -236,23 +234,49 @@ class DatamodelsNQPipeline:
 
     def create_collection(
         self,
-        batch_name: str,
+        evaluator: BaseEvaluator,
+        collection_name: str,
+        mode: str = "train",
         device: str = "cuda:0",
-        pre_collection_batch: pd.DataFrame = None,
-
 
     ):
         
+        ## Verfiy if pre-collections exist
+        
+        pre_collections_path = f"{self.datamodels_path}/pre_collections/{mode}"
+        assert os.path.exists(pre_collections_path)       
+
+        ## Read all pre-collections
+        feather_files = Path(pre_collections_path).glob('*.feather')
+        dfs = [pl.read_ipc(file) for file in sorted(feather_files)]
+        pre_collections = pl.concat(dfs, how='vertical')
+
+        ## Verify if pre-collections are not empty
+        assert len(pre_collections) > 0
+        
         try:
-            optional_output =  pre_collection_batch["optinal_output"].to_numpy()
+            optional_output =  pre_collections["optinal_output"].to_numpy()
         except:
             optional_output = None
         
-        evaluation = self.evaluator.evaluate(pre_collection_batch["true_output"].to_numpy(),  pre_collection_batch["predicted_output"].to_numpy(), optional_output)
-        pre_collection_batch["evaluation"] = evaluation
-        pre_collection_batch["input"] =  pre_collection_batch["input"].apply(lambda x: np.array(x))
-        collection = pre_collection_batch[["collection_idx","test_idx","input", "evaluation"]]
-        collection.to_feather(f"{self.datamodels_path}/collections/{batch_name}")
+        ## Evaluate the pre_collections and add them to the dataframe
+        evaluation = evaluator.evaluate(pre_collections["true_output"].to_numpy(),  pre_collections["predicted_output"].to_numpy(), optional_output)
+        pre_collections  = pre_collections.with_columns(pl.Series("evaluation", evaluation).cast(pl.Float64).alias("evaluation"))
+        collection = pre_collections[["collection_idx","test_idx","input", "evaluation"]]
+        
+
+        ## Guarantees the necessary directories
+        if not os.path.exists(f"{self.datamodels_path}/collections"):
+            os.mkdir(f"{self.datamodels_path}/collections")
+        
+        if not os.path.exists(f"{self.datamodels_path}/collections/train"):
+            os.mkdir(f"{self.datamodels_path}/collections/train")
+
+        if not os.path.exists(f"{self.datamodels_path}/collections/test"):
+            os.mkdir(f"{self.datamodels_path}/collections/test")
+
+        ## Save file
+        collection.write_ipc(f"{self.datamodels_path}/collections/{mode}/{collection_name}.feather")
 
     
 
@@ -325,7 +349,6 @@ class DatamodelsNQPipeline:
                                 "model": str(model),
                                 "criterion": str(criterion),
                                 "optimizer": str(optimizer),
-                                "llm": str(self.llm),
                                 "endtime": datetime.datetime.now().strftime('%Y-%m-%d_%H-%M-%S')
                                 },
                                 tags=[f"task_{idx // 5}", run_id],
