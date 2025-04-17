@@ -63,24 +63,34 @@ class TestNQPipelinePreCollectionCreation:
             k = 4,
             num_models= 1,
             datamodels_path = f"{tmp_path}",
-            train_collections_idx = None,
-            test_collections_idx = None,
-            test_set = None,
-            train_set = None,
-            instructions= "You are given a question and you MUST respond in 5 tokens, there are documents that can or cannot be helpful, and you MUST respond",
-            llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
-            evaluator=Rouge_L_evaluator(),
-            model_configs=model_configs
         )
 
         pipe = DatamodelsNQPipeline(config)
 
-        pipe.create_pre_collection(start_idx = 0, end_idx = 1, type="train", log=False, log_config=None, checkpoint=10, output_column="answer")
-        pipe.create_pre_collection(start_idx = 0, end_idx = 1, type="test", log=False, log_config=None, checkpoint=10, output_column="answer")
+        pipe.create_pre_collection( start_idx = 0, 
+                                   end_idx = 1, 
+                                   mode="train", 
+                                   log=False, 
+                                   output_column="answer", 
+                                   model_configs=model_configs,
+                                   instruction= "Test",
+                                  llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+                                )
+        
+        pipe.create_pre_collection( start_idx = 0, 
+                                   end_idx = 1, 
+                                   mode="test", 
+                                   log=False, 
+                                   output_column="answer", 
+                                   model_configs=model_configs,
+                                   instruction= "Test",
+                                  llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+                                )
 
     @classmethod
     def teardown_class(cls):
         shutil.rmtree(cls.datamodels_path)
+
 
     def test_output_train_generated(self):
         assert os.path.exists(f"{self.datamodels_path}/pre_collections/train")
@@ -98,4 +108,11 @@ class TestNQPipelinePreCollectionCreation:
         assert os.path.exists(f"{self.datamodels_path}/pre_collections/train/pre_collection_0.feather")
         assert not os.path.exists(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
 
+    def test_pre_collection_dtypes(self):
+        df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_0.feather")
+        assert df["collection_idx"].dtype == pl.Int64
+        assert df["test_idx"].dtype == pl.Int64
+        assert df["input"].dtype == pl.Array
+        assert df["predicted_output"].dtype == pl.String
+        assert df["true_output"].dtype == pl.String
 
