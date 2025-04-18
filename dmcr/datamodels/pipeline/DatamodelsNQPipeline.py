@@ -140,8 +140,10 @@ class DatamodelsNQPipeline:
 
 
 
-        if end_idx == -1:
+        if end_idx == -1 and mode == "train":
             end_idx = len(self.train_collections_idx[start_idx:])
+        elif end_idx == -1 and mode == "test":
+            end_idx = len(self.test_collections_idx[start_idx:])
 
         
 
