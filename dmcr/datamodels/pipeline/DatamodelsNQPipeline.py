@@ -312,6 +312,7 @@ class DatamodelsNQPipeline:
             ## Initialize place to save weights and bias
             stacked_weights = torch.tensor([], device=device)
             stacked_bias = torch.tensor([], device=device)
+
             df = pl.read_ipc(f"{self.datamodels_path}/collections/train/{collection_name}.feather")
 
             for idx in range(self.num_models):
@@ -410,6 +411,96 @@ class DatamodelsNQPipeline:
 
             torch.save(stacked_weights, f"{self.datamodels_path}/models/{run_id}/weights.pt")
             torch.save(stacked_bias, f"{self.datamodels_path}/models/{run_id}/bias.pt")
+
+    def evaluate_test_collections(
+            self,
+            evaluation_id: str,
+            collection_name: str,
+            model_id: str,
+            log: bool = False,
+            log_config: LogConfig | None = None
+    ):
+        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+
+        ## Verify path
+        
+        
+        ## Load model parameters
+        weigths = torch.load(f"{self.datamodels_path}/models/{model_id}/weights.pt")
+        bias = torch.load(f"{self.datamodels_path}/models/{model_id}/bias.pt")
+
+        ## Load test dataset
+        df = pl.read_ipc(f"{self.datamodels_path}/collections/test/{collection_name}.feather")
+
+        evaluations = {
+            "mse": [],
+            "test_idx": [],
+        }
+        ### Run evaluation for each test collection
+        if log:
+            if log_config is None:
+                raise Exception("Please provide a log configuration.")
+            
+            if not os.path.exists(log_config.dir):
+                os.mkdir(log_config.dir)
+
+            wandb.init( 
+                project = log_config.project, 
+                dir = log_config.dir, 
+                id = f"{collection_name}_{log_config.id}", 
+                name = f"{collection_name}_{log_config.name}",
+                config = log_config.config,
+                tags = log_config.tags
+            )
+
+
+        for idx in range(self.num_models):
+
+                ## Preoare dataset
+                
+                _temp = (
+                    df.filter(pl.col("test_idx") == idx)
+                    .select(pl.col("input"), pl.col("evaluation"))
+                )
+
+                _x = _temp["input"].to_numpy()
+                _y = _temp["evaluation"].to_numpy()
+
+                dataset = torch.utils.data.TensorDataset(torch.tensor(_x, device=device), torch.tensor(_y, device=device))
+                test_loader = torch.utils.data.DataLoader(dataset, batch_size=1)
+
+                ## Load models
+                model = LinearRegressor(len(dataset[0][0]), 1)
+                model.load_state_dict({ "linear.weight": weigths[idx].unsqueeze(0), "linear.bias": bias[idx].unsqueeze(0) })
+                model.to(device)
+
+                ## Evaluate in test
+                inputs, target = next(iter(test_loader))
+                total_mse = model.evaluate(inputs.to(device).to(dtype=torch.float32), target.to(device).to(dtype=torch.float32))
+                mean_mse = round(total_mse / len(dataset), 4)
+                evaluations["mse"].append(mean_mse)
+                evaluations["test_idx"].append(idx)
+                if log:
+                    wandb.log({"test_idx": idx, "mean_metric": mean_mse})
+
+        ## Save evaluations
+        if not os.path.exists(f"{self.datamodels_path}/evaluations/{evaluation_id}"):
+            os.mkdir(f"{self.datamodels_path}/evaluations/{evaluation_id}")
+
+        pl.DataFrame(evaluations).write_ipc(f"{self.datamodels_path}/evaluations/{evaluation_id}.feather")
+
+        if log:
+            artifact = wandb.Artifact(name=f"{evaluation_id}", type="file")
+            artifact.add_file(f"{self.datamodels_path}/evaluations/{evaluation_id}.feather")
+            wandb.log_artifact(artifact)
+            wandb.finish()
+
+        
+
+
+
+
+
     
     def _add_element_to_collection(self, pre_collection_dict, collection_idx, test_idx, input, predicted_output, true_output, optinal_output=None):
 
