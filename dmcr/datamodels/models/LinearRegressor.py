@@ -20,6 +20,6 @@ class LinearRegressor(nn.Module):
 
     def evaluate(self, x, target):
         with torch.no_grad():  # Disable gradient calculation for evaluation
-            predictions = self.linear(x)
+            predictions = self.linear(x).squeeze(1)
             mse = nn.MSELoss()(predictions, target)
             return mse.item()  # Return MSE as a scalar
