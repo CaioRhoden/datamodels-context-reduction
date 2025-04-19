@@ -406,11 +406,17 @@ class DatamodelsNQPipeline:
                 stacked_weights = torch.concat((stacked_weights, model.get_weights()), dim=0)
                 stacked_bias = torch.concat((stacked_bias, model.get_bias()), dim=0)
 
+                torch.save(stacked_weights, f"{self.datamodels_path}/models/{run_id}/weights.pt")
+                torch.save(stacked_bias, f"{self.datamodels_path}/models/{run_id}/bias.pt")
+
                 if log:
+                    artifact = wandb.Artifact(name=f"model_{run_id}", type="file")
+                    artifact.add_file(f"{self.datamodels_path}/models/{run_id}/weights.pt")
+                    artifact.add_file(f"{self.datamodels_path}/models/{run_id}/bias.pt")
+                    wandb.log_artifact(artifact)
                     wandb.finish()
 
-            torch.save(stacked_weights, f"{self.datamodels_path}/models/{run_id}/weights.pt")
-            torch.save(stacked_bias, f"{self.datamodels_path}/models/{run_id}/bias.pt")
+            
 
     def evaluate_test_collections(
             self,
@@ -426,8 +432,8 @@ class DatamodelsNQPipeline:
         
         
         ## Load model parameters
-        weigths = torch.load(f"{self.datamodels_path}/models/{model_id}/weights.pt")
-        bias = torch.load(f"{self.datamodels_path}/models/{model_id}/bias.pt")
+        weigths = torch.load(f"{self.datamodels_path}/models/{model_id}/weights.pt", weights_only=True)
+        bias = torch.load(f"{self.datamodels_path}/models/{model_id}/bias.pt", weights_only=True)
 
         ## Load test dataset
         df = pl.read_ipc(f"{self.datamodels_path}/collections/test/{collection_name}.feather")
@@ -484,13 +490,13 @@ class DatamodelsNQPipeline:
                     wandb.log({"test_idx": idx, "mean_metric": mean_mse})
 
         ## Save evaluations
-        if not os.path.exists(f"{self.datamodels_path}/evaluations/{evaluation_id}"):
-            os.mkdir(f"{self.datamodels_path}/evaluations/{evaluation_id}")
+        if not os.path.exists(f"{self.datamodels_path}/evaluations"):
+            os.mkdir(f"{self.datamodels_path}/evaluations")
 
         pl.DataFrame(evaluations).write_ipc(f"{self.datamodels_path}/evaluations/{evaluation_id}.feather")
 
         if log:
-            artifact = wandb.Artifact(name=f"{evaluation_id}", type="file")
+            artifact = wandb.Artifact(name=f"evaluation_{evaluation_id}", type="file")
             artifact.add_file(f"{self.datamodels_path}/evaluations/{evaluation_id}.feather")
             wandb.log_artifact(artifact)
             wandb.finish()
