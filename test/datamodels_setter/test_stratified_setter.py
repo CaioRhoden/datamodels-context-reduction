@@ -25,11 +25,11 @@ class TestStratifiedSetter:
             load_path_random="toy_random.feather",
             save_path="results",
             k=3,
-            n_samples_target=3,
+            n_samples_target=2,
             n_test_target=1,
-            n_samples_mix=3,
+            n_samples_mix=2,
             n_test_mix=1,
-            n_samples_random=3,
+            n_samples_random=2,
             n_test_random=1,
             index_col="index",
             seed=42
@@ -62,11 +62,20 @@ class TestStratifiedSetter:
 
         with h5py.File(f"results/train_collection.h5", 'r') as hf:
             train_collection = hf['train_collection'][:]
-            assert len(train_collection) == 6
+            assert len(train_collection) == 3
 
         with h5py.File(f"results/test_collection.h5", 'r') as hf:
             test_collection = hf['test_collection'][:]
             assert len(test_collection) == 3
+
+    def test_indices_in_collection(self):
+        with h5py.File(f"results/train_collection.h5", 'r') as hf:
+            train_collection = hf['train_collection'][0]
+            assert set(train_collection).issubset(set(range(0, 6)))
+
+        with h5py.File(f"results/train_collection.h5", 'r') as hf:
+            train_collection = hf['train_collection'][1]
+            assert set(train_collection).issubset(set(range(6, 12)))
 
         
     
