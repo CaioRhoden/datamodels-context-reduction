@@ -77,19 +77,18 @@ class StratifiedSetter(BaseSetter):
         ### Read data
         target_set = pl.read_ipc(self.config.load_path_target)
         random_set = pl.read_ipc(self.config.load_path_random)
-        train = pl.concat([target_set, random_set], how="diagonal")
         target_size = len(target_set)
 
 
         ### Get target samples
 
-        random_indices_target = [np.random.choice(train[:target_size].select(self.config.index_col).to_numpy().squeeze(), self.config.k, replace=False) for _ in range(self.config.n_samples_target)]
+        random_indices_target = [np.random.choice(target_set.select(self.config.index_col).to_numpy().squeeze(), self.config.k, replace=False) for _ in range(self.config.n_samples_target)]
         random_indices_array = np.array(random_indices_target)
         train_target_collection = random_indices_array[int(self.config.n_test_target):]
         test_target_collection = random_indices_array[:int(self.config.n_test_target)]
 
         ## Get random samples
-        random_indices_random = [np.random.choice(train[target_size:].select(self.config.index_col).to_numpy().squeeze(), self.config.k, replace=False) for _ in range(self.config.n_samples_random)]
+        random_indices_random = [np.random.choice(random_set.select(self.config.index_col).to_numpy().squeeze(), self.config.k, replace=False)  + target_size for _ in range(self.config.n_samples_random)]
         random_indices_array = np.array(random_indices_random)
         train_random_collection = random_indices_array[int(self.config.n_test_random):]
         test_random_collection = random_indices_array[:int(self.config.n_test_random)]
@@ -100,8 +99,8 @@ class StratifiedSetter(BaseSetter):
         for _ in range(self.config.n_samples_mix):
             n_target = np.random.randint(1, self.config.k-1)
             n_random = self.config.k - n_target
-            target_indices = np.random.choice(train[:target_size].select(self.config.index_col).to_numpy().squeeze(), n_target, replace=False)
-            random_indices = np.random.choice(train[target_size:].select(self.config.index_col).to_numpy().squeeze(), n_random, replace=False)
+            target_indices = np.random.choice(target_set.select(self.config.index_col).to_numpy().squeeze(), n_target, replace=False)
+            random_indices = np.random.choice(random_set.select(self.config.index_col).to_numpy().squeeze(), n_random, replace=False) + target_size
             mix_indices = np.concatenate((target_indices, random_indices))
             random_indices_mix.append(mix_indices)
 
@@ -120,5 +119,6 @@ class StratifiedSetter(BaseSetter):
         with h5py.File(f"{self.config.save_path}/test_collection.h5", 'w') as hf:
             hf.create_dataset('test_collection', data=test_collection)
 
+        train = pl.concat([target_set, random_set])
         train.write_csv(f"{self.config.save_path}/train_set.csv")
     
