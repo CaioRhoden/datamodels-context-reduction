@@ -9,24 +9,24 @@ license = {text = "GPL-3.0-or-later"}
 readme = "README.md"
 requires-python = ">=3.11,<4.0"
 dependencies = [
-    "accelerate (==1.0.1)",
-    "auto-mix-prep (==0.2.0)",
-    "evaluate (==0.4.3)",
-    "h5py (==3.12.1)",
-    "langchain (==0.3.20)",
-    "langchain-community (==0.3.19)",
-    "langchain-huggingface (==0.1.2)",
-    "matplotlib (==3.10.1)",
-    "numpy (==2.2.3)",
-    "pandas (==2.2.3)",
-    "polars (==1.24.0)",
-    "pyparsing (==3.2.1)",
-    "scikit-learn (==1.6.1)",
-    "seaborn (==0.13.2)",
-    "torch (==2.5.0)",
-    "transformers (==4.46.1)",
-    "wandb (==0.19.8)",
-    "bitsandbytes (==0.45.3)"
+    "accelerate>=1.0.1",
+    "auto-mix-prep>=0.2.0",
+    "evaluate>=0.4.3",
+    "h5py>=3.12.1",
+    "langchain>=0.3.20",
+    "langchain-community>=0.3.19",
+    "langchain-huggingface>=0.1.2",
+    "matplotlib>=3.10.1",
+    "numpy>=2.2.3",
+    "pandas>=2.2.3",
+    "polars>=1.24.0",
+    "pyparsing>=3.2.1",
+    "scikit-learn>=1.6.1",
+    "seaborn>=0.13.2",
+    "torch>=2.5.0",
+    "transformers>=4.46.1",
+    "wandb>=0.19.8",
+    "bitsandbytes>=0.45.3"
 ]
 
 
