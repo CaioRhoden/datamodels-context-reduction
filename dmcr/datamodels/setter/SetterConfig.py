@@ -5,8 +5,9 @@ class NaiveSetterConfig:
     load_path: str
     save_path: str
     k: int
-    n_samples: int
+    train_samples: int
     test_samples: int
+    index_col: str
 
 @dataclass
 class StratifiedSetterConfig:
