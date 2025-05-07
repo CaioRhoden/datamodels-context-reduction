@@ -8,5 +8,5 @@ class BaseEvaluator(ABC):
     def __init__(self) -> None:
         pass
     @abstractmethod
-    def evaluate(self, y: np.ndarray, y_pred: np.ndarray, possible_outputs: None | np.ndarray) -> np.ndarray:
+    def evaluate(self, y: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
         pass
