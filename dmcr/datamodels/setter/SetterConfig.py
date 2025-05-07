@@ -23,4 +23,11 @@ class StratifiedSetterConfig:
     n_test_random: int
     index_col: str
     seed: int
-    
+
+@dataclass
+class IndexBasedSetterConfig:
+    save_path: str
+    size_index: int
+    k: int
+    train_samples: int
+    test_samples: int

@@ -1,2 +1,2 @@
 from dmcr.datamodels.pipeline.Datamodels import DatamodelPipeline
-from dmcr.datamodels.pipeline.DatamodelsNQPipeline import DatamodelsNQPipeline
+from dmcr.datamodels.pipeline.DatamodelsRAGPipelinee import DatamodelsNQPipeline
