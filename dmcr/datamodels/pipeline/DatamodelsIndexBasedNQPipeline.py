@@ -191,6 +191,7 @@ class DatamodelsIndexBasedNQPipeline:
 
                 ## Get true output and verify the expected behavior    
                 try:
+                    print(self.test_set[dev_idx][output_column].to_numpy().flatten()[0])
                     true_output = self.test_set[dev_idx][output_column].to_numpy().flatten()[0].tolist()
                     assert type(true_output) is list
                     assert type(true_output[0]) is str
@@ -578,13 +579,13 @@ class DatamodelsIndexBasedNQPipeline:
         for collection_idx in self.train_collections_idx[idx_row]:
 
             idx = rag_indexes[str(idx_test)][collection_idx]
-            title = self.train_set[idx][title_column]
-            text = self.train_set[idx][text_column]
+            title = self.train_set[idx][title_column].to_numpy().flatten()[0]
+            text = self.train_set[idx][text_column].to_numpy().flatten()[0]
             context += f"Document[{count}](Title: {title}){text}\n\n"
             count += 1
 
         
-        input = self.test_set[idx_test][question_column]
+        input = self.test_set[idx_test][question_column].to_numpy().flatten()[0]
 
         prompt = PromptTemplate.from_template(template).format(context=context, input=input)
 

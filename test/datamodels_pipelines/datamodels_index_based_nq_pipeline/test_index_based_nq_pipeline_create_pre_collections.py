@@ -102,10 +102,10 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
                                   llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
                                 )
 
-    # @classmethod
-    # def teardown_class(cls):
-        # shutil.rmtree(cls.datamodels_path)
-        # clean_temp_folders()
+    @classmethod
+    def teardown_class(cls):
+        shutil.rmtree(cls.datamodels_path)
+        clean_temp_folders()
 
 
     def test_output_train_generated(self):
