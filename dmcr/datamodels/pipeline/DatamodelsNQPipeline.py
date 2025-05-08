@@ -113,14 +113,13 @@ class DatamodelsNQPipeline:
         log: bool = False,
         log_config: LogConfig | None = None,
         model_configs: dict | None = None,
-        optional_output_column: str | None = None
     
     ):
 
         if self.train_collections_idx is None:
             raise ValueError("Train collection index not loaded")
         
-        pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
+        pre_collection_dict = self._reset_pre_collection_dict()
         checkpoint_count = 0
 
         if self.train_collections_idx is None or self.test_collections_idx is None:
@@ -155,12 +154,7 @@ class DatamodelsNQPipeline:
                 else:
                     result = llm.run(prompt)
 
-                # Add element to pre collection dict
-                if optional_output_column is not None:
-                    pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column], self.test_set.iloc[dev_idx][optional_output_column])
-
-                else:
-                    pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column])
+                pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column])
 
             ## Saving condition in checkpoint or end of indezes
             if checkpoint_count == checkpoint or idx_row == end_idx-1:
@@ -185,7 +179,7 @@ class DatamodelsNQPipeline:
                     df.write_ipc(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
 
 
-                pre_collection_dict = self._reset_pre_collection_dict(optional_output_column)
+                pre_collection_dict = self._reset_pre_collection_dict()
                 checkpoint_count = 0
 
             if log:
@@ -233,13 +227,8 @@ class DatamodelsNQPipeline:
         ## Verify if pre-collections are not empty
         assert len(pre_collections) > 0
         
-        try:
-            optional_output =  pre_collections["optinal_output"].to_numpy()
-        except:
-            optional_output = None
-        
         ## Evaluate the pre_collections and add them to the dataframe
-        evaluation = evaluator.evaluate(pre_collections["true_output"].to_numpy(),  pre_collections["predicted_output"].to_numpy(), optional_output)
+        evaluation = evaluator.evaluate(pre_collections["true_output"].to_numpy(),  pre_collections["predicted_output"].to_numpy())
         pre_collections  = pre_collections.with_columns(pl.Series("evaluation", evaluation).cast(pl.Float64).alias("evaluation"))
         collection = pre_collections[["collection_idx","test_idx","input", "evaluation"]]
         
@@ -573,7 +562,8 @@ class DatamodelsNQPipeline:
         indeces_df[arr] = 1
         return indeces_df
         
-    def _reset_pre_collection_dict(self, optional_column: str | None = None) -> dict:
+    def _reset_pre_collection_dict(self
+                                   ) -> dict:
         pre_collection_dict = {
             "collection_idx": [],
             "test_idx": [],
@@ -582,7 +572,7 @@ class DatamodelsNQPipeline:
             "true_output": [],
         }
 
-        if optional_column is not None:
-            pre_collection_dict["optinal_output"] = []
+
+
 
         return pre_collection_dict
