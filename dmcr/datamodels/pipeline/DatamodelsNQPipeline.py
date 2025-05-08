@@ -75,9 +75,9 @@ class DatamodelsNQPipeline:
         print("Loaded test collection index")
         
     def _verify_repo_structure(self):
-        if not os.path.exists(f"{self.datamodels_path}/train_set.csv"):
+        if not os.path.exists(f"{self.datamodels_path}/train_set.feather"):
             raise Exception("Train set not found in datamodels path")
-        if not os.path.exists(f"{self.datamodels_path}/test_set.csv"):
+        if not os.path.exists(f"{self.datamodels_path}/test_set.feather"):
             raise Exception("Test set not found in datamodels path")
         if not os.path.exists(f"{self.datamodels_path}/train_collection.h5"):
             raise Exception("Train collection not found in datamodels path")
@@ -87,15 +87,12 @@ class DatamodelsNQPipeline:
     def _set_dataframes(self):
         """
         Loads the test set if it has not been loaded yet.
-
-        Returns:
-            pd.DataFrame: The test set.
         """
 
-        self.train_set = pd.read_csv(f"{self.datamodels_path}/train_set.csv")
+        self.train_set = pl.read_ipc(f"{self.datamodels_path}/train_set.feather")
         print("Loaded train set")
 
-        self.test_set = pd.read_csv(f"{self.datamodels_path}/test_set.csv")
+        self.test_set = pl.read_ipc(f"{self.datamodels_path}/test_set.feather")
         print("Loaded test set")
 
     def create_pre_collection(
@@ -154,7 +151,17 @@ class DatamodelsNQPipeline:
                 else:
                     result = llm.run(prompt)
 
-                pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, self.test_set.iloc[dev_idx][output_column])
+                try:
+                    true_output = self.test_set[dev_idx][output_column].to_numpy().flatten()[0].tolist()
+                    assert type(true_output) is list
+                    assert type(true_output[0]) is str
+                except AssertionError:
+                    raise Exception("True output format not supported, the expected is a list of strings in a Polars dataframe but what received to extract was : ", self.test_set[dev_idx][output_column])
+                
+                
+                
+
+                pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, true_output)
 
             ## Saving condition in checkpoint or end of indezes
             if checkpoint_count == checkpoint or idx_row == end_idx-1:
@@ -184,7 +191,7 @@ class DatamodelsNQPipeline:
 
             if log:
 
-                print(log_config.id)
+                print(f"Log id: {log_config.id}")
 
                 if log_config is None:
                     raise Exception("Please provide a log configuration.")
@@ -497,16 +504,13 @@ class DatamodelsNQPipeline:
 
 
     
-    def _add_element_to_collection(self, pre_collection_dict, collection_idx, test_idx, input, predicted_output, true_output, optinal_output=None):
+    def _add_element_to_collection(self, pre_collection_dict, collection_idx, test_idx, input, predicted_output, true_output):
 
         pre_collection_dict["collection_idx"].append(collection_idx)
         pre_collection_dict["test_idx"].append(test_idx)
         pre_collection_dict["input"].append(input)
         pre_collection_dict["predicted_output"].append(predicted_output)
         pre_collection_dict["true_output"].append(true_output)
-        if optinal_output is not None:
-            print(optinal_output)
-            pre_collection_dict["optinal_output"].append(optinal_output)
 
         return pre_collection_dict
 
@@ -528,19 +532,19 @@ class DatamodelsNQPipeline:
         context = ""
         count = 0
         for idx in self.train_collections_idx[idx_row]:
-            title = self.train_set.loc[idx][title_column]
-            text = self.train_set.loc[idx][text_column]
+            title = self.train_set[int(idx)][title_column].to_numpy().flatten()[0]
+            text = self.train_set[int(idx)][text_column].to_numpy().flatten()[0]
             context += f"Document[{count}](Title: {title}){text}\n\n"
             count += 1
 
         
-        input = self.test_set.loc[idx_test][question_column]
+        input = self.test_set[idx_test][question_column].to_numpy().flatten()[0]
 
         prompt = PromptTemplate.from_template(template).format(context=context, input=input)
 
         return prompt
 
-    def _convert_idx_to_binary(self, arr: np.ndarray, df: pd.DataFrame = None) -> np.ndarray:
+    def _convert_idx_to_binary(self, arr: np.ndarray, df: pl.DataFrame = None) -> np.ndarray:
         
         """
         Convert an array of indices into a binary numpy array of the same length as a given DataFrame.
@@ -549,7 +553,7 @@ class DatamodelsNQPipeline:
         ----------
         arr : np.ndarray
             The array of indices to convert.
-        df : pd.DataFrame, optional
+        df : pl.DataFrame, optional
             The DataFrame to use to determine the length of the output array.
             Defaults to None, in which case the length of the output array is the same as the length of the input array.
         

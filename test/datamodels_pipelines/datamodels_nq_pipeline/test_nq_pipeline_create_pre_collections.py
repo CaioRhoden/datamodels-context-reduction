@@ -29,7 +29,7 @@ class TestNQPipelinePreCollectionCreation:
 
         test = {
             "question": ["test_question_1"],
-            "answer": ["test_answer_1"],
+            "answer": [["test_answer_1"]],
         }
         
         ## Create dfs
@@ -39,8 +39,8 @@ class TestNQPipelinePreCollectionCreation:
 
         ## Save temp data
 
-        train_df.write_csv(f"{tmp_path}/train_set.csv")
-        test_df.write_csv(f"{tmp_path}/test_set.csv")
+        train_df.write_ipc(f"{tmp_path}/train_set.feather")
+        test_df.write_ipc(f"{tmp_path}/test_set.feather")
 
         ## Create combinations for datamodel training
         with h5py.File(f"{tmp_path}/train_collection.h5", 'w') as hf:
@@ -116,5 +116,5 @@ class TestNQPipelinePreCollectionCreation:
         assert df["test_idx"].dtype == pl.Int64
         assert df["input"].dtype == pl.Array
         assert df["predicted_output"].dtype == pl.String
-        assert df["true_output"].dtype == pl.String
+        assert df["true_output"].dtype == pl.List(pl.String)
 
