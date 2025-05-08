@@ -1,1 +1,1 @@
-from dmcr.datamodels.config import DatamodelConfig
+from dmcr.datamodels.config import DatamodelConfig, DatamodelIndexBasedConfig

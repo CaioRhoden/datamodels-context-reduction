@@ -12,6 +12,11 @@ class DatamodelConfig:
     num_models: int
     datamodels_path: str | None
 
+@dataclass 
+class DatamodelIndexBasedConfig(DatamodelConfig):
+    train_set_path: str
+    test_set_path: str
+
 
 @dataclass
 class MemMapConfig:
