@@ -51,7 +51,7 @@ class TestIndexBasedNQPipelineCollectionCreation:
         evaluator = Rouge_L_evaluator()
 
         pipe.create_collection(evaluator=evaluator, collection_name="unit_test", mode="train")
-        pipe.create_collection(evaluator=evaluator, collection_name="unit_test", mode="test")
+        pipe.create_collection(evaluator=evaluator, collection_name="unit_test", mode="test", checkpoint=2)
         
     @classmethod
     def teardown_class(cls):
@@ -59,17 +59,18 @@ class TestIndexBasedNQPipelineCollectionCreation:
         clean_temp_folders()
 
     def test_output_train_generated(self):
-        assert os.path.exists(f"{self.datamodels_path}/collections/train/unit_test.feather")
+        assert os.path.exists(f"{self.datamodels_path}/collections/train/unit_test_0.feather")
 
-    def test_output_test_generated(self):
-        assert os.path.exists(f"{self.datamodels_path}/collections/test/unit_test.feather")
+    def test_output_test_generated_with_checkpoint(self):
+        assert os.path.exists(f"{self.datamodels_path}/collections/test/unit_test_0.feather")
+        assert os.path.exists(f"{self.datamodels_path}/collections/test/unit_test_2.feather")
 
     def test_length_train_generated(self):
-        df = pl.read_ipc(f"{self.datamodels_path}/collections/train/unit_test.feather")
+        df = pl.read_ipc(f"{self.datamodels_path}/collections/train/unit_test_0.feather")
         assert len(df) == 3
 
     def test_collection_dtypes(self):
-        df = pl.read_ipc(f"{self.datamodels_path}/collections/train/unit_test.feather")
+        df = pl.read_ipc(f"{self.datamodels_path}/collections/train/unit_test_0.feather")
         assert df["collection_idx"].dtype == pl.Int64
         assert df["test_idx"].dtype == pl.Int64
         assert df["input"].dtype == pl.Array
