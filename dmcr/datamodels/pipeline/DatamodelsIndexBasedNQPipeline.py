@@ -263,7 +263,8 @@ class DatamodelsIndexBasedNQPipeline:
         collection_name: str,
         mode: str = "train",
         log: bool = False,
-        log_config: LogConfig | None = None
+        log_config: LogConfig | None = None,
+        checkpoint: int | None = None
     ):
         
         start_time = datetime.datetime.now()
@@ -279,31 +280,12 @@ class DatamodelsIndexBasedNQPipeline:
 
         ## Verify if pre-collections are not empty
         assert len(pre_collections) > 0
-        
-        try:
-            optional_output =  pre_collections["optinal_output"].to_numpy()
-        except:
-            optional_output = None
-        
-        ## Evaluate the pre_collections and add them to the dataframe
-        evaluation = evaluator.evaluate(pre_collections["true_output"].to_numpy(),  pre_collections["predicted_output"].to_numpy())
-        pre_collections  = pre_collections.with_columns(pl.Series("evaluation", evaluation).cast(pl.Float64).alias("evaluation"))
-        collection = pre_collections[["collection_idx","test_idx","input", "evaluation"]]
-        
 
-        ## Guarantees the necessary directories
-        if not os.path.exists(f"{self.datamodels_path}/collections"):
-            os.mkdir(f"{self.datamodels_path}/collections")
-        
-        if not os.path.exists(f"{self.datamodels_path}/collections/train"):
-            os.mkdir(f"{self.datamodels_path}/collections/train")
+        ##Checkponints
+        if checkpoint is None:
+            checkpoint = len(pre_collections)
 
-        if not os.path.exists(f"{self.datamodels_path}/collections/test"):
-            os.mkdir(f"{self.datamodels_path}/collections/test")
-
-        ## Save file
-        collection.write_ipc(f"{self.datamodels_path}/collections/{mode}/{collection_name}.feather")
-
+        ## Init Log
         if log:
 
             if log_config is None:
@@ -318,16 +300,56 @@ class DatamodelsIndexBasedNQPipeline:
                     config = log_config.config,
                     tags = log_config.tags
                 )
+
+            except:
+                raise Exception("Wandb not initialized, please check your log configuration")
+
+
+        ## Break chunks
+        chunk_size = 0
+        print(f"len pre collections {len(pre_collections)}")
+        while chunk_size < len(pre_collections):
+            print(f"Starting chunk {chunk_size}")
+            next_chunk = max(chunk_size+checkpoint, len(pre_collections))
+            pre_collections_chunk = pre_collections[chunk_size:next_chunk]
+            ## Evaluate the pre_collections and add them to the dataframe
+            evaluation = evaluator.evaluate(pre_collections_chunk["true_output"].to_numpy(),  pre_collections_chunk["predicted_output"].to_numpy())
+            pre_collections_chunk  = pre_collections_chunk.with_columns(pl.Series("evaluation", evaluation).cast(pl.Float64).alias("evaluation"))
+            collection = pre_collections_chunk[["collection_idx","test_idx","input", "evaluation"]]
+
+            ## Guarantees the necessary directories
+            if not os.path.exists(f"{self.datamodels_path}/collections"):
+                os.mkdir(f"{self.datamodels_path}/collections")
+            
+            if not os.path.exists(f"{self.datamodels_path}/collections/train"):
+                os.mkdir(f"{self.datamodels_path}/collections/train")
+
+            if not os.path.exists(f"{self.datamodels_path}/collections/test"):
+                os.mkdir(f"{self.datamodels_path}/collections/test")
+
+            ## Save file
+            collection.write_ipc(f"{self.datamodels_path}/collections/{mode}/{collection_name}_{chunk_size}.feather")
+            print(f"Chunk {chunk_size} saved")
+
+            ## Log duration and evaluationss
+            if log:
                 wandb.log({
-                    "collection_name": f"{collection_name}_{mode}", 
+                    "collection_name": f"{collection_name}_{mode}_{chunk_size}", 
                     "end_time": str(datetime.datetime.now()), 
                     "full_duration": str((datetime.datetime.now() - start_time).total_seconds()), 
                     "evaluation": evaluation
                 })
-                wandb.finish()
+            
+            chunk_size = chunk_size + checkpoint
+            
+            
 
-            except:
-                raise Exception("Wandb not initialized, please check your log configuration")
+                
+                
+        if log:
+            wandb.finish()
+
+
 
     def train_datamodels(
             self,
@@ -348,6 +370,8 @@ class DatamodelsIndexBasedNQPipeline:
             torch.manual_seed(random_seed)
             device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 
+
+
             ## Create dirs
             if not os.path.exists(f"{self.datamodels_path}/models"):
                 os.mkdir(f"{self.datamodels_path}/models")
@@ -355,15 +379,21 @@ class DatamodelsIndexBasedNQPipeline:
             ## Create run_id folder
             if not os.path.exists(f"{self.datamodels_path}/models/{run_id}"):
                 os.mkdir(f"{self.datamodels_path}/models/{run_id}")
+            
+            ## Create and verify list of files from collection
+            colleciton_path = f"{self.datamodels_path}/collections/train/"
+            collections_arr = [os.path.join(colleciton_path, f) for f in os.listdir(colleciton_path) if f.endswith(".feather")]
+            if len(collections_arr) == 0:
+                raise Exception("No collections found in train folder")
 
             ## Initialize place to save weights and bias
             stacked_weights = torch.tensor([], device=device)
             stacked_bias = torch.tensor([], device=device)
 
-            df = pl.read_ipc(f"{self.datamodels_path}/collections/train/{collection_name}.feather")
+            df = pl.concat([pl.read_ipc(file) for file in collections_arr], how="vertical")
 
             for idx in range(self.num_models):
-                print(f"Idx: {idx}")
+                print(f"Model {idx} training")
                 
                 _temp = (
                     df.filter(pl.col("test_idx") == idx)
@@ -482,8 +512,15 @@ class DatamodelsIndexBasedNQPipeline:
         weigths = torch.load(f"{self.datamodels_path}/models/{model_id}/weights.pt", weights_only=True)
         bias = torch.load(f"{self.datamodels_path}/models/{model_id}/bias.pt", weights_only=True)
 
-        ## Load test dataset
-        df = pl.read_ipc(f"{self.datamodels_path}/collections/test/{collection_name}.feather")
+       ## Create and verify list of files from collection
+        colleciton_path = f"{self.datamodels_path}/collections/test/"
+        collections_arr = [os.path.join(colleciton_path, f) for f in os.listdir(colleciton_path) if f.endswith(".feather")]
+        if len(collections_arr) == 0:
+            raise Exception("No collections found in test folder")
+
+        df = pl.concat([pl.read_ipc(file) for file in collections_arr], how="vertical")
+
+
 
         evaluations = {
             "mse": [],
@@ -508,6 +545,8 @@ class DatamodelsIndexBasedNQPipeline:
 
 
         for idx in range(self.num_models):
+                
+                print(f"Model {idx} under evaluation")
 
                 ## Preoare dataset
                 
