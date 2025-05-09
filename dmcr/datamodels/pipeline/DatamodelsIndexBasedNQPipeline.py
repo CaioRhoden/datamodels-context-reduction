@@ -167,6 +167,26 @@ class DatamodelsIndexBasedNQPipeline:
         collection_size = len(rag_indexes[_keys[0]])
 
         ## Iterate over the combinations
+        if log:
+
+                print(log_config.id)
+
+                if log_config is None:
+                    raise Exception("Please provide a log configuration.")
+                
+                try:
+                    wandb.init( 
+                        project = log_config.project, 
+                        dir = log_config.dir, 
+                        id = f"{log_config.id}", 
+                        name = f"{log_config.name}",
+                        config = log_config.config,
+                        tags = log_config.tags
+                    )
+
+                except:
+                    raise Exception("Wandb not initialized, please check your log configuration")
+
         for idx_row in range(start_idx, end_idx):
 
             start_time = datetime.datetime.now()
@@ -201,7 +221,7 @@ class DatamodelsIndexBasedNQPipeline:
                 
                 
                 pre_collection_dict = self._add_element_to_collection(pre_collection_dict, idx_row, dev_idx, binary_idx, result, true_output)
-
+            
             ## Saving condition in checkpoint or end of indezes
             if checkpoint_count == checkpoint or idx_row == end_idx-1:
 
@@ -229,26 +249,13 @@ class DatamodelsIndexBasedNQPipeline:
                 checkpoint_count = 0
 
             if log:
+                wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
 
-                print(log_config.id)
+        if log:
+            wandb.finish()
+        
 
-                if log_config is None:
-                    raise Exception("Please provide a log configuration.")
-                
-                try:
-                    wandb.init( 
-                        project = log_config.project, 
-                        dir = log_config.dir, 
-                        id = f"{idx_row}_{log_config.id}", 
-                        name = f"{idx_row}_{log_config.name}",
-                        config = log_config.config,
-                        tags = log_config.tags
-                    )
-                    wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
-                    wandb.finish()
-
-                except:
-                    raise Exception("Wandb not initialized, please check your log configuration")
+            
 
     def create_collection(
         self,
@@ -536,9 +543,6 @@ class DatamodelsIndexBasedNQPipeline:
         pl.DataFrame(evaluations).write_ipc(f"{self.datamodels_path}/evaluations/{evaluation_id}.feather")
 
         if log:
-            artifact = wandb.Artifact(name=f"evaluation_{evaluation_id}", type="file")
-            artifact.add_file(f"{self.datamodels_path}/evaluations/{evaluation_id}.feather")
-            wandb.log_artifact(artifact)
             wandb.finish()
 
         
