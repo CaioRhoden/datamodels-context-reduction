@@ -500,12 +500,11 @@ class DatamodelsIndexBasedNQPipeline:
             evaluation_id: str,
             collection_name: str,
             model_id: str,
+            metric: str = "mse",
             log: bool = False,
             log_config: LogConfig | None = None
     ):
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-        ## Verify path
         
         
         ## Load model parameters
@@ -568,12 +567,12 @@ class DatamodelsIndexBasedNQPipeline:
 
                 ## Evaluate in test
                 inputs, target = next(iter(test_loader))
-                total_mse = model.evaluate(inputs.to(device).to(dtype=torch.float32), target.to(device).to(dtype=torch.float32))
-                mean_mse = round(total_mse / len(dataset), 4)
-                evaluations["mse"].append(mean_mse)
+                total_metric = model.evaluate(inputs.to(device).to(dtype=torch.float32), target.to(device).to(dtype=torch.float32), metric=metric)
+
+                evaluations[f"metric_{metric}"].append(total_metric)
                 evaluations["test_idx"].append(idx)
                 if log:
-                    wandb.log({"test_idx": idx, "mean_metric": mean_mse})
+                    wandb.log({"test_idx": idx, "mean_metric": total_metric, "metric": metric})
 
         ## Save evaluations
         if not os.path.exists(f"{self.datamodels_path}/evaluations"):
