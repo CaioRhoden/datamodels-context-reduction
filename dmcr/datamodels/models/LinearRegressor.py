@@ -1,5 +1,6 @@
 import torch.nn as nn
 import torch
+from torcheval.metrics import R2Score
 
 class LinearRegressor(nn.Module):
     def __init__(self, in_features: int, out_features: int, device: str = "cuda:0"):
@@ -18,8 +19,16 @@ class LinearRegressor(nn.Module):
         return self.linear.bias.to(self.device)
 
 
-    def evaluate(self, x, target):
+    def evaluate(self, x, target, metric: str = "mse"):
         with torch.no_grad():  # Disable gradient calculation for evaluation
             predictions = self.linear(x).squeeze(1)
-            mse = nn.MSELoss()(predictions, target)
-            return mse.item()  # Return MSE as a scalar
+
+            if metric == "mse":
+                mse = nn.MSELoss()(predictions, target)
+                return mse.item()  # Return MSE as a scalar
+
+            elif metric == "R2Score":
+                metric = R2Score()
+                metric.update(predictions, target)
+                return metric.compute().item()
+                
