@@ -429,8 +429,8 @@ class DatamodelsIndexBasedNQPipeline:
                     wandb.init( 
                         project = log_config.project, 
                         dir = log_config.dir, 
-                        id = f"{collection_name}_{log_config.id}", 
-                        name = f"{collection_name}_{log_config.name}",
+                        id = f"{collection_name}_{log_config.id}_model_{idx}", 
+                        name = f"{collection_name}_{log_config.name}_model_{idx}",
                         config = log_config.config,
                         tags = log_config.tags
                     )
