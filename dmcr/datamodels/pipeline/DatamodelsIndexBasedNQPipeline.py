@@ -500,7 +500,7 @@ class DatamodelsIndexBasedNQPipeline:
             evaluation_id: str,
             collection_name: str,
             model_id: str,
-            metric: str = "mse",
+            metric: str = "R2Score",
             log: bool = False,
             log_config: LogConfig | None = None
     ):
