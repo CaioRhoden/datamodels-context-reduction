@@ -57,7 +57,8 @@ class TestIndexBasedNQPipelineCollectionCreation:
             evaluation_id="test",
             collection_name="collections_test",
             model_id="test",
-            log=False
+            log=False,
+            metric="R2Score"
         )
 
 

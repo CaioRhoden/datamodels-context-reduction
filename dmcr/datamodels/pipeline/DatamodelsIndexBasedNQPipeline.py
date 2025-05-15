@@ -522,7 +522,7 @@ class DatamodelsIndexBasedNQPipeline:
 
 
         evaluations = {
-            "mse": [],
+            f"metric_{metric}": [],
             "test_idx": [],
         }
         ### Run evaluation for each test collection
@@ -558,7 +558,7 @@ class DatamodelsIndexBasedNQPipeline:
                 _y = _temp["evaluation"].to_numpy()
 
                 dataset = torch.utils.data.TensorDataset(torch.tensor(_x, device=device), torch.tensor(_y, device=device))
-                test_loader = torch.utils.data.DataLoader(dataset, batch_size=1)
+                test_loader = torch.utils.data.DataLoader(dataset, batch_size=len(_x))
 
                 ## Load models
                 model = LinearRegressor(len(dataset[0][0]), 1)
