@@ -28,7 +28,7 @@ class LinearRegressor(nn.Module):
                 return mse.item()  # Return MSE as a scalar
 
             elif metric == "R2Score":
-                metric = R2Score()
+                metric = R2Score(device=self.device)
                 metric.update(predictions, target)
                 return metric.compute().item()
                 
