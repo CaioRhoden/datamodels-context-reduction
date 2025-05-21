@@ -25,14 +25,13 @@ class Rouge_L_evaluator(BaseEvaluator):
             ValueError: If the shape of predictions and references do not match.
         """
 
-        if y.shape != y_pred.shape:
-            raise ValueError("The shape of predictions and references must be the same.")
         
         # Calculate Rouge-L for each pair of sentences
         results = []
         for pred, ref in zip(y_pred, y):
             max_result = 0
             for ref_i in ref:
+                print(pred, ref_i)
                 result = self.rouge_l.compute(predictions=[pred], references=[ref_i])
                 max_result = max(result["rougeL"], max_result)
             
