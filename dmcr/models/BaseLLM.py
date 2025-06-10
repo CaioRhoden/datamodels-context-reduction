@@ -4,5 +4,5 @@ class BaseLLM:
         pass
         
     
-    def run(self, input: str) -> None:
+    def run(self, prompt: str ,  instruction: str, config_params: dict):
         pass

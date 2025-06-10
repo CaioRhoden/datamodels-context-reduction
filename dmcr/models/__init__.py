@@ -6,3 +6,4 @@ from dmcr.models.GPT2 import GPT2
 from dmcr.models.GPT2Parser import GPT2Parser
 from dmcr.models.ParserLlama import ParserLlama
 from dmcr.models.GenericInstructModelHF import GenericInstructModelHF
+from dmcr.models.GenericChatInstructModelHF import GenericChatInstructModelHF
