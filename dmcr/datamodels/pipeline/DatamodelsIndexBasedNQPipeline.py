@@ -1,8 +1,8 @@
-from dmcr.datamodels.config import DatamodelIndexBasedConfig, MemMapConfig, DatamodelConfig, LogConfig
+from dmcr.datamodels.config import DatamodelIndexBasedConfig, LogConfig
+from dmcr.datamodels.pipeline.TrainModelsPipeline import TrainModelsPipeline
 from dmcr.evaluators import BaseEvaluator
 from dmcr.models import BaseLLM, GenericInstructModelHF
 
-import pandas as pd
 import polars as pl
 import numpy as np
 import torch
@@ -12,7 +12,6 @@ from dmcr.datamodels.models import LinearRegressor
 import h5py
 import json
 import os
-import pickle
 from torch.utils.data import TensorDataset, random_split
 import torch.nn as nn
 import torch.optim as optim
@@ -20,7 +19,6 @@ import datetime
 import wandb
 
 from pathlib import Path
-from torch.utils.data import Subset, random_split
 
 
 
@@ -353,6 +351,7 @@ class DatamodelsIndexBasedNQPipeline:
 
     def train_datamodels(
             self,
+            model: LinearRegressor,
             collection_name: str,
             epochs: int,
             train_batches: int,
@@ -367,133 +366,44 @@ class DatamodelsIndexBasedNQPipeline:
             run_id: str = "weights",
                          
     ):
-            torch.manual_seed(random_seed)
-            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-
-
-
-            ## Create dirs
-            if not os.path.exists(f"{self.datamodels_path}/models"):
-                os.mkdir(f"{self.datamodels_path}/models")
-
-            ## Create run_id folder
-            if not os.path.exists(f"{self.datamodels_path}/models/{run_id}"):
-                os.mkdir(f"{self.datamodels_path}/models/{run_id}")
             
-            ## Create and verify list of files from collection
-            colleciton_path = f"{self.datamodels_path}/collections/train/"
-            collections_arr = [os.path.join(colleciton_path, f) for f in os.listdir(colleciton_path) if f.endswith(".feather")]
-            if len(collections_arr) == 0:
-                raise Exception("No collections found in train folder")
+        """
+        Trains multiple data models using the specified parameters.
 
-            ## Initialize place to save weights and bias
-            stacked_weights = torch.tensor([], device=device)
-            stacked_bias = torch.tensor([], device=device)
+        Parameters:
+            model (LinearRegressor): The linear regression model to be trained.
+            collection_name (str): The name of the data collection to be used for training.
+            epochs (int): The number of epochs for training each model.
+            train_batches (int): The number of batches for training data.
+            val_batches (int): The number of batches for validation data.
+            val_size (float): The proportion of the dataset to include in the validation split.
+            lr (float): The learning rate for the optimizer.
+            patience (int): The number of epochs to wait for improvement before early stopping.
+            random_seed (int, optional): The seed for random number generation to ensure reproducibility. Default is 42.
+            log (bool, optional): Whether to log the training process. Default is False.
+            log_epochs (int, optional): Frequency of logging in terms of epochs. Default is 1.
+            log_config (LogConfig | None, optional): Configuration for logging. Default is None.
+            run_id (str, optional): The identifier for the training run. Default is "weights".
 
-            df = pl.concat([pl.read_ipc(file) for file in collections_arr], how="vertical")
+        Returns:
+            None
+        """
 
-            for idx in range(self.num_models):
-                print(f"Model {idx} training")
-                
-                _temp = (
-                    df.filter(pl.col("test_idx") == idx)
-                    .select(pl.col("input"), pl.col("evaluation"))
-                )
-
-                _x = _temp["input"].to_numpy()
-                _y = _temp["evaluation"].to_numpy()
-
-                dataset = torch.utils.data.TensorDataset(torch.tensor(_x, device=device), torch.tensor(_y, device=device))
-                
-                ## Random Sampling
-                train_dt, val_dt = random_split(dataset, [float(1 - val_size), val_size], generator=torch.Generator().manual_seed(random_seed)) 
-                train = torch.utils.data.DataLoader(train_dt, batch_size=train_batches, shuffle=True)
-                val = torch.utils.data.DataLoader(val_dt, batch_size=val_batches, shuffle=True)
-
-                ## Model Creation
-                model = LinearRegressor(len(dataset[0][0]), 1)
-                criterion = nn.MSELoss()
-                optimizer = optim.SGD(model.parameters(), lr=lr)
-
-                ## Earlt Stopping Config
-                best_mse = float('inf')
-                early_stopping_counter = 0
-
-                if log:
-                    if log_config is None:
-                        raise Exception("Please provide a log configuration.")
-                    
-                    if not os.path.exists(log_config.dir):
-                        os.mkdir(log_config.dir)
-
-                    wandb.init( 
-                        project = log_config.project, 
-                        dir = log_config.dir, 
-                        id = f"{collection_name}_{log_config.id}_model_{idx}", 
-                        name = f"{collection_name}_{log_config.name}_model_{idx}",
-                        config = log_config.config,
-                        tags = log_config.tags
-                    )
-
-                for epoch in range(epochs):
-
-                    # Shuffle indexes        
-                    total_loss = 0
-                    total_mse = 0
-                    for x_train_batch, y_train_batch in train:
-
-                        x_train_batch, y_train_batch = x_train_batch.to(device).to(dtype=torch.float32), y_train_batch.to(device).to(dtype=torch.float32)
-
-                        # Apply the mask to the weights
-                        y_pred = model(x_train_batch).squeeze() # Add batch dimension
-
-                        # Compute loss
-                        loss = criterion(y_pred, y_train_batch).to(device).to(dtype=torch.float32)  # Add batch dimension to target
-
-                        # Backward pass and optimize
-                        optimizer.zero_grad()
-                        loss.backward()
-                        optimizer.step()
-
-                        total_loss += loss.item()
-                        
-                    for x_val_batch, y_val_batch in val:
-                        total_mse += model.evaluate(x_val_batch.to(device).to(dtype=torch.float32), y_val_batch.to(device).to(dtype=torch.float32))
-                    
-                    mean_loss = round(total_loss / len(train), 4)
-                    mean_mse = round(total_mse / len(val), 4)
-
-                    print(f'Epoch [{epoch + 1}/{epochs}], Loss: {mean_loss:.4f}, Val MSE: {mean_mse:.4f}')
-
-                    if log and epoch % log_epochs == 0:
-                        wandb.log({"epoch": epoch, "mean_loss": mean_loss, "mean_metric": mean_mse})
-
-                    if mean_mse < best_mse:
-                        best_mse = mean_mse
-                        early_stopping_counter = 0
-                    else:
-                        early_stopping_counter += 1
-
-                    if early_stopping_counter >= patience:
-                        if log:
-                            wandb.log({"early_stopping_counter": epoch, "epoch": epoch, "mean_loss": mean_loss, "mean_metric": mean_mse})
-                        print(f"Early stopping at epoch {epoch + 1}")
-                        break
-
-                stacked_weights = torch.concat((stacked_weights, model.get_weights()), dim=0)
-                stacked_bias = torch.concat((stacked_bias, model.get_bias()), dim=0)
-
-                torch.save(stacked_weights, f"{self.datamodels_path}/models/{run_id}/weights.pt")
-                torch.save(stacked_bias, f"{self.datamodels_path}/models/{run_id}/bias.pt")
-
-                if log:
-                    artifact = wandb.Artifact(name=f"model_{run_id}", type="file")
-                    artifact.add_file(f"{self.datamodels_path}/models/{run_id}/weights.pt")
-                    artifact.add_file(f"{self.datamodels_path}/models/{run_id}/bias.pt")
-                    wandb.log_artifact(artifact)
-                    wandb.finish()
-
-            
+        train_models = TrainModelsPipeline(self, model)
+        train_models.train_datamodels(
+            collection_name, 
+            epochs, 
+            train_batches, 
+            val_batches, 
+            val_size, 
+            lr, 
+            patience, 
+            random_seed, 
+            log, 
+            log_epochs, 
+            log_config, 
+            run_id
+        )
 
     def evaluate_test_collections(
             self,

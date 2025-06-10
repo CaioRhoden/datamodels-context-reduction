@@ -1,1 +1,2 @@
 from dmcr.datamodels.models.LinearRegressor import LinearRegressor
+from dmcr.datamodels.models.LASSOLinearRegressor import LASSOLinearRegressor

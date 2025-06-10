@@ -3,6 +3,7 @@ import polars as pl
 import numpy as np
 from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
 from dmcr.datamodels import DatamodelIndexBasedConfig
+from dmcr.datamodels.models import LinearRegressor, LASSOLinearRegressor
 import torch
 
 from dmcr.utils.test_utils import clean_temp_folders
@@ -46,7 +47,11 @@ class TestIndexBasedNQPipelineCollectionCreation:
         )
 
         pipeline = DatamodelsIndexBasedNQPipeline(config, test_flag=True)
+        model = LASSOLinearRegressor(3,1, 0.1, device="cpu")
+
+
         pipeline.train_datamodels(
+            model=model,
             collection_name = "collections_test",
             epochs=50,
             train_batches=1,
