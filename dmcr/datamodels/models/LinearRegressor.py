@@ -24,8 +24,6 @@ class LinearRegressor(nn.Module):
 
     def evaluate(self, x, target, metric: str = "mse") -> float:
         with torch.no_grad():  # Disable gradient calculation for evaluation
-            print(self.forward(x))
-            print(self.get_weights())
             predictions = self.forward(x).squeeze(1).to(self.device)
             target = target.to(self.device)
 

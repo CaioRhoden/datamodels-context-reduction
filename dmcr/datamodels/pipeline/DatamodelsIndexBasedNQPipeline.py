@@ -167,7 +167,6 @@ class DatamodelsIndexBasedNQPipeline:
         ## Iterate over the combinations
         if log:
 
-                print(log_config.id)
 
                 if log_config is None:
                     raise Exception("Please provide a log configuration.")
