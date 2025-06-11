@@ -40,7 +40,6 @@ class GenericEvaluator(BaseEvaluator):
         for pred, ref in zip(y_pred, y):
             max_result = 0
             for ref_i in ref:
-                print(pred, ref_i)
                 result = self.evaluator.compute(predictions=[pred], references=[ref_i])
                 max_result = max(result[self.key], max_result)
             

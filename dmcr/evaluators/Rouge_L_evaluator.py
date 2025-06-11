@@ -31,7 +31,6 @@ class Rouge_L_evaluator(BaseEvaluator):
         for pred, ref in zip(y_pred, y):
             max_result = 0
             for ref_i in ref:
-                print(pred, ref_i)
                 result = self.rouge_l.compute(predictions=[pred], references=[ref_i])
                 max_result = max(result["rougeL"], max_result)
             
