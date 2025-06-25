@@ -22,17 +22,19 @@ class LASSOLinearRegressor(LinearRegressor):
 
         super().__init__(in_features, out_features, device)
         self.lambda_l1 = lambda_l1
-        self.weights = torch.zeros(
-            (in_features, out_features),  # Shape: [10, 1] for out_features=1
+        self.weights = torch.empty(
+            (in_features, out_features),
             dtype=torch.float32,
+            device=device,
             requires_grad=True
-        ).to(device)
+        )
         # Correct bias shape: (out_features,)
         self.bias = torch.zeros(
             out_features,  # Shape: [1] for out_features=1
             dtype=torch.float32,
-            requires_grad=True
-        ).to(device)
+            requires_grad=True,
+            device=device
+        )
 
     def forward(self, x):
         x  = x.to(self.device)
