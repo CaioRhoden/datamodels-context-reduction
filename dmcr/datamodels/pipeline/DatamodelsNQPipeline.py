@@ -131,6 +131,8 @@ class DatamodelsNQPipeline:
         ## Iterate over the combinations
         for idx_row in range(start_idx, end_idx):
 
+            print(f"Creating pre-collection {idx_row}")
+
             start_time = datetime.datetime.now()
 
 
