@@ -200,15 +200,17 @@ class DatamodelsIndexBasedNQPipeline:
             ## Get the input output pairs and concatenate into a string
             for dev_idx in range(len(self.test_set)):
                 prompt = self._fill_prompt_template(idx_row, dev_idx, title_column, text_column, rag_indexes, question_column)
+                print(f"Train collection index: {idx_row}, Dev index: {dev_idx}")
 
                 if isinstance(llm, GenericInstructModelHF):
                     result = llm.run(prompt, instruction=str(instruction), config_params=model_configs)[0]["generated_text"]
                 else:
                     result = llm.run(prompt)
 
+
+
                 ## Get true output and verify the expected behavior    
                 try:
-                    print(self.test_set[dev_idx][output_column].to_numpy().flatten()[0])
                     true_output = self.test_set[dev_idx][output_column].to_numpy().flatten()[0].tolist()
                     assert type(true_output) is list
                     assert type(true_output[0]) is str
