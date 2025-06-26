@@ -156,9 +156,9 @@ class DatamodelsIndexBasedNQPipeline:
 
         ### Set start and end index
         if end_idx == -1 and mode == "train":
-            end_idx = len(self.train_collections_idx[start_idx:])
+            end_idx = start_idx + len(self.train_collections_idx[start_idx:])
         elif end_idx == -1 and mode == "test":
-            end_idx = len(self.test_collections_idx[start_idx:])
+            end_idx = start_idx + len(self.test_collections_idx[start_idx:])
         
         ### Get size
         _keys = list(rag_indexes.keys())
