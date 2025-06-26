@@ -8,7 +8,7 @@ import numpy as np
 import torch
 
 from langchain.prompts import PromptTemplate
-from dmcr.datamodels.models import LinearRegressor
+from dmcr.datamodels.models import FactoryLinearRegressor
 import h5py
 import json
 import os
@@ -352,7 +352,7 @@ class DatamodelsIndexBasedNQPipeline:
 
     def train_datamodels(
             self,
-            model: LinearRegressor,
+            model_factory: FactoryLinearRegressor,
             collection_name: str,
             epochs: int,
             train_batches: int,
@@ -390,7 +390,7 @@ class DatamodelsIndexBasedNQPipeline:
             None
         """
 
-        train_models = TrainModelsPipeline(self, model)
+        train_models = TrainModelsPipeline(self, model_factory)
         train_models.train_datamodels(
             collection_name, 
             epochs, 

@@ -9,12 +9,13 @@ from torch.utils.data import random_split
 from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
 from dmcr.datamodels.models import LinearRegressor
 from dmcr.datamodels.config import LogConfig
+from dmcr.datamodels.models import FactoryLinearRegressor
 
 class TrainModelsPipeline():
 
-    def __init__(self, datamodelsPipeline: DatamodelsIndexBasedNQPipeline, model: LinearRegressor) -> None:
+    def __init__(self, datamodelsPipeline: DatamodelsIndexBasedNQPipeline, model_factory: FactoryLinearRegressor) -> None:
         self.datamodels = datamodelsPipeline
-        self.model = model
+        self.model_factory = model_factory
 
 
     def train_datamodels(
@@ -33,6 +34,8 @@ class TrainModelsPipeline():
             run_id: str = "weights",
                          
     ) -> None:
+            
+            model = self.model_factory.create_model()
 
             ## Create dirs
             if not os.path.exists(f"{self.datamodels.datamodels_path}/models"):
@@ -49,8 +52,8 @@ class TrainModelsPipeline():
                 raise Exception("No collections found in train folder")
 
             ## Initialize place to save weights and bias
-            stacked_weights = torch.tensor([], device=self.model.device)
-            stacked_bias = torch.tensor([], device=self.model.device)
+            stacked_weights = torch.tensor([], device=model.device)
+            stacked_bias = torch.tensor([], device=model.device)
 
             df = pl.concat([pl.read_ipc(file) for file in collections_arr], how="vertical")
 
@@ -65,7 +68,7 @@ class TrainModelsPipeline():
                 _x = _temp["input"].to_numpy()
                 _y = _temp["evaluation"].to_numpy()
 
-                dataset = torch.utils.data.TensorDataset(torch.tensor(_x, device=self.model.device), torch.tensor(_y, device=self.model.device))
+                dataset = torch.utils.data.TensorDataset(torch.tensor(_x, device=model.device), torch.tensor(_y, device=model.device))
                 
                 ## Random Sampling
                 train_dt, val_dt = random_split(dataset, [float(1 - val_size), val_size], generator=torch.Generator().manual_seed(random_seed)) 
@@ -103,17 +106,17 @@ class TrainModelsPipeline():
                     total_mse = 0
                     for x_train_batch, y_train_batch in train:
 
-                        x_train_batch, y_train_batch = x_train_batch.to(self.model.device).to(dtype=torch.float32), y_train_batch.to(self.model.device).to(dtype=torch.float32)
+                        x_train_batch, y_train_batch = x_train_batch.to(model.device).to(dtype=torch.float32), y_train_batch.to(model.device).to(dtype=torch.float32)
 
                         # Apply the mask to the weights
-                        y_pred = self.model.forward(x_train_batch).squeeze() # Add batch dimension
+                        y_pred = model.forward(x_train_batch).squeeze() # Add batch dimension
 
                         # Compute loss
-                        total_loss += self.model.optimize(y_pred, y_train_batch, lr)
+                        total_loss += model.optimize(y_pred, y_train_batch, lr)
                      
                         
                     for x_val_batch, y_val_batch in val:
-                        total_mse += self.model.evaluate(x_val_batch.to(self.model.device).to(dtype=torch.float32), y_val_batch.to(self.model.device).to(dtype=torch.float32))
+                        total_mse += model.evaluate(x_val_batch.to(model.device).to(dtype=torch.float32), y_val_batch.to(model.device).to(dtype=torch.float32))
                     
                     mean_loss = round(total_loss / len(train), 4)
                     mean_mse = round(total_mse / len(val), 4)
@@ -135,10 +138,10 @@ class TrainModelsPipeline():
                         print(f"Early stopping at epoch {epoch + 1}")
                         break
 
-                stacked_weights = torch.concat((stacked_weights, self.model.get_weights()), dim=0)
-                stacked_bias = torch.concat((stacked_bias, self.model.get_bias()), dim=0)
+                stacked_weights = torch.concat((stacked_weights, model.get_weights()), dim=0)
+                stacked_bias = torch.concat((stacked_bias, model.get_bias()), dim=0)
 
-                self.model.detach()
+                model.detach()
 
                 torch.save(stacked_weights, f"{self.datamodels.datamodels_path}/models/{run_id}/weights.pt")
                 torch.save(stacked_bias, f"{self.datamodels.datamodels_path}/models/{run_id}/bias.pt")

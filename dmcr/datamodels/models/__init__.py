@@ -1,2 +1,3 @@
 from dmcr.datamodels.models.LinearRegressor import LinearRegressor
 from dmcr.datamodels.models.LASSOLinearRegressor import LASSOLinearRegressor
+from dmcr.datamodels.models.FactoryModels import FactoryBaseModel, FactoryLinearRegressor, FactoryLASSOLinearRegressor
