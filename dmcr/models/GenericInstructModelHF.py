@@ -1,6 +1,5 @@
 from dmcr.models import BaseLLM
 from transformers import AutoTokenizer, AutoModelForCausalLM
-from langchain_huggingface import HuggingFacePipeline
 from transformers import pipeline
 from transformers import BitsAndBytesConfig
 import torch
@@ -26,7 +25,8 @@ class GenericInstructModelHF(BaseLLM):
             self.model = AutoModelForCausalLM.from_pretrained(
                     path, 
                     device_map={"": self.accelerator.process_index},
-                    torch_dtype=torch.bfloat16,
+                    torch_dtype=torch.bfloat16, 
+                    attn_implementation="flash_attention_2",
 
                 )
         
