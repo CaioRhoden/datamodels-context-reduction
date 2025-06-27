@@ -35,7 +35,7 @@ class TrainModelsPipeline():
                          
     ) -> None:
             
-            model = self.model_factory.create_model()
+            
 
             ## Create dirs
             if not os.path.exists(f"{self.datamodels.datamodels_path}/models"):
@@ -52,12 +52,13 @@ class TrainModelsPipeline():
                 raise Exception("No collections found in train folder")
 
             ## Initialize place to save weights and bias
-            stacked_weights = torch.tensor([], device=model.device)
-            stacked_bias = torch.tensor([], device=model.device)
+            stacked_weights = torch.tensor([], device=self.model_factory.device)
+            stacked_bias = torch.tensor([], device=self.model_factory.device)
 
             df = pl.concat([pl.read_ipc(file) for file in collections_arr], how="vertical")
 
             for idx in range(self.datamodels.num_models):
+                model = self.model_factory.create_model()
                 print(f"Model {idx} training")
                 
                 _temp = (

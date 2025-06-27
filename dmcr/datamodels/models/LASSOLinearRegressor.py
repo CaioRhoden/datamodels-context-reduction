@@ -62,6 +62,7 @@ class LASSOLinearRegressor(LinearRegressor):
         """
         criterion = nn.MSELoss()
         mse_loss = criterion(y_pred, target).to(self.device).to(dtype=torch.float32)
+        print(f"prediction: {y_pred}, target: {target}")
             
         # Compute L1 penalty (only on weights, not bias)
         l1_penalty = self.lambda_l1 * torch.sum(torch.abs(self.weights))

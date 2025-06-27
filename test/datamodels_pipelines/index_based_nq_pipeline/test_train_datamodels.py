@@ -25,7 +25,7 @@ class TestIndexBasedNQPipelineCollectionCreation:
 
         pre_collection = {
             "collection_idx": [i for i in range(10)],
-            "test_idx": [0 for i in range(10)],
+            "test_idx": [i%2 for i in range(1,11)],
             "input": [np.array([1,0,1]) for i in range(10)],
             "evaluation": [0.5 for i in range(10)],
         }
@@ -40,7 +40,7 @@ class TestIndexBasedNQPipelineCollectionCreation:
 
         config = DatamodelIndexBasedConfig(
             k = 4,
-            num_models= 1,
+            num_models= 2,
             datamodels_path = f"{tmp_path}",
             train_set_path= f"{tmp_path}/train_set.feather",
             test_set_path= f"{tmp_path}/test_set.feather",
@@ -53,7 +53,7 @@ class TestIndexBasedNQPipelineCollectionCreation:
         pipeline.train_datamodels(
             model_factory=model_factory,
             collection_name = "collections_test",
-            epochs=50,
+            epochs=10,
             train_batches=1,
             val_batches=1,
             val_size=0.2,
@@ -80,5 +80,5 @@ class TestIndexBasedNQPipelineCollectionCreation:
     def test_output_sizes(self):
         weights = torch.load(f"{self.datamodels_path}/models/test/weights.pt", weights_only=True)
         bias = torch.load(f"{self.datamodels_path}/models/test/bias.pt", weights_only=True)
-        assert weights.shape == (1, 3)
-        assert bias.shape == (1,)
+        assert weights.shape == (2, 3)
+        assert bias.shape == (2,)
