@@ -25,7 +25,7 @@ from pathlib import Path
 
 
 
-class DatamodelsIndexBasedNQPipeline:
+class DatamodelsIndexBasedPipeline:
     
     def __init__(self, config: DatamodelIndexBasedConfig, test_flag=False) -> None:
 
