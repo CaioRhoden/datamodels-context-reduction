@@ -468,7 +468,6 @@ class DatamodelsIndexBasedPipeline:
                 _x = _temp["input"].to_numpy()
                 _y = _temp["evaluation"].to_numpy()
 
-                torch.
 
                 dataset = torch.utils.data.TensorDataset(torch.tensor(_x, device=device), torch.tensor(_y, device=device))
                 test_loader = torch.utils.data.DataLoader(dataset, batch_size=len(_x))
