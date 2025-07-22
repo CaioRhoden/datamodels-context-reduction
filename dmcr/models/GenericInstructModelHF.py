@@ -15,6 +15,7 @@ class GenericInstructModelHF(BaseLLM):
             self,
             path: str,
             quantization = False,
+            attn_implementation = "sdpa"
         ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(path)
@@ -26,7 +27,7 @@ class GenericInstructModelHF(BaseLLM):
                     path, 
                     device_map={"": self.accelerator.process_index},
                     torch_dtype=torch.bfloat16, 
-                    attn_implementation="flash_attention_2",
+                    attn_implementation=attn_implementation,
 
                 )
         
