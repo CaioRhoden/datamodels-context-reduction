@@ -11,7 +11,7 @@ from accelerate import Accelerator
 
 class GenericInstructHFBatch(BatchModel):
 
-    def __init__(self, path: str, quantization=False) -> None:
+    def __init__(self, path: str, quantization=False, attn_implementation = "sdpa") -> None:
         
         self.tokenizer = AutoTokenizer.from_pretrained(path)
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
@@ -22,7 +22,7 @@ class GenericInstructHFBatch(BatchModel):
                     path, 
                     device_map={"": self.accelerator.process_index},
                     torch_dtype=torch.bfloat16, 
-                    attn_implementation="flash_attention_2",
+                    attn_implementation=attn_implementation,
 
                 )
         
