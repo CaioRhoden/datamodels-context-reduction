@@ -31,7 +31,7 @@ class TrainModelsPipeline():
             log: bool = False,
             log_epochs: int = 1,
             log_config: LogConfig | None = None,
-            run_id: str = "weights",
+            run_id: str = "default_run_id",
                          
     ) -> None:
             
@@ -46,8 +46,8 @@ class TrainModelsPipeline():
                 os.mkdir(f"{self.datamodels.datamodels_path}/models/{run_id}")
             
             ## Create and verify list of files from collection
-            colleciton_path = f"{self.datamodels.datamodels_path}/collections/train/"
-            collections_arr = [os.path.join(colleciton_path, f) for f in os.listdir(colleciton_path) if f.endswith(".feather")]
+            collection_path = f"{self.datamodels.datamodels_path}/collections/train/"
+            collections_arr = [os.path.join(collection_path, f) for f in os.listdir(collection_path) if f.endswith(".feather") and f.startswith(collection_name)]
             if len(collections_arr) == 0:
                 raise Exception("No collections found in train folder")
 
@@ -94,8 +94,8 @@ class TrainModelsPipeline():
                     wandb.init( 
                         project = log_config.project, 
                         dir = log_config.dir, 
-                        id = f"{collection_name}_{log_config.id}_model_{idx}", 
-                        name = f"{collection_name}_{log_config.name}_model_{idx}",
+                        id = f"{collection_name}_{run_id}_{log_config.id}_model_{idx}", 
+                        name = f"{collection_name}_{run_id}_{log_config.name}_model_{idx}",
                         config = log_config.config,
                         tags = log_config.tags
                     )

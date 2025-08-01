@@ -14,10 +14,17 @@ import shutil
 
 class TestIndexBasedNQPipelineCollectionCreation:
 
+
+
     @classmethod
     def setup_class(cls):
 
         ## CREATE TEMP DATA FOR PIPELINE
+        """
+        Set up a test pipeline with a toy dataset. This pipeline trains a few LASSO linear
+        regressors on a toy dataset. The purpose of this test is to make sure that the
+        pipeline is working correctly, and that the trained models are saved to disk.
+        """
         clean_temp_folders()
 
         tmp_path = tempfile.mkdtemp(dir=os.getcwd())
@@ -69,16 +76,35 @@ class TestIndexBasedNQPipelineCollectionCreation:
         
     @classmethod
     def teardown_class(cls):
+        """
+        Remove the temporary directory with the trained models and the associated data.
+        Also clean temporary folders.
+        """
         shutil.rmtree(cls.datamodels_path)
         clean_temp_folders()
 
     def test_output_generation_train_datamodels(self):
+        """
+        Test that the output files are correctly generated after training
+        the datamodels. This includes checking the existence of the model
+        directory and the weights and bias files.
+        """
+
         assert os.path.exists(f"{self.datamodels_path}/models/test")
         assert os.path.exists(f"{self.datamodels_path}/models/test/weights.pt")
         assert os.path.exists(f"{self.datamodels_path}/models/test/bias.pt")
 
     def test_output_sizes(self):
+        """
+        Verify the output sizes of the weights and bias after training the datamodels.
+        
+        This test ensures that the weights and bias loaded from the specified paths
+        have the expected shapes. The weights are expected to have a shape of (2, 3),
+        and the bias is expected to have a shape of (2,).
+        """
+
         weights = torch.load(f"{self.datamodels_path}/models/test/weights.pt", weights_only=True)
         bias = torch.load(f"{self.datamodels_path}/models/test/bias.pt", weights_only=True)
         assert weights.shape == (2, 3)
         assert bias.shape == (2,)
+        
