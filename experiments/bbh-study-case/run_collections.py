@@ -15,7 +15,7 @@ def format_collection_filename(filename: str):
     name = os.path.splitext(os.path.basename(filename))[0].replace("pre_", "")+".feather"
     return name
 
-def run_collection(start_idx, end_idx, test_flag = False):
+def run_collection(start_idx, end_idx, hard_test_flag = False):
     
 
     

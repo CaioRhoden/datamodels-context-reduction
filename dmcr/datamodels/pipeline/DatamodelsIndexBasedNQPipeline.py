@@ -1,7 +1,4 @@
-from dmcr.datamodels.config import DatamodelIndexBasedConfig, LogConfig
-from dmcr.datamodels.pipeline.TrainModelsPipeline import TrainModelsPipeline
-from dmcr.evaluators import BaseReferenceEvaluator
-from dmcr.models import BaseLLM, GenericInstructModelHF
+
 
 import polars as pl
 import numpy as np
@@ -12,13 +9,15 @@ from dmcr.datamodels.models import FactoryLinearRegressor, LinearRegressor
 import h5py
 import json
 import os
-from torch.utils.data import TensorDataset, random_split
-import torch.nn as nn
-import torch.optim as optim
 import datetime
 import wandb
-
 from pathlib import Path
+
+
+from dmcr.datamodels.config import DatamodelIndexBasedConfig, LogConfig
+from dmcr.datamodels.pipeline.TrainModelsPipeline import TrainModelsPipeline
+from dmcr.evaluators import BaseReferenceEvaluator, BaseUnsupervisedEvaluator
+from dmcr.models import BaseLLM, GenericInstructModelHF
 
 
 
@@ -27,7 +26,7 @@ from pathlib import Path
 
 class DatamodelsIndexBasedNQPipeline:
     
-    def __init__(self, config: DatamodelIndexBasedConfig, test_flag=False) -> None:
+    def __init__(self, config: DatamodelIndexBasedConfig, soft_test_flag=False, hard_test_flag=False) -> None:
 
         """
         Initializes a new instance of the Datamodels class.
@@ -50,11 +49,15 @@ class DatamodelsIndexBasedNQPipeline:
         self.num_models = config.num_models
         self.datamodels_path = config.datamodels_path
 
-
-        if not test_flag:
+        
+        if not hard_test_flag and not soft_test_flag:
             self._verify_repo_structure()
             self.set_collections_index()
             self.set_dataframes(config.train_set_path, config.test_set_path)
+        elif not hard_test_flag:
+            self.set_dataframes(config.train_set_path, config.test_set_path)
+        else:
+            pass
     
     def set_collections_index(self):
 
@@ -258,7 +261,7 @@ class DatamodelsIndexBasedNQPipeline:
 
     def create_collection(
         self,
-        evaluator: BaseReferenceEvaluator,
+        evaluator: BaseReferenceEvaluator|BaseUnsupervisedEvaluator,
         collection_name: str,
         mode: str = "train",
         log: bool = False,
@@ -311,8 +314,17 @@ class DatamodelsIndexBasedNQPipeline:
             print(f"Starting chunk {chunk_size}")
             next_chunk = max(chunk_size+checkpoint, len(pre_collections))
             pre_collections_chunk = pre_collections[chunk_size:next_chunk]
+
             ## Evaluate the pre_collections and add them to the dataframe
-            evaluation = evaluator.evaluate(pre_collections_chunk["true_output"].to_numpy(),  pre_collections_chunk["predicted_output"].to_numpy())
+            if isinstance(evaluator, BaseReferenceEvaluator):
+                evaluation = evaluator.evaluate(pre_collections_chunk["true_output"].to_numpy(),  pre_collections_chunk["predicted_output"].to_numpy())
+            elif isinstance(evaluator, BaseUnsupervisedEvaluator):
+                questions  = [self.test_set[idx_test]["question"].to_numpy().flatten()[0] for idx_test in pre_collections_chunk["test_idx"]]
+                
+                evaluation = evaluator.evaluate(pre_collections_chunk["predicted_output"].to_numpy(),  questions=questions)
+            else:
+                raise ValueError("Evaluator must be an instance of BaseReferenceEvaluator or BaseUnsupervisedEvaluator")
+            
             pre_collections_chunk  = pre_collections_chunk.with_columns(pl.Series("evaluation", evaluation).cast(pl.Float64).alias("evaluation"))
             collection = pre_collections_chunk[["collection_idx","test_idx","input", "evaluation"]]
 

@@ -377,7 +377,7 @@ class DatamodelPipeline:
 
 
 
-    def load_collections_from_path(self, test_flag: bool = False):
+    def load_collections_from_path(self, hard_test_flag: bool = False):
 
         input_samples_train = np.array([])
         results_train = np.array([])

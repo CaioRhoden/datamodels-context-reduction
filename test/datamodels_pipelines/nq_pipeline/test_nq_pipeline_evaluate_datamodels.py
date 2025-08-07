@@ -49,7 +49,7 @@ class TestNQPipelineCollectionCreation:
             datamodels_path = f"{tmp_path}",
         )
 
-        pipeline = DatamodelsNQPipeline(config, test_flag=True)
+        pipeline = DatamodelsNQPipeline(config, hard_test_flag=True)
 
         pipeline.evaluate_test_collections(
             evaluation_id="test",

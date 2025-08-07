@@ -2,7 +2,7 @@ from abc import ABC, abstractmethod
 import numpy as np
 
 
-class BaseUnsupervisedvaluator(ABC):
+class BaseUnsupervisedEvaluator(ABC):
     """
     Base class for unsupervised evaluators.
 

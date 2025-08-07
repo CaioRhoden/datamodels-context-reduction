@@ -53,7 +53,7 @@ class TestIndexBasedNQPipelineCollectionCreation:
             test_set_path= f"{tmp_path}/test_set.feather",
         )
 
-        pipeline = DatamodelsIndexBasedNQPipeline(config, test_flag=True)
+        pipeline = DatamodelsIndexBasedNQPipeline(config, hard_test_flag=True)
         model_factory = FactoryLASSOLinearRegressor(3, 1, device="cpu", **{"lambda_l1": 0.01})
 
 

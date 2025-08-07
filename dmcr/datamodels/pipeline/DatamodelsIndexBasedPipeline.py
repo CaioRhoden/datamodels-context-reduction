@@ -30,7 +30,7 @@ from dmcr.models.BatchModel import BatchModel
 
 class DatamodelsIndexBasedPipeline:
     
-    def __init__(self, config: DatamodelIndexBasedConfig, test_flag=False) -> None:
+    def __init__(self, config: DatamodelIndexBasedConfig, hard_test_flag=False) -> None:
 
         """
         Initializes a new instance of the Datamodels class.

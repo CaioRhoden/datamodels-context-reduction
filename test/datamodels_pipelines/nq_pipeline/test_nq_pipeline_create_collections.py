@@ -45,7 +45,7 @@ class TestNQPipelineCollectionCreation:
             datamodels_path = f"{tmp_path}",
         )
 
-        pipe = DatamodelsNQPipeline(config, test_flag=True)
+        pipe = DatamodelsNQPipeline(config, hard_test_flag=True)
         evaluator = Rouge_L_evaluator()
 
         pipe.create_collection(evaluator=evaluator, collection_name="unit_test", mode="train")

@@ -51,7 +51,7 @@ class TestIndexBasedNQPipelineCollectionCreation:
             test_set_path= f"{tmp_path}/test_set.feather",
         )
 
-        pipeline = DatamodelsIndexBasedNQPipeline(config, test_flag=True)
+        pipeline = DatamodelsIndexBasedNQPipeline(config, hard_test_flag=True)
 
         pipeline.evaluate_test_collections(
             evaluation_id="test",

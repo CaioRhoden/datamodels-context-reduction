@@ -29,7 +29,7 @@ from torch.utils.data import Subset, random_split
 
 class DatamodelsNQPipeline:
     
-    def __init__(self, config: DatamodelConfig, test_flag=False) -> None:
+    def __init__(self, config: DatamodelConfig, hard_test_flag=False) -> None:
 
         """
         Initializes a new instance of the Datamodels class.

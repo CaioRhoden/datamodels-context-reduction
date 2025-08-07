@@ -41,7 +41,7 @@ class GenericInstructModelHF(BaseLLM):
                 )
 
     
-    def run(self, prompt: str,  instruction: str, config_params: dict) -> str:
+    def run(self, prompt: str,  instruction: str, config_params: dict) -> str | list:
 
         messages = [
             {"role": "system", "content": instruction},

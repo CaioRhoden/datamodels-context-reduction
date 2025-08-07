@@ -70,7 +70,7 @@ class TestIndexBasedNQPipelineSelectCollectionTraining:
             test_set_path= f"{self.datamodels_path}/test_set.feather",
         )
 
-        pipeline = DatamodelsIndexBasedNQPipeline(config, test_flag=True)
+        pipeline = DatamodelsIndexBasedNQPipeline(config, hard_test_flag=True)
         model_factory = FactoryLinearRegressor(3, 1, device="cpu")
 
         with pytest.raises(Exception, match="No collections found in train folder"):
