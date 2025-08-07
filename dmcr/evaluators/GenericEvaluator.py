@@ -1,9 +1,9 @@
 import pandas as pd
 import numpy as np
-from dmcr.evaluators import BaseEvaluator
+from dmcr.evaluators import BaseReferenceEvaluator
 import evaluate
 
-class GenericEvaluator(BaseEvaluator):
+class GenericEvaluator(BaseReferenceEvaluator):
 
     def __init__(self,  metric: str, key: str) -> None:
         """

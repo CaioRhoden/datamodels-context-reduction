@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
-from dmcr.evaluators import BaseEvaluator
+from dmcr.evaluators import BaseReferenceEvaluator
 import evaluate
 import ast
 
-class Rouge_L_evaluator(BaseEvaluator):
+class Rouge_L_evaluator(BaseReferenceEvaluator):
 
     def __init__(self) -> None:
         self.rouge_l = evaluate.load("rouge")

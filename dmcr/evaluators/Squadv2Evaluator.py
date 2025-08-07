@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
-from dmcr.evaluators import BaseEvaluator
+from dmcr.evaluators import BaseReferenceEvaluator
 import evaluate
 import ast
 import random
-class SquadV2Evaluator(BaseEvaluator):
+class SquadV2Evaluator(BaseReferenceEvaluator):
 
     def __init__(self, squadv2_key: str) -> None:
         self.rouge_l = evaluate.load("squad_v2")

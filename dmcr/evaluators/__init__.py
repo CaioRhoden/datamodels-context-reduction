@@ -1,5 +1,6 @@
-from dmcr.evaluators.BaseEvaluator import BaseEvaluator
+from dmcr.evaluators.BaseReferenceEvaluator import BaseReferenceEvaluator
 from dmcr.evaluators.Rouge_L_evaluator import Rouge_L_evaluator
 from dmcr.evaluators.GleuEvaluator import GleuEvaluator
 from dmcr.evaluators.GenericEvaluator import GenericEvaluator
 from dmcr.evaluators.Squadv2Evaluator import SquadV2Evaluator
+from dmcr.evaluators.BaseUnsupervisedEvaluator import BaseUnsupervisedvaluator

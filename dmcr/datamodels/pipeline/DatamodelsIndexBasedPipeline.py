@@ -1,7 +1,7 @@
 from dmcr.datamodels.config import DatamodelIndexBasedConfig, LogConfig
 from dmcr.datamodels.pipeline.PreCollectionsPipeline import PreCollectionsPipeline
 from dmcr.datamodels.pipeline.TrainModelsPipeline import TrainModelsPipeline
-from dmcr.evaluators import BaseEvaluator
+from dmcr.evaluators import BaseReferenceEvaluator
 from dmcr.models import BaseLLM, GenericInstructModelHF
 
 import polars as pl
@@ -124,7 +124,7 @@ class DatamodelsIndexBasedPipeline:
         
     def create_collection(
         self,
-        evaluator: BaseEvaluator,
+        evaluator: BaseReferenceEvaluator,
         collection_name: str,
         mode: str = "train",
         log: bool = False,

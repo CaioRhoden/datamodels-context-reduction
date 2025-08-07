@@ -1,5 +1,5 @@
 from dmcr.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
-from dmcr.evaluators import BaseEvaluator
+from dmcr.evaluators import BaseReferenceEvaluator
 from dmcr.models import BaseLLM, GenericInstructModelHF
 
 import pandas as pd
@@ -215,7 +215,7 @@ class DatamodelsNQPipeline:
 
     def create_collection(
         self,
-        evaluator: BaseEvaluator,
+        evaluator: BaseReferenceEvaluator,
         collection_name: str,
         mode: str = "train",
         log: bool = False,

@@ -1,10 +1,10 @@
 import pandas as pd
 import numpy as np
-from dmcr.evaluators import BaseEvaluator
+from dmcr.evaluators import BaseReferenceEvaluator
 import evaluate
 import ast
 
-class GleuEvaluator(BaseEvaluator):
+class GleuEvaluator(BaseReferenceEvaluator):
 
     def __init__(self) -> None:
         """
