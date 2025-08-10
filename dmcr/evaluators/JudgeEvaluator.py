@@ -78,7 +78,7 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
             print("No ratings found in generated text")
             return 0
         
-        return sum(ratings) / len(ratings)
+        return (sum(ratings) / len(ratings))/10
 
         
 

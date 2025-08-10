@@ -317,7 +317,7 @@ class DatamodelsIndexBasedNQPipeline:
         print(f"len pre collections {len(pre_collections)}")
         while chunk_size < len(pre_collections):
             print(f"Starting chunk {chunk_size}")
-            next_chunk = min(chunk_size+checkpoint, len(pre_collections))
+            next_chunk = min(chunk_size+checkpoint, end_idx)
             pre_collections_chunk = pre_collections[chunk_size:next_chunk]
 
             ## Evaluate the pre_collections and add them to the dataframe
