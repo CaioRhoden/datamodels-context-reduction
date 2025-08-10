@@ -266,7 +266,9 @@ class DatamodelsIndexBasedNQPipeline:
         mode: str = "train",
         log: bool = False,
         log_config: LogConfig | None = None,
-        checkpoint: int | None = None
+        checkpoint: int | None = None,
+        start_idx: int = 0,
+        end_idx: int | None = None
     ):
         
         start_time = datetime.datetime.now()
@@ -286,6 +288,9 @@ class DatamodelsIndexBasedNQPipeline:
         ##Checkponints
         if checkpoint is None:
             checkpoint = len(pre_collections)
+
+        if end_idx is None:
+            end_idx = len(pre_collections)
 
         ## Init Log
         if log:
@@ -308,11 +313,11 @@ class DatamodelsIndexBasedNQPipeline:
 
 
         ## Break chunks
-        chunk_size = 0
+        chunk_size = start_idx
         print(f"len pre collections {len(pre_collections)}")
         while chunk_size < len(pre_collections):
             print(f"Starting chunk {chunk_size}")
-            next_chunk = max(chunk_size+checkpoint, len(pre_collections))
+            next_chunk = min(chunk_size+checkpoint, len(pre_collections))
             pre_collections_chunk = pre_collections[chunk_size:next_chunk]
 
             ## Evaluate the pre_collections and add them to the dataframe
