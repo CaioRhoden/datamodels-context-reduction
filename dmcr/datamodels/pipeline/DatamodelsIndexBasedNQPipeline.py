@@ -315,7 +315,7 @@ class DatamodelsIndexBasedNQPipeline:
         ## Break chunks
         chunk_size = start_idx
         print(f"len pre collections {len(pre_collections)}")
-        while chunk_size < len(pre_collections):
+        while chunk_size < end_idx:
             print(f"Starting chunk {chunk_size}")
             next_chunk = min(chunk_size+checkpoint, end_idx)
             pre_collections_chunk = pre_collections[chunk_size:next_chunk]
