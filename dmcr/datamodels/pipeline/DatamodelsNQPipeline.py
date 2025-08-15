@@ -183,9 +183,9 @@ class DatamodelsNQPipeline:
                     os.mkdir(f"{self.datamodels_path}/pre_collections/test")
 
                 if mode == "train":
-                    df.write_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather")
+                    df.write_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_{idx_row}.feather", compression="zstd")
                 elif mode == "test":
-                    df.write_ipc(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather")
+                    df.write_ipc(f"{self.datamodels_path}/pre_collections/test/pre_collection_{idx_row}.feather", compression="zstd")
 
 
                 pre_collection_dict = self._reset_pre_collection_dict()
@@ -253,7 +253,7 @@ class DatamodelsNQPipeline:
             os.mkdir(f"{self.datamodels_path}/collections/test")
 
         ## Save file
-        collection.write_ipc(f"{self.datamodels_path}/collections/{mode}/{collection_name}.feather")
+        collection.write_ipc(f"{self.datamodels_path}/collections/{mode}/{collection_name}.feather", compression="zstd")
 
         if log:
 
@@ -491,7 +491,7 @@ class DatamodelsNQPipeline:
         if not os.path.exists(f"{self.datamodels_path}/evaluations"):
             os.mkdir(f"{self.datamodels_path}/evaluations")
 
-        pl.DataFrame(evaluations).write_ipc(f"{self.datamodels_path}/evaluations/{evaluation_id}.feather")
+        pl.DataFrame(evaluations).write_ipc(f"{self.datamodels_path}/evaluations/{evaluation_id}.feather", compression="zstd")
 
         if log:
             artifact = wandb.Artifact(name=f"evaluation_{evaluation_id}", type="file")

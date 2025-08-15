@@ -104,7 +104,7 @@ class PreCollectionsPipeline():
         df = pl.DataFrame(pre_collection_dict)
         save_dir = Path(self.datamodels.datamodels_path) / "pre_collections" / mode
         save_dir.mkdir(parents=True, exist_ok=True)
-        df.write_ipc(save_dir / f"pre_collection_{idx_row}.feather")
+        df.write_ipc(save_dir / f"pre_collection_{idx_row}.feather", compression="zstd")
         return self.datamodels._reset_pre_collection_dict()
     def _init_logging(self, log_config: LogConfig):
         """
