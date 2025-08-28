@@ -3,6 +3,7 @@ import polars as pl
 import numpy as np
 import h5py
 from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
+from dmcr.datamodels.pipeline import BaseLLMPreCollectionsPipeline
 from dmcr.datamodels import DatamodelIndexBasedConfig
 from dmcr.models import GenericInstructModelHF
 from dmcr.utils.test_utils import clean_temp_folders
@@ -10,12 +11,38 @@ import tempfile
 import os
 import shutil
 import json
+from langchain.prompts import PromptTemplate
+
 
 
 class TestIndexBasedNQPipelinePreCollectionCreation:
 
     @classmethod
     def setup_class(cls):
+        def fill_prompt_template(idx_row: int, idx_test: int, rag_indexes: dict, datamodels: DatamodelsIndexBasedNQPipeline) -> str:
+            template = """
+                Documents:
+                {context}
+
+                Question: {input}\nAnswer: 
+            """
+
+            context = ""
+            count = 0
+            for collection_idx in datamodels.train_collections_idx[idx_row]:
+
+                idx = rag_indexes[str(idx_test)][collection_idx]
+                title = datamodels.train_set[idx]["title"].to_numpy().flatten()[0]
+                text = datamodels.train_set[idx]["text"].to_numpy().flatten()[0]
+                context += f"Document[{count}](Title: {title}){text}\n\n"
+                count += 1
+
+            
+            input = datamodels.test_set[idx_test]["question"].to_numpy().flatten()[0]
+
+            prompt = PromptTemplate.from_template(template).format(context=context, input=input)
+
+            return prompt
 
         ## CREATE TEMP DATA FOR PIPELINE
         clean_temp_folders()
@@ -79,6 +106,23 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
         )
 
         pipe =DatamodelsIndexBasedNQPipeline(config)
+        pre_collection_pipe = BaseLLMPreCollectionsPipeline(
+            datamodelsPipeline = pipe,
+            mode = "train",
+            instruction = "Test",
+            model = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+            context_strategy = fill_prompt_template,
+            rag_indexes_path = f"{tmp_path}/indexes.json",
+            output_column = "answer",
+            start_idx = 0,
+            end_idx = 1,
+            checkpoint = 50,
+            log = False,
+            log_config = None,
+            model_configs = model_configs
+        )
+
+        pipe.create_pre_collection(pre_collection_pipe)
 
         
 
