@@ -7,8 +7,7 @@ import json
 import numpy as np
 
 
-from dmcr.datamodels.pipeline import DatamodelsIndexBasedPipeline
-from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
+from dmcr.datamodels.pipeline.DatamodelsPipeleData import DatamodelsPipelineData
 from dmcr.datamodels.config import LogConfig
 from dmcr.models.BaseLLM import BaseLLM
 from dmcr.models.BatchModel import BatchModel
@@ -21,8 +20,8 @@ from dmcr.models.GenericInstructBatchHF import GenericInstructBatchHF
 class PreCollectionsPipeline():
 
     def __init__(self, 
-                 datamodelsPipeline: DatamodelsIndexBasedPipeline | DatamodelsIndexBasedNQPipeline):
-        self.datamodels = datamodelsPipeline,
+                 datamodels_data: DatamodelsPipelineData):
+        self.datamodels_data = datamodels_data
         
 
 
@@ -98,16 +97,16 @@ class PreCollectionsPipeline():
     def _validate_inputs(self, mode, model, rag_indexes):
         if mode not in ("train", "test"):
             raise ValueError(f"Invalid mode: {mode}")
-        assert self.datamodels.test_set is not None
-        assert self.datamodels.train_set is not None
+        assert self.datamodels_data.test_set is not None
+        assert self.datamodels_data.train_set is not None
         assert rag_indexes is not None
 
     def _save_checkpoint(self, pre_collection_dict, idx_row, mode):
         df = pl.DataFrame(pre_collection_dict)
-        save_dir = Path(self.datamodels.datamodels_path) / "pre_collections" / mode
+        save_dir = Path(self.datamodels_data.datamodels_path) / "pre_collections" / mode
         save_dir.mkdir(parents=True, exist_ok=True)
         df.write_ipc(save_dir / f"pre_collection_{idx_row}.feather", compression="zstd")
-        return self.datamodels._reset_pre_collection_dict()
+        return self._reset_pre_collection_dict()
     def _init_logging(self, log_config: LogConfig):
         """
         Initialize wandb logging.
@@ -135,11 +134,11 @@ class PreCollectionsPipeline():
 class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
     def __init__(self, 
-                datamodelsPipeline: DatamodelsIndexBasedPipeline | DatamodelsIndexBasedNQPipeline,
+                datamodels_data: DatamodelsPipelineData,
                 mode: Literal["train", "test"],
                 instruction: dict | str,
                 model: BaseLLM,
-                context_strategy: Callable[[int, int, dict, DatamodelsIndexBasedPipeline|DatamodelsIndexBasedNQPipeline], str],
+                context_strategy: Callable[[int, int, dict, DatamodelsPipelineData], str],
                 rag_indexes_path: str,
                 output_column: str,
                 start_idx: int = 0,
@@ -150,7 +149,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 model_configs: dict | None = None,      
             
                 ):
-        super().__init__(datamodelsPipeline)
+        super().__init__(datamodels_data)
         self.mode = mode,
         self.instruction = instruction,
         self.model = model,
@@ -183,7 +182,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
         ### Set start and end index
         if self.end_idx == -1:
-            dataset_idx = getattr(self.datamodels, f"{self.mode}_collections_idx")
+            dataset_idx = getattr(self.datamodels_data, f"{self.mode}_collections_idx")
             end_idx = self.start_idx + len(dataset_idx[self.start_idx:])
         
         ### Get size
@@ -199,12 +198,12 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
             start_time = datetime.datetime.now()
 
             if self.mode == "train":
-                binary_idx = self._convert_idx_to_binary(self.datamodels.train_collections_idx[idx_row], collection_size=collection_size)
+                binary_idx = self._convert_idx_to_binary(self.datamodels_data.train_collections_idx[idx_row], collection_size=collection_size)
             elif self.mode == "test":
-                binary_idx = self._convert_idx_to_binary(self.datamodels.test_collections_idx[idx_row],collection_size=collection_size)
+                binary_idx = self._convert_idx_to_binary(self.datamodels_data.test_collections_idx[idx_row],collection_size=collection_size)
             
-            for sample_idx, _ in enumerate(self.datamodels.test_set):
-                prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels)
+            for sample_idx, _ in enumerate(self.datamodels_data.test_set):
+                prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels_data)
                 print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
 
                 if isinstance(self.model, GenericInstructModelHF):
@@ -214,7 +213,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
                 ## Get true output and verify the expected behavior    
                 try:
-                    true_output = self.datamodels.test_set[sample_idx][self.output_column].to_numpy().flatten()[0].tolist()
+                    true_output = self.datamodels_data.test_set[sample_idx][self.output_column].to_numpy().flatten()[0].tolist()
                     assert isinstance(true_output, list)
                     assert isinstance(true_output[0], str)
 
@@ -222,7 +221,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 except AssertionError as exc:
                     raise ValueError(
                         "True output format not supported, the expected is a list of strings in a Polars dataframe but what received to extract was : "
-                        f"{self.datamodels.test_set[sample_idx][self.output_column]}"
+                        f"{self.datamodels_data.test_set[sample_idx][self.output_column]}"
                     ) from exc
                 pre_collection_dict = self._add_row(pre_collection_dict, idx_row, sample_idx, binary_idx, result, true_output)
             
@@ -241,12 +240,12 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
 class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
     def __init__(self, 
-                datamodelsPipeline: DatamodelsIndexBasedPipeline,
+                datamodels_data: DatamodelsPipelineData,
                 mode: Literal["train", "test"],
                 instruction: dict | str,
                 model: BatchModel,
                 batch_size: int,
-                context_strategy: Callable[[int, int, dict, DatamodelsIndexBasedPipeline], str],
+                context_strategy: Callable[[int, int, dict, DatamodelsPipelineData], str],
                 rag_indexes_path: str,
                 output_column: str,
                 start_idx: int = 0,
@@ -261,11 +260,11 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
         Initialize a BatchLLMPreCollectionsPipeline.
 
         Args:
-            datamodelsPipeline (DatamodelsIndexBasedPipeline): The pipeline to use for generating the pre-collection data.
+            datamodels_data (DatamodelsPipelineData): The pipeline to use for generating the pre-collection data.
             mode (Literal["train", "test"]): The mode to use for generating the pre-collection data.
             instruction (dict | str): The instruction to use for generating the pre-collection data.
             model (BatchModel): The model to use for generating the pre-collection data.
-            context_strategy (Callable[[int, int, dict, DatamodelsIndexBasedPipeline], str]): The strategy (function) to use for generating the context for the model.
+            context_strategy (Callable[[int, int, dict, DatamodelsPipelineData], str]): The strategy (function) to use for generating the context for the model.
             rag_indexes_path (str): The path to the rag indexes file.
             output_column (str): The column to write the output to.
             start_idx (int, optional): The starting index for generating the pre-collection data. Defaults to 0.
@@ -275,7 +274,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
             log_config (LogConfig | None, optional): The configuration for logging. Defaults to None.
             model_configs (dict | None, optional): The configurations for the model. Defaults to None.
         """
-        super().__init__(datamodelsPipeline)
+        super().__init__(datamodels_data)
         self.mode = mode,
         self.instruction = instruction,
         self.model = model,
@@ -309,7 +308,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
         ### Set start and end index
         if self.end_idx == -1:
-            dataset_idx = getattr(self.datamodels, f"{self.mode}_collections_idx")
+            dataset_idx = getattr(self.datamodels_data, f"{self.mode}_collections_idx")
             end_idx = self.start_idx + len(dataset_idx[self.start_idx:])
         
         ### Get size
@@ -325,22 +324,22 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
             start_time = datetime.datetime.now()
 
             if self.mode == "train":
-                binary_idx = self._convert_idx_to_binary(self.datamodels.train_collections_idx[idx_row], collection_size=collection_size)
+                binary_idx = self._convert_idx_to_binary(self.datamodels_data.train_collections_idx[idx_row], collection_size=collection_size)
             elif self.mode == "test":
-                binary_idx = self._convert_idx_to_binary(self.datamodels.test_collections_idx[idx_row],collection_size=collection_size)
+                binary_idx = self._convert_idx_to_binary(self.datamodels_data.test_collections_idx[idx_row],collection_size=collection_size)
             
             batch_buffer = 0
             batch_pairs = []
-            for sample_idx, _ in enumerate(self.datamodels.test_set):
-                prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels)
+            for sample_idx, _ in enumerate(self.datamodels_data.test_set):
+                prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels_data)
                 print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
              
                 ## Get true output and verify the expected behavior    
-                true_output = self.datamodels.test_set[sample_idx][self.output_column].to_numpy().flatten()[0].tolist()
+                true_output = self.datamodels_data.test_set[sample_idx][self.output_column].to_numpy().flatten()[0].tolist()
                 assert isinstance(true_output, list)
                 assert isinstance(true_output[0], str)
 
-                if batch_buffer < self.batch_size and sample_idx < (len(self.datamodels.test_set) - 1):
+                if batch_buffer < self.batch_size and sample_idx < (len(self.datamodels_data.test_set) - 1):
 
                     batch_pairs.append((prompt, true_output))
                     batch_buffer += 1
