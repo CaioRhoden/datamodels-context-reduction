@@ -9,13 +9,14 @@ from accelerate import Accelerator
 
 
 
-class GenericInstructHFBatch(BatchModel):
+class GenericInstructBatchHF(BatchModel):
 
-    def __init__(self, path: str, quantization=False, attn_implementation = "sdpa") -> None:
+    def __init__(self, path: str, quantization=False, attn_implementation = "sdpa", thinking = False) -> None:
         
         self.tokenizer = AutoTokenizer.from_pretrained(path)
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
         self.accelerator = Accelerator()
+        self.thinking = thinking
 
         if not quantization:
             self.model = AutoModelForCausalLM.from_pretrained(
@@ -55,7 +56,13 @@ class GenericInstructHFBatch(BatchModel):
                         
          
                 )
-        
+        if self.thinking:
+            messages = [self.tokenizer.apply_chat_template(
+                m,
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=self.thinking
+            ) for m in messages]
         output = pipe(messages, **config_params)
 
         if isinstance(output, list):

@@ -1,9 +1,9 @@
-from dmcr.models import GenericChatInstructModelHF
+from dmcr.models import GenericInstructModelHF
 
-class TestGenericChatInstructModelHF:
+class TestGenericThinkingInstructModelHF:
     @classmethod
     def setup_class(cls):
-        cls.model = GenericChatInstructModelHF("Qwen/Qwen3-0.6B", thinking=True)
+        cls.model = GenericInstructModelHF("Qwen/Qwen3-0.6B", thinking=True)
 
     def test_run(self):
         prompt = "Hello, how are you?"

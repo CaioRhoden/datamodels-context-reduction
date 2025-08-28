@@ -15,12 +15,14 @@ class GenericInstructModelHF(BaseLLM):
             self,
             path: str,
             quantization = False,
-            attn_implementation = "sdpa"
+            attn_implementation = "sdpa",
+            thinking = False
         ) -> None:
 
         self.tokenizer = AutoTokenizer.from_pretrained(path)
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
         self.accelerator = Accelerator()
+        self.thinking = thinking
 
         if not quantization:
             self.model = AutoModelForCausalLM.from_pretrained(
@@ -57,6 +59,15 @@ class GenericInstructModelHF(BaseLLM):
          
                 )
         
+        if self.thinking:
+            
+            messages = self.tokenizer.apply_chat_template(
+                messages,
+                tokenize=False,
+                add_generation_prompt=True,
+                enable_thinking=self.thinking
+            )
+
         output = pipe(messages, **config_params)
         return output
     
