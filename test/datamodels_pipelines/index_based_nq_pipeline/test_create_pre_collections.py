@@ -80,27 +80,7 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
 
         pipe =DatamodelsIndexBasedNQPipeline(config)
 
-        pipe.create_pre_collection( start_idx = 0, 
-                                   end_idx = 1, 
-                                   mode="train", 
-                                   log=False, 
-                                   output_column="answer", 
-                                   model_configs=model_configs,
-                                   instruction= "Test",
-                                   rag_indexes_path=f"{tmp_path}/indexes.json",
-                                  llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
-                                )
         
-        pipe.create_pre_collection( start_idx = 0, 
-                                   end_idx = 1, 
-                                   mode="test", 
-                                   log=False, 
-                                   output_column="answer", 
-                                   model_configs=model_configs,
-                                   instruction= "Test",
-                                   rag_indexes_path=f"{tmp_path}/indexes.json",
-                                  llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
-                                )
 
     @classmethod
     def teardown_class(cls):

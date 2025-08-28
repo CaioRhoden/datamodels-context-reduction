@@ -108,7 +108,7 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
             test_set_path= f"{tmp_path}/test_set.feather",
         )
 
-        pipe =DatamodelsIndexBasedPipeline(config)
+        pipe = DatamodelsIndexBasedPipeline(config)
         pre_collection_pipe = BaseLLMPreCollectionsPipeline(
             datamodelsPipeline = pipe,
             mode = "train",
@@ -125,27 +125,7 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
             model_configs = model_configs
         )
 
-        pipe.create_pre_collection( start_idx = 0, 
-                                   end_idx = 1, 
-                                   mode="train", 
-                                   log=False, 
-                                   output_column="answer", 
-                                   model_configs=model_configs,
-                                   instruction= "Test",
-                                   rag_indexes_path=f"{tmp_path}/indexes.json",
-                                  llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
-                                )
-        
-        pipe.create_pre_collection( start_idx = 0, 
-                                   end_idx = 1, 
-                                   mode="test", 
-                                   log=False, 
-                                   output_column="answer", 
-                                   model_configs=model_configs,
-                                   instruction= "Test",
-                                   rag_indexes_path=f"{tmp_path}/indexes.json",
-                                  llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
-                                )
+        pipe.create_pre_collection(pre_collection_pipe)
 
     @classmethod
     def teardown_class(cls):
