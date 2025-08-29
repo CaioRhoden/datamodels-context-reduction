@@ -1,7 +1,6 @@
 import pytest
 import polars as pl
 import numpy as np
-import h5py
 from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
 from dmcr.datamodels import DatamodelIndexBasedConfig
 from dmcr.evaluators import Rouge_L_evaluator, JudgeEvaluator

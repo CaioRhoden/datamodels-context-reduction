@@ -12,13 +12,16 @@ import os
 import datetime
 import wandb
 from pathlib import Path
+from typing import Literal, Callable
+
 
 
 from dmcr.datamodels.config import DatamodelIndexBasedConfig, LogConfig
 from dmcr.datamodels.pipeline.TrainModelsPipeline import TrainModelsPipeline
 from dmcr.evaluators import BaseReferenceEvaluator, BaseUnsupervisedEvaluator
-from dmcr.models import BaseLLM, GenericInstructModelHF
-from dmcr.datamodels.pipeline.PreCollectionsPipeline import PreCollectionsPipeline
+from dmcr.models import BaseLLM, GenericInstructModelHF, BatchModel
+from dmcr.datamodels.pipeline.DatamodelsPipelineData import DatamodelsPreCollectionsData
+from dmcr.datamodels.pipeline.PreCollectionsPipeline import BaseLLMPreCollectionsPipeline, BatchLLMPreCollectionsPipeline
 
 
 
@@ -118,13 +121,10 @@ class DatamodelsIndexBasedNQPipeline:
 
     def create_pre_collection(
         self,
-        pre_collection_pipeline: PreCollectionsPipeline,
-
+        pre_collection_pipeline: BaseLLMPreCollectionsPipeline | BatchLLMPreCollectionsPipeline
     ):
+       
         pre_collection_pipeline.process()
-        
-
-            
 
     def create_collection(
         self,

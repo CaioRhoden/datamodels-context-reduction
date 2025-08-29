@@ -5,9 +5,11 @@ import os
 import polars as pl
 import json
 import numpy as np
+from pathlib import Path
 
 
-from dmcr.datamodels.pipeline.DatamodelsPipeleData import DatamodelsPipelineData
+
+from dmcr.datamodels.pipeline.DatamodelsPipelineData import DatamodelsPreCollectionsData
 from dmcr.datamodels.config import LogConfig
 from dmcr.models.BaseLLM import BaseLLM
 from dmcr.models.BatchModel import BatchModel
@@ -19,8 +21,7 @@ from dmcr.models.GenericInstructBatchHF import GenericInstructBatchHF
 
 class PreCollectionsPipeline():
 
-    def __init__(self, 
-                 datamodels_data: DatamodelsPipelineData):
+    def __init__(self, datamodels_data: DatamodelsPreCollectionsData):
         self.datamodels_data = datamodels_data
         
 
@@ -134,11 +135,11 @@ class PreCollectionsPipeline():
 class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
     def __init__(self, 
-                datamodels_data: DatamodelsPipelineData,
+                datamodels_data: DatamodelsPreCollectionsData,
                 mode: Literal["train", "test"],
                 instruction: dict | str,
                 model: BaseLLM,
-                context_strategy: Callable[[int, int, dict, DatamodelsPipelineData], str],
+                context_strategy: Callable[[int, int, dict, DatamodelsPreCollectionsData], str],
                 rag_indexes_path: str,
                 output_column: str,
                 start_idx: int = 0,
@@ -149,26 +150,41 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 model_configs: dict | None = None,      
             
                 ):
-        super().__init__(datamodels_data)
-        self.mode = mode,
-        self.instruction = instruction,
-        self.model = model,
-        self.context_strategy = context_strategy,
-        self.rag_indexes_path = rag_indexes_path,
-        self.output_column = output_column,
-        self.start_idx = start_idx,
-        self.end_idx = end_idx,
-        self.checkpoint = checkpoint,
-        self.log = log,
-        self.log_config = log_config,
+        self.datamodels_data = datamodels_data
+        self.mode = mode
+        self.instruction = instruction
+        self.model = model
+        self.context_strategy = context_strategy
+        self.rag_indexes_path = rag_indexes_path
+        self.output_column = output_column
+        self.start_idx = start_idx
+        self.end_idx = end_idx
+        self.checkpoint = checkpoint
+        self.log = log
+        self.log_config = log_config
         self.model_configs = model_configs
     
 
     def process(self) -> None: 
        
         ## guarantees it's a single inference scenario
-        with open(self.rag_indexes_path, "r") as f:
-            rag_indexes = json.load(f)
+        """
+        Process a single inference scenario.
+
+        This method guarantees a single inference scenario.
+        It loads the rag indexes, validates the inputs, and then iterates over the combinations.
+        It generates prompts using the context strategy and runs the model.
+        It then formats the output and saves it in a pre collection dictionary.
+        Finally, it saves the pre collection dictionary in a checkpoint or at the end of the indezes.
+
+        Args:
+            None
+
+        Returns:
+            None
+        """
+        rag_indexes = json.load(open(self.rag_indexes_path, "r"))
+
         
         self._validate_inputs(self.mode, self.model, rag_indexes)
         if not isinstance(self.model, BaseLLM):
@@ -183,7 +199,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
         ### Set start and end index
         if self.end_idx == -1:
             dataset_idx = getattr(self.datamodels_data, f"{self.mode}_collections_idx")
-            end_idx = self.start_idx + len(dataset_idx[self.start_idx:])
+            self.end_idx = self.start_idx + len(dataset_idx[self.start_idx:])
         
         ### Get size
         _keys = list(rag_indexes.keys())
@@ -202,12 +218,13 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
             elif self.mode == "test":
                 binary_idx = self._convert_idx_to_binary(self.datamodels_data.test_collections_idx[idx_row],collection_size=collection_size)
             
-            for sample_idx, _ in enumerate(self.datamodels_data.test_set):
+
+            for sample_idx, _ in enumerate(self.datamodels_data.test_set["idx"]):
                 prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels_data)
                 print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
 
                 if isinstance(self.model, GenericInstructModelHF):
-                    result = self.model.run(prompt, instruction=str(self.instruction), config_params=model_configs)[0]["generated_text"]
+                    result = self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs)[0]["generated_text"]
                 else:
                     result = self.model.run(prompt)
 
@@ -227,7 +244,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
             
             ## Saving condition in checkpoint or end of indezes
             checkpoint_count += 1
-            if checkpoint_count == self.checkpoint or idx_row == end_idx-1:
+            if checkpoint_count == self.checkpoint or idx_row == (self.end_idx-1):
                 pre_collection_dict = self._save_checkpoint(pre_collection_dict, idx_row, self.mode)
                 checkpoint_count = 0
 
@@ -240,12 +257,12 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
 class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
     def __init__(self, 
-                datamodels_data: DatamodelsPipelineData,
+                datamodels_data: DatamodelsPreCollectionsData,
                 mode: Literal["train", "test"],
                 instruction: dict | str,
                 model: BatchModel,
                 batch_size: int,
-                context_strategy: Callable[[int, int, dict, DatamodelsPipelineData], str],
+                context_strategy: Callable[[int, int, dict, DatamodelsPreCollectionsData], str],
                 rag_indexes_path: str,
                 output_column: str,
                 start_idx: int = 0,
@@ -260,11 +277,11 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
         Initialize a BatchLLMPreCollectionsPipeline.
 
         Args:
-            datamodels_data (DatamodelsPipelineData): The pipeline to use for generating the pre-collection data.
+            datamodels_data (DatamodelsPreCollectionsData): The pipeline to use for generating the pre-collection data.
             mode (Literal["train", "test"]): The mode to use for generating the pre-collection data.
             instruction (dict | str): The instruction to use for generating the pre-collection data.
             model (BatchModel): The model to use for generating the pre-collection data.
-            context_strategy (Callable[[int, int, dict, DatamodelsPipelineData], str]): The strategy (function) to use for generating the context for the model.
+            context_strategy (Callable[[int, int, dict, DatamodelsPreCollectionsData], str]): The strategy (function) to use for generating the context for the model.
             rag_indexes_path (str): The path to the rag indexes file.
             output_column (str): The column to write the output to.
             start_idx (int, optional): The starting index for generating the pre-collection data. Defaults to 0.
@@ -274,7 +291,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
             log_config (LogConfig | None, optional): The configuration for logging. Defaults to None.
             model_configs (dict | None, optional): The configurations for the model. Defaults to None.
         """
-        super().__init__(datamodels_data)
+        self.datamodels_data = datamodels_data
         self.mode = mode,
         self.instruction = instruction,
         self.model = model,
@@ -309,7 +326,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
         ### Set start and end index
         if self.end_idx == -1:
             dataset_idx = getattr(self.datamodels_data, f"{self.mode}_collections_idx")
-            end_idx = self.start_idx + len(dataset_idx[self.start_idx:])
+            self.end_idx = self.start_idx + len(dataset_idx[self.start_idx:])
         
         ### Get size
         _keys = list(rag_indexes.keys())
@@ -348,7 +365,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 else:
                     batch_pairs.append((prompt, true_output))
                     if isinstance(self.model, GenericInstructBatchHF):
-                        _list_results = self.model.run(prompt, instruction=str(self.instruction), config_params=model_configs)
+                        _list_results = self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs)
                         results = [result[0]["generated_text"] for result in _list_results]
                     else:
                         results = self.model.run(prompt)
@@ -364,7 +381,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
             
             ## Saving condition in checkpoint or end of indezes
             checkpoint_count += 1
-            if checkpoint_count == self.checkpoint or idx_row == end_idx-1:
+            if checkpoint_count == self.checkpoint or idx_row == self.end_idx-1:
                 pre_collection_dict = self._save_checkpoint(pre_collection_dict, idx_row, self.mode)
                 checkpoint_count = 0
 

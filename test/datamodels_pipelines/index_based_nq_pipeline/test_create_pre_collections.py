@@ -4,6 +4,7 @@ import numpy as np
 import h5py
 from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
 from dmcr.datamodels.pipeline import BaseLLMPreCollectionsPipeline
+from dmcr.datamodels.pipeline.DatamodelsPipelineData import DatamodelsPreCollectionsData
 from dmcr.datamodels import DatamodelIndexBasedConfig
 from dmcr.models import GenericInstructModelHF
 from dmcr.utils.test_utils import clean_temp_folders
@@ -30,14 +31,14 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
             context = ""
             count = 0
             for collection_idx in datamodels.train_collections_idx[idx_row]:
-
+                
                 idx = rag_indexes[str(idx_test)][collection_idx]
                 title = datamodels.train_set[idx]["title"].to_numpy().flatten()[0]
                 text = datamodels.train_set[idx]["text"].to_numpy().flatten()[0]
                 context += f"Document[{count}](Title: {title}){text}\n\n"
                 count += 1
 
-            
+            print(f"test_set: {datamodels.test_set}")
             input = datamodels.test_set[idx_test]["question"].to_numpy().flatten()[0]
 
             prompt = PromptTemplate.from_template(template).format(context=context, input=input)
@@ -61,8 +62,8 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
         
         ## Create dfs
 
-        train_df = pl.DataFrame(train).with_row_count("idx")
-        test_df = pl.DataFrame(test).with_row_count("idx")
+        train_df = pl.DataFrame(train).with_row_index("idx")
+        test_df = pl.DataFrame(test).with_row_index("idx")
 
         ## Save temp data
 
@@ -86,19 +87,17 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
         with open(f"{tmp_path}/indexes.json", "w") as f:
             json.dump(indexes, f)
 
-
-
+        
 
         ## INSTANTIATE PIPELINE
         model_configs = {
             "temperature": 0.7,
             "top_p": 0.95,
-            "max_length": 2048,
             "max_new_tokens": 10
         }
 
         config = DatamodelIndexBasedConfig(
-            k = 4,
+            k = 2,
             num_models= 1,
             datamodels_path = f"{tmp_path}",
             train_set_path= f"{tmp_path}/train_set.feather",
@@ -106,23 +105,52 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
         )
 
         pipe =DatamodelsIndexBasedNQPipeline(config)
-        pre_collection_pipe = BaseLLMPreCollectionsPipeline(
-            datamodelsPipeline = pipe,
-            mode = "train",
-            instruction = "Test",
-            model = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
-            context_strategy = fill_prompt_template,
-            rag_indexes_path = f"{tmp_path}/indexes.json",
-            output_column = "answer",
+
+        ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
+        datamodels_data = DatamodelsPreCollectionsData(
+            train_set=pipe.train_set,
+            test_set=pipe.test_set,
+            train_collections_idx=pipe.train_collections_idx,
+            test_collections_idx=pipe.test_collections_idx,
+            datamodels_path=pipe.datamodels_path,
+        )
+        print(tmp_path)
+        pre_collection_pipeline = BaseLLMPreCollectionsPipeline(
+            datamodels_data=datamodels_data,
+            mode="train",
+            instruction="Answer",
+            model=GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+            context_strategy=fill_prompt_template,
+            rag_indexes_path=f"{tmp_path}/indexes.json",
+            output_column="answer",
             start_idx = 0,
-            end_idx = 1,
+            end_idx = -1,
+            checkpoint = 1,
+            log = False,
+            log_config = None,
+            model_configs=model_configs,
+        )
+
+        pipe.create_pre_collection(pre_collection_pipeline)
+        pre_collection_pipeline = BaseLLMPreCollectionsPipeline(
+            datamodels_data=datamodels_data,
+            mode="test",
+            instruction="Answer",
+            model=GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+            context_strategy=fill_prompt_template,
+            rag_indexes_path=f"{tmp_path}/indexes.json",
+            output_column="answer",
+            start_idx = 0,
+            end_idx = -1,
             checkpoint = 50,
             log = False,
             log_config = None,
-            model_configs = model_configs
+            model_configs=model_configs,
         )
 
-        pipe.create_pre_collection(pre_collection_pipe)
+
+        print("Creating pre-collections")
+        pipe.create_pre_collection(pre_collection_pipeline)
 
         
 
@@ -133,23 +161,20 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
 
 
     def test_output_train_generated(self):
-        assert os.path.exists(f"{self.datamodels_path}/pre_collections/train")
+        assert os.path.exists(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
         assert os.path.exists(f"{self.datamodels_path}/pre_collections/train/pre_collection_0.feather")
         
     def test_output_test_generated(self):
-        assert os.path.exists(f"{self.datamodels_path}/pre_collections/test")
         assert os.path.exists(f"{self.datamodels_path}/pre_collections/test/pre_collection_0.feather")
 
     def test_output_length(self):
-        df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_0.feather")
+        df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
         assert len(df) == 1
-    
-    def test_checkpoint_stop(self):
-        assert os.path.exists(f"{self.datamodels_path}/pre_collections/train/pre_collection_0.feather")
-        assert not os.path.exists(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
+        df2 = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_0.feather")
+        assert (len(df2)+len(df)) == 2
 
     def test_pre_collection_dtypes(self):
-        df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_0.feather")
+        df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
         assert df["collection_idx"].dtype == pl.Int64
         assert df["test_idx"].dtype == pl.Int64
         assert df["input"].dtype == pl.Array

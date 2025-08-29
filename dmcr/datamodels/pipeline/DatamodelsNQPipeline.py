@@ -1,6 +1,9 @@
 from dmcr.datamodels.config import MemMapConfig, DatamodelConfig, LogConfig
 from dmcr.evaluators import BaseReferenceEvaluator
 from dmcr.models import BaseLLM, GenericInstructModelHF
+from dmcr.datamodels.pipeline.DatamodelsPipelineData import DatamodelsPreCollectionsData
+
+
 
 import pandas as pd
 import polars as pl

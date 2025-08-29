@@ -3,7 +3,7 @@ import polars as pl
 import numpy as np
 
 @dataclass
-class DatamodelsPipelineData:
+class DatamodelsPreCollectionsData:
     train_collections_idx: np.ndarray
     test_collections_idx: np.ndarray
     train_set: pl.DataFrame
