@@ -292,18 +292,18 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
             model_configs (dict | None, optional): The configurations for the model. Defaults to None.
         """
         self.datamodels_data = datamodels_data
-        self.mode = mode,
-        self.instruction = instruction,
-        self.model = model,
-        self.batch_size = batch_size,
-        self.context_strategy = context_strategy,
-        self.rag_indexes_path = rag_indexes_path,
-        self.output_column = output_column,
-        self.start_idx = start_idx,
-        self.end_idx = end_idx,
-        self.checkpoint = checkpoint,
-        self.log = log,
-        self.log_config = log_config,
+        self.mode = mode
+        self.instruction = instruction
+        self.model = model
+        self.batch_size = batch_size
+        self.context_strategy = context_strategy
+        self.rag_indexes_path = rag_indexes_path
+        self.output_column = output_column
+        self.start_idx = start_idx
+        self.end_idx = end_idx
+        self.checkpoint = checkpoint
+        self.log = log
+        self.log_config = log_config
         self.model_configs = model_configs
     
 
@@ -314,8 +314,8 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
             rag_indexes = json.load(f)
         
         self._validate_inputs(self.mode, self.model, rag_indexes)
-        if not isinstance(self.model, BaseLLM):
-            raise TypeError("Model must be an instance of BaseLLM for this PreCollectionPipeline class")
+        if not isinstance(self.model, BatchModel):
+            raise TypeError("Model must be an instance of BatchModel for this PreCollectionPipeline class")
 
 
 
@@ -347,7 +347,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
             
             batch_buffer = 0
             batch_pairs = []
-            for sample_idx, _ in enumerate(self.datamodels_data.test_set):
+            for sample_idx, _ in enumerate(self.datamodels_data.test_set["idx"]):
                 prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels_data)
                 print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
              
@@ -365,7 +365,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 else:
                     batch_pairs.append((prompt, true_output))
                     if isinstance(self.model, GenericInstructBatchHF):
-                        _list_results = self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs)
+                        _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
                         results = [result[0]["generated_text"] for result in _list_results]
                     else:
                         results = self.model.run(prompt)
