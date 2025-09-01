@@ -9,7 +9,7 @@ import os
 
 
 
-class BatchModelHF(BaseLLM):
+class BatchInstructModelHF(BaseLLM):
 
     def __init__(
             self,
