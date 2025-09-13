@@ -107,6 +107,7 @@ class PreCollectionsPipeline():
         save_dir = Path(self.datamodels_data.datamodels_path) / "pre_collections" / mode
         save_dir.mkdir(parents=True, exist_ok=True)
         df.write_ipc(save_dir / f"pre_collection_{idx_row}.feather", compression="zstd")
+
         return self._reset_pre_collection_dict()
     def _init_logging(self, log_config: LogConfig):
         """
@@ -308,85 +309,110 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
     
 
     def process(self) -> None: 
-       
-        ## guarantees it's a single inference scenario
-        with open(self.rag_indexes_path, "r") as f:
-            rag_indexes = json.load(f)
-        
-        self._validate_inputs(self.mode, self.model, rag_indexes)
-        if not isinstance(self.model, BatchModel):
-            raise TypeError("Model must be an instance of BatchModel for this PreCollectionPipeline class")
+            """
+            Process the dataset in batches, generating model outputs and saving results.
 
+            This method iterates over a range of collection indices, batching prompts and true outputs for efficient model inference.
+            For each collection index, it generates prompts using the context strategy, collects true outputs, and accumulates them into batches.
+            When a batch is ready (either the batch size is reached or the last sample is processed), it runs the model on the batch and stores the results.
+            The results are added to a dictionary, which is periodically saved to disk as a checkpoint.
+            Logging is performed if enabled.
+            """
+            # Load RAG (Retrieval-Augmented Generation) indexes from file
+            with open(self.rag_indexes_path, "r") as f:
+                rag_indexes = json.load(f)
 
+            # Validate input arguments and model type
+            self._validate_inputs(self.mode, self.model, rag_indexes)
+            if not isinstance(self.model, BatchModel):
+                raise TypeError("Model must be an instance of BatchModel for this PreCollectionPipeline class")
 
-        
-        pre_collection_dict = self._reset_pre_collection_dict()
-        checkpoint_count = 0
+            # Initialize the dictionary to store pre-collection results
+            pre_collection_dict = self._reset_pre_collection_dict()
+            checkpoint_count = 0
 
-        ### Set start and end index
-        if self.end_idx == -1:
-            dataset_idx = getattr(self.datamodels_data, f"{self.mode}_collections_idx")
-            self.end_idx = self.start_idx + len(dataset_idx[self.start_idx:])
-        
-        ### Get size
-        _keys = list(rag_indexes.keys())
-        collection_size = len(rag_indexes[_keys[0]])
+            # Set the end index if not provided
+            if self.end_idx == -1:
+                dataset_idx = getattr(self.datamodels_data, f"{self.mode}_collections_idx")
+                self.end_idx = self.start_idx + len(dataset_idx[self.start_idx:])
 
-        ## Iterate over the combinations
-        if self.log:
-            self._init_logging(self.log_config)
-            
-        for idx_row in range(self.start_idx, self.end_idx):
+            # Determine the size of each collection
+            _keys = list(rag_indexes.keys())
+            collection_size = len(rag_indexes[_keys[0]])
 
-            start_time = datetime.datetime.now()
-
-            if self.mode == "train":
-                binary_idx = self._convert_idx_to_binary(self.datamodels_data.train_collections_idx[idx_row], collection_size=collection_size)
-            elif self.mode == "test":
-                binary_idx = self._convert_idx_to_binary(self.datamodels_data.test_collections_idx[idx_row],collection_size=collection_size)
-            
-            batch_buffer = 0
-            batch_pairs = []
-            for sample_idx, _ in enumerate(self.datamodels_data.test_set["idx"]):
-                prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels_data)
-                print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
-             
-                ## Get true output and verify the expected behavior    
-                true_output = self.datamodels_data.test_set[sample_idx][self.output_column].to_numpy().flatten()[0].tolist()
-                assert isinstance(true_output, list)
-                assert isinstance(true_output[0], str)
-
-                if batch_buffer < self.batch_size and sample_idx < (len(self.datamodels_data.test_set) - 1):
-
-                    batch_pairs.append((prompt, true_output))
-                    batch_buffer += 1
-                
-                
-                else:
-                    batch_pairs.append((prompt, true_output))
-                    if isinstance(self.model, GenericInstructBatchHF):
-                        _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
-                        results = [result[0]["generated_text"] for result in _list_results]
-                    else:
-                        results = self.model.run(prompt)
-
-                    for _results_idx in range(len(results)):
-                        
-                        pre_collection_dict = self._add_row(pre_collection_dict, idx_row, sample_idx, binary_idx, results[_results_idx], batch_pairs[_results_idx][1])
-                        print(f"Added row {idx_row}, for question {sample_idx}")
-                    
-                    batch_buffer = 0
-                    batch_pairs = []
-
-            
-            ## Saving condition in checkpoint or end of indezes
-            checkpoint_count += 1
-            if checkpoint_count == self.checkpoint or idx_row == self.end_idx-1:
-                pre_collection_dict = self._save_checkpoint(pre_collection_dict, idx_row, self.mode)
-                checkpoint_count = 0
-
+            # Initialize logging if enabled
             if self.log:
-                wandb.log({"idx": idx_row, "end_time": str(datetime.datetime.now()), "full_duration": str((datetime.datetime.now() - start_time).total_seconds())})
+                self._init_logging(self.log_config)
 
-        if self.log:
-            wandb.finish()  
+            # Iterate over each collection index in the specified range
+            for idx_row in range(self.start_idx, self.end_idx):
+
+                start_time = datetime.datetime.now()  # Track start time for logging
+
+                # Convert collection indices to binary representation for the current collection
+                if self.mode == "train":
+                    binary_idx = self._convert_idx_to_binary(self.datamodels_data.train_collections_idx[idx_row], collection_size=collection_size)
+                elif self.mode == "test":
+                    binary_idx = self._convert_idx_to_binary(self.datamodels_data.test_collections_idx[idx_row], collection_size=collection_size)
+
+                batch_buffer = 0  # Counter for the current batch size
+                batch_pairs = []  # List to accumulate (prompt, true_output, sample_idx) tuples
+
+                # Iterate over each sample in the test set
+                for sample_idx, _ in enumerate(self.datamodels_data.test_set["idx"]):
+                    # Generate the prompt for the current sample
+                    prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels_data)
+                    print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
+
+                    # Retrieve the true output and verify its format
+                    true_output = self.datamodels_data.test_set[sample_idx][self.output_column].to_numpy().flatten()[0].tolist()
+                    assert isinstance(true_output, list)
+                    assert isinstance(true_output[0], str)
+
+                    # Accumulate batch until batch_size is reached or last sample is processed
+                    if batch_buffer < (self.batch_size-1) and sample_idx < (len(self.datamodels_data.test_set) - 1):
+                        batch_pairs.append([prompt, true_output, sample_idx])
+                        batch_buffer += 1
+                    else:
+                        # Add the last sample to the batch
+                        batch_pairs.append((prompt, true_output, sample_idx))
+                        # Run the model on the batch
+                        if isinstance(self.model, GenericInstructBatchHF):
+                            _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
+                            results = [result[0]["generated_text"] for result in _list_results]
+                        else:
+                            results = self.model.run(prompt)
+
+                        # Store results in the pre_collection_dict
+                        for _results_idx in range(len(results)):
+                            pre_collection_dict = self._add_row(
+                                pre_collection_dict,
+                                batch_pairs[_results_idx][2],  # sample_idx
+                                sample_idx,  # current sample_idx (may be redundant)
+                                binary_idx,
+                                results[_results_idx],
+                                batch_pairs[_results_idx][1],  # true_output
+                            )
+                            print(f"Added row {idx_row}, for question {sample_idx}")
+
+                        # Reset batch buffer and pairs for the next batch
+                        batch_buffer = 0
+                        batch_pairs = []
+
+                # Save checkpoint if needed (either at interval or at the end)
+                checkpoint_count += 1
+                if checkpoint_count == self.checkpoint or idx_row == self.end_idx-1:
+                    pre_collection_dict = self._save_checkpoint(pre_collection_dict, idx_row, self.mode)
+                    checkpoint_count = 0
+
+                # Log progress if enabled
+                if self.log:
+                    wandb.log({
+                        "idx": idx_row,
+                        "end_time": str(datetime.datetime.now()),
+                        "full_duration": str((datetime.datetime.now() - start_time).total_seconds())
+                    })
+
+            # Finish logging session if enabled
+            if self.log:
+                wandb.finish()
