@@ -92,10 +92,10 @@ class DatamodelsNQPipeline:
         Loads the test set if it has not been loaded yet.
         """
 
-        self.train_set = pl.read_ipc(f"{self.datamodels_path}/train_set.feather")
+        self.train_set = pl.read_ipc(f"{self.datamodels_path}/train_set.feather", memory_map=False)
         print("Loaded train set")
 
-        self.test_set = pl.read_ipc(f"{self.datamodels_path}/test_set.feather")
+        self.test_set = pl.read_ipc(f"{self.datamodels_path}/test_set.feather", memory_map=False)
         print("Loaded test set")
 
     def create_pre_collection(
@@ -233,7 +233,7 @@ class DatamodelsNQPipeline:
 
         ## Read all pre-collections
         feather_files = Path(pre_collections_path).glob('*.feather')
-        dfs = [pl.read_ipc(file) for file in sorted(feather_files)]
+        dfs = [pl.read_ipc(file, memory_map=False) for file in sorted(feather_files)]
         pre_collections = pl.concat(dfs, how='vertical')
 
         ## Verify if pre-collections are not empty
@@ -314,7 +314,7 @@ class DatamodelsNQPipeline:
             stacked_weights = torch.tensor([], device=device)
             stacked_bias = torch.tensor([], device=device)
 
-            df = pl.read_ipc(f"{self.datamodels_path}/collections/train/{collection_name}.feather")
+            df = pl.read_ipc(f"{self.datamodels_path}/collections/train/{collection_name}.feather", memory_map=False)
 
             for idx in range(self.num_models):
                 print(f"Idx: {idx}")
@@ -437,7 +437,7 @@ class DatamodelsNQPipeline:
         bias = torch.load(f"{self.datamodels_path}/models/{model_id}/bias.pt", weights_only=True)
 
         ## Load test dataset
-        df = pl.read_ipc(f"{self.datamodels_path}/collections/test/{collection_name}.feather")
+        df = pl.read_ipc(f"{self.datamodels_path}/collections/test/{collection_name}.feather", memory_map=False)
 
         evaluations = {
             "mse": [],

@@ -13,6 +13,8 @@ import os
 import shutil
 import json
 from langchain.prompts import PromptTemplate
+from pathlib import Path
+PATH = Path(__file__).parent.parent.parent.parent
 
 
 
@@ -119,7 +121,7 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
             datamodels_data=datamodels_data,
             mode="train",
             instruction="Answer",
-            model=GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+            model=GenericInstructModelHF(f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}", quantization=True),
             context_strategy=fill_prompt_template,
             rag_indexes_path=f"{tmp_path}/indexes.json",
             output_column="answer",
@@ -136,7 +138,7 @@ class TestIndexBasedNQPipelinePreCollectionCreation:
             datamodels_data=datamodels_data,
             mode="test",
             instruction="Answer",
-            model=GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+            model=GenericInstructModelHF(f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}", quantization=True),
             context_strategy=fill_prompt_template,
             rag_indexes_path=f"{tmp_path}/indexes.json",
             output_column="answer",

@@ -16,6 +16,7 @@ from langchain.prompts import PromptTemplate
 from pathlib import Path
 
 PATH = Path(__file__).parent.parent.parent.parent
+print(PATH)
 
 
 
@@ -60,7 +61,7 @@ class TestIndexBasedNQPipelineBatchPreCollection:
 
         test = {
             "question": ["test_question_1", "test_question_2", "test_question_3", "test_question_4", "test_question_5"],
-            "answer": ["test_answer_1", "test_answer_2", "test_answer_3", "test_answer_4", "test_answer_5"],
+            "answer": [["test_answer_1"], ["test_answer_2"], ["test_answer_3"], ["test_answer_4"], ["test_answer_5"]],
         }
         
         ## Create dfs
@@ -120,7 +121,7 @@ class TestIndexBasedNQPipelineBatchPreCollection:
             test_collections_idx=pipe.test_collections_idx,
             datamodels_path=pipe.datamodels_path,
         )
-        print(tmp_path)
+
         pre_collection_pipeline = BatchLLMPreCollectionsPipeline(
             datamodels_data=datamodels_data,
             mode="train",
@@ -143,7 +144,7 @@ class TestIndexBasedNQPipelineBatchPreCollection:
             datamodels_data=datamodels_data,
             mode="test",
             instruction="Answer",
-            model=GenericInstructBatchHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+            model=GenericInstructBatchHF(f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}", quantization=True),
             context_strategy=fill_prompt_template,
             rag_indexes_path=f"{tmp_path}/indexes.json",
             output_column="answer",
@@ -162,10 +163,10 @@ class TestIndexBasedNQPipelineBatchPreCollection:
 
         
 
-    @classmethod
-    def teardown_class(cls):
-        shutil.rmtree(cls.datamodels_path)
-        clean_temp_folders()
+    # @classmethod
+    # def teardown_class(cls):
+    #     shutil.rmtree(cls.datamodels_path)
+    #     clean_temp_folders()
 
 
     def test_output_train_generated(self):
@@ -183,7 +184,7 @@ class TestIndexBasedNQPipelineBatchPreCollection:
 
     def test_number_of_test_indexes(self):
         df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
-        assert df["test_idx"].n_unique() == 10
+        assert len(df.select("test_idx").unique()) == 5
 
     def test_pre_collection_dtypes(self):
         df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")

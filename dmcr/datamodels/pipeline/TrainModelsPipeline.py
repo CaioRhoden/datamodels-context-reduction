@@ -55,7 +55,7 @@ class TrainModelsPipeline():
             stacked_weights = torch.tensor([], device=self.model_factory.device)
             stacked_bias = torch.tensor([], device=self.model_factory.device)
 
-            df = pl.concat([pl.read_ipc(file) for file in collections_arr], how="vertical")
+            df = pl.concat([pl.read_ipc(file, memory_map=False) for file in collections_arr], how="vertical")
 
             for idx in range(self.datamodels.num_models):
                 model = self.model_factory.create_model()

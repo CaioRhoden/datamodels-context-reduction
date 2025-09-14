@@ -103,14 +103,14 @@ class DatamodelsIndexBasedNQPipeline:
         if train_set_path.endswith(".csv"):
             self.train_set = pl.read_csv(train_set_path)
         elif train_set_path.endswith(".feather"):
-            self.train_set = pl.read_ipc(train_set_path)
+            self.train_set = pl.read_ipc(train_set_path, memory_map=False)
         else:
             raise ValueError(f"Unsupported file format: {train_set_path}")
         
         if test_set_path.endswith(".csv"):
             self.test_set = pl.read_csv(test_set_path)
         elif test_set_path.endswith(".feather"):
-            self.test_set = pl.read_ipc(test_set_path)
+            self.test_set = pl.read_ipc(test_set_path, memory_map=False)
         else:
             raise ValueError(f"Unsupported file format: {test_set_path}")
 
@@ -146,7 +146,7 @@ class DatamodelsIndexBasedNQPipeline:
 
         ## Read all pre-collections
         feather_files = Path(pre_collections_path).glob('*.feather')
-        dfs = [pl.read_ipc(file) for file in sorted(feather_files)]
+        dfs = [pl.read_ipc(file, memory_map=False) for file in sorted(feather_files)]
         pre_collections = pl.concat(dfs, how='vertical')
 
         ## Verify if pre-collections are not empty
@@ -312,7 +312,7 @@ class DatamodelsIndexBasedNQPipeline:
         if len(collections_arr) == 0:
             raise Exception("No collections found in test folder")
 
-        df = pl.concat([pl.read_ipc(file) for file in collections_arr], how="vertical")
+        df = pl.concat([pl.read_ipc(file, memory_map=False) for file in collections_arr], how="vertical")
 
 
 

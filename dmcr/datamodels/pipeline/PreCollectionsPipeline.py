@@ -384,11 +384,12 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                             results = self.model.run(prompt)
 
                         # Store results in the pre_collection_dict
+                        
                         for _results_idx in range(len(results)):
                             pre_collection_dict = self._add_row(
                                 pre_collection_dict,
-                                batch_pairs[_results_idx][2],  # sample_idx
-                                sample_idx,  # current sample_idx (may be redundant)
+                                idx_row,
+                                batch_pairs[_results_idx][2],  # current sample_idx (may be redundant)
                                 binary_idx,
                                 results[_results_idx],
                                 batch_pairs[_results_idx][1],  # true_output

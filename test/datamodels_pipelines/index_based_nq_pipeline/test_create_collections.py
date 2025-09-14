@@ -8,6 +8,8 @@ from dmcr.utils.test_utils import clean_temp_folders
 import tempfile
 import os
 import shutil
+from pathlib import Path
+PATH = Path(__file__).parent.parent.parent.parent
 
 
 class TestIndexBasedNQPipelineCollectionCreation:
@@ -82,7 +84,7 @@ class TestIndexBasedNQPipelineCollectionCreation:
             """
 
         judge_evaluator = JudgeEvaluator(
-            model_path=os.environ["DATAMODELS_TEST_MODEL"],
+            model_path=f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}",
             model_configs = {
                 "temperature": 0.5,
                 "top_p": 0.9,

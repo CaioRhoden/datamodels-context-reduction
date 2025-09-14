@@ -75,7 +75,7 @@ class TestNQPipelinePreCollectionCreation:
                                    output_column="answer", 
                                    model_configs=model_configs,
                                    instruction= "Test",
-                                  llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+                                  llm = GenericInstructModelHF(f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}", quantization=True),
                                 )
         
         pipe.create_pre_collection( start_idx = 0, 
@@ -85,7 +85,7 @@ class TestNQPipelinePreCollectionCreation:
                                    output_column="answer", 
                                    model_configs=model_configs,
                                    instruction= "Test",
-                                  llm = GenericInstructModelHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+                                  llm = GenericInstructModelHF(f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}", quantization=True),
                                 )
 
     @classmethod
