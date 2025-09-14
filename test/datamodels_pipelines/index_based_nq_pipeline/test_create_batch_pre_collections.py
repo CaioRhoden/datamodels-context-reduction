@@ -13,6 +13,9 @@ import os
 import shutil
 import json
 from langchain.prompts import PromptTemplate
+from pathlib import Path
+
+PATH = Path(__file__).parent.parent.parent.parent
 
 
 
@@ -56,8 +59,8 @@ class TestIndexBasedNQPipelineBatchPreCollection:
         }
 
         test = {
-            "question": ["test_question_1"],
-            "answer": [["test_answer_1"]],
+            "question": ["test_question_1", "test_question_2", "test_question_3", "test_question_4", "test_question_5"],
+            "answer": ["test_answer_1", "test_answer_2", "test_answer_3", "test_answer_4", "test_answer_5"],
         }
         
         ## Create dfs
@@ -82,6 +85,9 @@ class TestIndexBasedNQPipelineBatchPreCollection:
         indexes = {
             "0": [0 ,1, 2, 3, 4],
             "1": [5, 6, 7, 8, 9],
+            "2": [0, 2, 4, 6, 8],
+            "3": [1, 3, 5, 7, 9],
+            "4": [0, 1, 5, 6, 7]
         }
 
         with open(f"{tmp_path}/indexes.json", "w") as f:
@@ -119,11 +125,11 @@ class TestIndexBasedNQPipelineBatchPreCollection:
             datamodels_data=datamodels_data,
             mode="train",
             instruction="Answer",
-            model=GenericInstructBatchHF(os.environ["DATAMODELS_TEST_MODEL"], quantization=True),
+            model=GenericInstructBatchHF(f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}", quantization=True),
             context_strategy=fill_prompt_template,
             rag_indexes_path=f"{tmp_path}/indexes.json",
             output_column="answer",
-            batch_size=6,
+            batch_size=3,
             start_idx = 0,
             end_idx = -1,
             checkpoint = 1,
@@ -144,7 +150,7 @@ class TestIndexBasedNQPipelineBatchPreCollection:
             batch_size=6,
             start_idx = 0,
             end_idx = -1,
-            checkpoint = 50,
+            checkpoint = 5,
             log = False,
             log_config = None,
             model_configs=model_configs,
@@ -171,9 +177,13 @@ class TestIndexBasedNQPipelineBatchPreCollection:
 
     def test_output_length(self):
         df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
-        assert len(df) == 1
+        assert len(df) == 5
         df2 = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_0.feather")
-        assert (len(df2)+len(df)) == 2
+        assert (len(df2)+len(df)) == 10
+
+    def test_number_of_test_indexes(self):
+        df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
+        assert df["test_idx"].n_unique() == 10
 
     def test_pre_collection_dtypes(self):
         df = pl.read_ipc(f"{self.datamodels_path}/pre_collections/train/pre_collection_1.feather")
