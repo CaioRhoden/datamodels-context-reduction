@@ -109,6 +109,7 @@ class PreCollectionsPipeline():
         df.write_ipc(save_dir / f"pre_collection_{idx_row}.feather", compression="zstd")
 
         return self._reset_pre_collection_dict()
+    
     def _init_logging(self, log_config: LogConfig):
         """
         Initialize wandb logging.
@@ -132,6 +133,26 @@ class PreCollectionsPipeline():
         except Exception as e:
             raise RuntimeError("Wandb initialization failed") from e
 
+    def _parse_generation_output(self, output: dict, thinking: bool=False) -> str:
+        """
+        Parse the output of the generation model, analyze if is it "enable_thinking"
+
+        Parameters:
+        - output (str): The raw output from the generation model.
+
+        Returns:
+        - str: The parsed output.
+        """
+        # Implement your parsing logic here
+        
+        if thinking:
+            # Example parsing logic for "enable_thinking"
+            # This is a placeholder; replace with actual logic as needed
+            parsed_output = str(output["generated_text"].split("</think>")[-1].strip())
+        else:
+            parsed_output = str(output["generated_text"])
+
+        return parsed_output
     
 class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
@@ -225,7 +246,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
 
                 if isinstance(self.model, GenericInstructModelHF):
-                    result = self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs)[0]["generated_text"]
+                    result = self._parse_generation_output(self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs)[0], self.model.thinking)
                 else:
                     result = self.model.run(prompt)
 
@@ -379,7 +400,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                         # Run the model on the batch
                         if isinstance(self.model, GenericInstructBatchHF):
                             _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
-                            results = [result[0]["generated_text"] for result in _list_results]
+                            results = [self._parse_generation_output(result[0], self.model.thinking) for result in _list_results]
                         else:
                             results = self.model.run(prompt)
 
