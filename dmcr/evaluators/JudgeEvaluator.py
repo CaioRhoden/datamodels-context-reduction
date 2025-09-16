@@ -16,7 +16,16 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
     assess the quality of predictions without requiring reference data.
     """
 
-    def __init__(self, model_path: str, model_configs: dict, instruction: str, format_template: Callable[[str, str], str], regex_pattern: str= r'Rating: \[\[(\d+)\]\]') -> None:
+    def __init__(
+            self, 
+            model_path: str, 
+            model_configs: dict, 
+            instruction: str, 
+            format_template: Callable[[str, str], str], 
+            regex_pattern: str= r'Rating: \[\[(\d+)\]\]', 
+            attn_implementation="sdpa", 
+            thinking=False
+        ) -> None:
         super().__init__()
 
         if os.path.exists(model_path):
@@ -28,9 +37,11 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
         self.instruction = instruction
         self.format_template = format_template
         self.regex_pattern = regex_pattern
+        self.attn_implementation = attn_implementation
+        self.thinking = thinking
 
         
-    def evaluate(self, y: np.ndarray, questions:np.ndarray, attn_implementation="sdpa", thinking=False) -> np.ndarray:
+    def evaluate(self, y: np.ndarray, questions:np.ndarray) -> np.ndarray:
         """
         Evaluate the data using an unsupervised approach.
 
@@ -42,7 +53,7 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
         Returns:
             np.ndarray: The evaluation results as an array.
         """
-        judge = GenericInstructModelHF(path=self.model_path, attn_implementation=attn_implementation, thinking=thinking)
+        judge = GenericInstructModelHF(path=self.model_path, attn_implementation=self.attn_implementation, thinking=self.thinking)
 
         results = []
         for pred, question in zip(y, questions):
