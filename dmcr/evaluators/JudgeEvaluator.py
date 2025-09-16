@@ -28,8 +28,9 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
         self.instruction = instruction
         self.format_template = format_template
         self.regex_pattern = regex_pattern
+
         
-    def evaluate(self, y: np.ndarray, questions:np.ndarray) -> np.ndarray:
+    def evaluate(self, y: np.ndarray, questions:np.ndarray, attn_implementation="sdpa", thinking=False) -> np.ndarray:
         """
         Evaluate the data using an unsupervised approach.
 
@@ -41,7 +42,7 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
         Returns:
             np.ndarray: The evaluation results as an array.
         """
-        judge = GenericInstructModelHF(path=self.model_path)
+        judge = GenericInstructModelHF(path=self.model_path, attn_implementation=attn_implementation, thinking=thinking)
 
         results = []
         for pred, question in zip(y, questions):
