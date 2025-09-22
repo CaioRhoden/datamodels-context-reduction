@@ -15,6 +15,7 @@ class GenericInstructBatchHF(BatchModel):
         
         self.tokenizer = AutoTokenizer.from_pretrained(path)
         self.tokenizer.pad_token_id = self.tokenizer.eos_token_id
+        self.tokenizer.padding_side = "left"
         self.accelerator = Accelerator()
         self.thinking = thinking
 
@@ -35,6 +36,14 @@ class GenericInstructBatchHF(BatchModel):
                     torch_dtype=torch.bfloat16,
                     quantization_config=quantization_config
                 )
+            
+        self.pipe = pipeline("text-generation",
+                model = self.model,
+                tokenizer = self.tokenizer,
+                return_full_text=False,
+                eos_token_id=self.tokenizer.eos_token_id,
+        )
+        
     
 
     def run(self, prompts: list[str],  instruction: str, config_params: dict) -> list[Any]:
@@ -48,14 +57,7 @@ class GenericInstructBatchHF(BatchModel):
             {"role": "user", "content": p},
         ]for p in prompts]
 
-        pipe = pipeline("text-generation",
-                        model = self.model,
-                        tokenizer = self.tokenizer,
-                        return_full_text=False,
-                        eos_token_id=self.tokenizer.eos_token_id,
-                        
-         
-                )
+
         if self.thinking:
             messages = [self.tokenizer.apply_chat_template(
                 m,
@@ -63,7 +65,16 @@ class GenericInstructBatchHF(BatchModel):
                 add_generation_prompt=True,
                 enable_thinking=self.thinking
             ) for m in messages]
-        output = pipe(messages, **config_params)
+
+        
+        else: 
+            messages = [self.tokenizer.apply_chat_template(
+                m,
+                tokenize=False,
+                add_generation_prompt=True,
+            ) for m in messages]
+
+        output = self.pipe(messages, batch_size=len(messages), **config_params)
 
         if isinstance(output, list):
             return output
