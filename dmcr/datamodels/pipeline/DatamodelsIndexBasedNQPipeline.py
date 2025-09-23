@@ -249,6 +249,9 @@ class DatamodelsIndexBasedNQPipeline:
             log_epochs: int = 1,
             log_config: LogConfig | None = None,
             run_id: str = "weights",
+            start_idx: int = 0,
+            end_idx: int | None = None,
+            checkpoint: int | None = None
                          
     ):
             
@@ -287,7 +290,10 @@ class DatamodelsIndexBasedNQPipeline:
             log, 
             log_epochs, 
             log_config, 
-            run_id
+            run_id,
+            start_idx,
+            end_idx,
+            checkpoint
         )
 
     def evaluate_test_collections(

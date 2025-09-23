@@ -31,10 +31,10 @@ class TestIndexBasedNQPipelineCollectionCreation:
         cls.datamodels_path = tmp_path
 
         pre_collection = {
-            "collection_idx": [i for i in range(10)],
-            "test_idx": [i%2 for i in range(1,11)],
-            "input": [np.array([1,0,1]) for i in range(10)],
-            "evaluation": [0.5 for i in range(10)],
+            "collection_idx": [i for i in range(12)],
+            "test_idx": [i%4 for i in range(1,13)],
+            "input": [np.array([1,0,1]) for i in range(12)],
+            "evaluation": [0.5 for i in range(12)],
         }
 
         os.mkdir(f"{tmp_path}/collections")
@@ -47,7 +47,7 @@ class TestIndexBasedNQPipelineCollectionCreation:
 
         config = DatamodelIndexBasedConfig(
             k = 4,
-            num_models= 2,
+            num_models= 4,
             datamodels_path = f"{tmp_path}",
             train_set_path= f"{tmp_path}/train_set.feather",
             test_set_path= f"{tmp_path}/test_set.feather",
@@ -63,10 +63,13 @@ class TestIndexBasedNQPipelineCollectionCreation:
             epochs=10,
             train_batches=1,
             val_batches=1,
-            val_size=0.2,
+            val_size=0.5,
             lr=0.001,
             patience=10,
             run_id="test",
+            start_idx=0,
+            end_idx=4,
+            checkpoint=2
 
         )
 
@@ -91,8 +94,12 @@ class TestIndexBasedNQPipelineCollectionCreation:
         """
 
         assert os.path.exists(f"{self.datamodels_path}/models/test")
-        assert os.path.exists(f"{self.datamodels_path}/models/test/weights.pt")
-        assert os.path.exists(f"{self.datamodels_path}/models/test/bias.pt")
+        assert os.path.exists(f"{self.datamodels_path}/models/test/0_1_weights.pt")
+        assert os.path.exists(f"{self.datamodels_path}/models/test/0_1_bias.pt")
+        assert os.path.exists(f"{self.datamodels_path}/models/test/2_3_weights.pt")
+        assert os.path.exists(f"{self.datamodels_path}/models/test/2_3_bias.pt")
+
+        
 
     def test_output_sizes(self):
         """
@@ -103,8 +110,8 @@ class TestIndexBasedNQPipelineCollectionCreation:
         and the bias is expected to have a shape of (2,).
         """
 
-        weights = torch.load(f"{self.datamodels_path}/models/test/weights.pt", weights_only=True)
-        bias = torch.load(f"{self.datamodels_path}/models/test/bias.pt", weights_only=True)
+        weights = torch.load(f"{self.datamodels_path}/models/test/0_1_weights.pt", weights_only=True)
+        bias = torch.load(f"{self.datamodels_path}/models/test/0_1_bias.pt", weights_only=True)
         assert weights.shape == (2, 3)
         assert bias.shape == (2,)
         
