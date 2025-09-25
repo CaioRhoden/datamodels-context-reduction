@@ -152,12 +152,20 @@ class DatamodelsIndexBasedNQPipeline:
         ## Verify if pre-collections are not empty
         assert len(pre_collections) > 0
 
-        ##Checkponints
-        if checkpoint is None:
-            checkpoint = len(pre_collections)
-
         if end_idx is None:
             end_idx = len(pre_collections)
+        ##Checkponints
+
+        if checkpoint is None:
+            checkpoint = end_idx - start_idx
+
+        if end_idx > len(pre_collections):
+            raise ValueError(f"end_idx {end_idx} is greater than the number of pre-collections {len(pre_collections)}")
+        if checkpoint > (end_idx - start_idx):
+            raise ValueError(f"checkpoint {checkpoint} is greater than the number of pre-collections to process {end_idx - start_idx}")
+
+        
+
 
         ## Init Log
         if log:
