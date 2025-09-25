@@ -88,10 +88,12 @@ class TestIndexBasedNQPipelineCollectionCreation:
             model_configs = {
                 "temperature": 0.5,
                 "top_p": 0.9,
-                "num_return_sequences": 5,
+                "num_return_sequences": 1,
+
             },
             instruction="",
-            format_template=format_input
+            format_template=format_input,
+            batch_size=2,
         )
 
         pipe.create_collection(evaluator=evaluator, collection_name="unit_test", mode="train")
