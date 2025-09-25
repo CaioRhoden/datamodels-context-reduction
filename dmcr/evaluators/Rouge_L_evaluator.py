@@ -3,11 +3,12 @@ import numpy as np
 from dmcr.evaluators import BaseReferenceEvaluator
 import evaluate
 import ast
+import uuid
 
 class Rouge_L_evaluator(BaseReferenceEvaluator):
 
     def __init__(self) -> None:
-        self.rouge_l = evaluate.load("rouge")
+        self.rouge_l = evaluate.load("rouge", experiment_id=str(uuid.uuid4()))
 
     def evaluate(self, y: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
         """

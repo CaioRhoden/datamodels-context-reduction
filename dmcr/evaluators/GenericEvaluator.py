@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from dmcr.evaluators import BaseReferenceEvaluator
 import evaluate
+import uuid
 
 class GenericEvaluator(BaseReferenceEvaluator):
 
@@ -13,7 +14,7 @@ class GenericEvaluator(BaseReferenceEvaluator):
             metric (str): The name of the metric to use, e.g. "rouge", "bleu".
             key (str): The key to use for the metric, e.g. "rougeL", "bleu-4".
         """
-        self.evaluator = evaluate.load(metric)
+        self.evaluator = evaluate.load(metric, experiment_id=str(uuid.uuid4()))
         self.key = key
 
 

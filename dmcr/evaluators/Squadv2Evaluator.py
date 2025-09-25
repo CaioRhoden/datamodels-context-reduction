@@ -4,11 +4,15 @@ from dmcr.evaluators import BaseReferenceEvaluator
 import evaluate
 import ast
 import random
+import uuid
+
+
 class SquadV2Evaluator(BaseReferenceEvaluator):
 
     def __init__(self, squadv2_key: str) -> None:
-        self.rouge_l = evaluate.load("squad_v2")
+        self.rouge_l = evaluate.load("squad_v2", experiment_id=str(uuid.uuid4()))
         self.key = squadv2_key
+        
 
     def evaluate(self, y: np.ndarray, y_pred: np.ndarray) -> np.ndarray:
         """
