@@ -28,7 +28,7 @@ class GenericInstructModelHF(BaseLLM):
             self.model = AutoModelForCausalLM.from_pretrained(
                     path, 
                     device_map={"": self.accelerator.process_index},
-                    torch_dtype=torch.bfloat16, 
+                    dtype=torch.bfloat16, 
                     attn_implementation=attn_implementation,
 
                 )
@@ -38,7 +38,7 @@ class GenericInstructModelHF(BaseLLM):
             self.model = AutoModelForCausalLM.from_pretrained(
                     path, 
                     device_map={"": self.accelerator.process_index},
-                    torch_dtype=torch.bfloat16,
+                    dtype=torch.bfloat16,
                     quantization_config=quantization_config
                 )
 
