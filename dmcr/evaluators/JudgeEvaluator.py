@@ -2,10 +2,11 @@ from typing import Callable
 import os
 import re
 import numpy as np
+from typing import Optional
 
 
 from dmcr.evaluators import BaseUnsupervisedEvaluator
-from dmcr.models import GenericInstructModelHF, GenericInstructBatchHF
+from dmcr.models import GenericInstructModelHF, GenericInstructBatchHF, GenericVLLMBatch
 
 
 class JudgeEvaluator(BaseUnsupervisedEvaluator):
@@ -25,7 +26,8 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
             regex_pattern: str= r'Rating: \[\[(\d+)\]\]', 
             attn_implementation="sdpa", 
             batch_size: int=1,
-            thinking=False
+            thinking=False,
+            judge: Optional[GenericInstructBatchHF | GenericInstructModelHF | GenericVLLMBatch] = None
         ) -> None:
         super().__init__()
 
@@ -44,12 +46,16 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
 
         if self.batch_size <=  0:
             raise ValueError("Batch size must be greater than 0")
-
-        self.judge = GenericInstructBatchHF(
-            path=self.model_path, 
-            attn_implementation=self.attn_implementation, 
-            thinking=self.thinking, 
-        )
+        
+        ## Initialize LM model
+        if judge is not None:
+            self.judge = judge
+        else:
+            self.judge = GenericInstructBatchHF(
+                path=self.model_path, 
+                attn_implementation=self.attn_implementation, 
+                thinking=self.thinking, 
+            )
         
 
 
