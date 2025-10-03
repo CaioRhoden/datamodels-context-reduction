@@ -259,7 +259,8 @@ class DatamodelsIndexBasedNQPipeline:
             run_id: str = "weights",
             start_idx: int = 0,
             end_idx: int | None = None,
-            checkpoint: int | None = None
+            checkpoint: int | None = None,
+            root_dir: str = "."
                          
     ):
             
@@ -301,7 +302,8 @@ class DatamodelsIndexBasedNQPipeline:
             run_id,
             start_idx,
             end_idx,
-            checkpoint
+            checkpoint,
+            root_dir=root_dir
         )
 
     def evaluate_test_collections(

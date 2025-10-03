@@ -13,7 +13,12 @@ class GenericVLLMBatch(BatchModel):
     including paged attention and continuous batching.
     """
 
-    def __init__(self, path: str, thinking: bool = False, quantization: str = None, **vllm_kwargs: Any) -> None:
+    def __init__(self, 
+                path: str, 
+                thinking: bool = False, 
+                quantization: str = None, 
+                **vllm_kwargs: Any
+            ) -> None:
         """
         Initializes the vLLM engine and tokenizer.
 

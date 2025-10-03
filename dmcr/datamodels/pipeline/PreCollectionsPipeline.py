@@ -398,11 +398,8 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                         # Add the last sample to the batch
                         batch_pairs.append((prompt, true_output, sample_idx))
                         # Run the model on the batch
-                        if isinstance(self.model, GenericInstructBatchHF):
-                            _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
-                            results = [self._parse_generation_output(result[0], self.model.thinking) for result in _list_results]
-                        else:
-                            results = self.model.run(prompt)
+                        _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
+                        results = [self._parse_generation_output(result[0], self.model.thinking) for result in _list_results]
 
                         # Store results in the pre_collection_dict
                         

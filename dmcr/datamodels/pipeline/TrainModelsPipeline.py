@@ -36,6 +36,7 @@ class TrainModelsPipeline():
             start_idx: int = 0,
             end_idx: int | None = None,
             checkpoint: int | None = None,
+            root_dir: str = "."
                          
     ) -> None:
         """Train multiple datamodels using the specified configuration and data collections.
@@ -82,7 +83,7 @@ class TrainModelsPipeline():
             - If logging is enabled, each model gets its own W&B run and checkpoints are logged as artifacts
         """
         
-        run_dir = f"{self.datamodels.datamodels_path}/models/{run_id}"
+        run_dir = f"{root_dir}/{self.datamodels.datamodels_path}/models/{run_id}"
 
         ## Create run_id folder
         if not os.path.exists(run_dir):
