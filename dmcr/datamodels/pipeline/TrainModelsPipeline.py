@@ -194,13 +194,13 @@ class TrainModelsPipeline():
                 torch.save(stacked_bias, f"{run_dir}/{last_checkpoint}_{idx}_bias.pt")
                 last_checkpoint = idx+1
 
-                if log:
-                    # Log a single artifact for the checkpoint file
-                    artifact_name = f"model_{run_id}_to_{idx+1}"
-                    artifact = wandb.Artifact(name=artifact_name, type="model_checkpoint")
-                    artifact.add_file(f"{run_dir}/{last_checkpoint}_{idx}_weights.pt")
-                    artifact.add_file(f"{run_dir}/{last_checkpoint}_{idx}_bias.pt")
-                    wandb.log_artifact(artifact)
+                # if log:
+                #     # Log a single artifact for the checkpoint file
+                #     artifact_name = f"model_{run_id}_to_{idx+1}"
+                #     artifact = wandb.Artifact(name=artifact_name, type="model_checkpoint")
+                #     artifact.add_file(f"{run_dir}/{last_checkpoint}_{idx}_weights.pt")
+                #     artifact.add_file(f"{run_dir}/{last_checkpoint}_{idx}_bias.pt")
+                #     wandb.log_artifact(artifact)
 
             if log:
                 wandb.finish()
