@@ -193,6 +193,8 @@ class TrainModelsPipeline():
                 torch.save(stacked_weights, f"{run_dir}/{last_checkpoint}_{idx}_weights.pt")
                 torch.save(stacked_bias, f"{run_dir}/{last_checkpoint}_{idx}_bias.pt")
                 last_checkpoint = idx+1
+                stacked_weights = torch.tensor([], device=self.model_factory.device)
+                stacked_bias = torch.tensor([], device=self.model_factory.device)
 
                 # if log:
                 #     # Log a single artifact for the checkpoint file
