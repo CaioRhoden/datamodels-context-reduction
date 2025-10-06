@@ -118,6 +118,57 @@ class DatamodelsIndexBasedNQPipeline:
 
         print("Loaded train set")
 
+    def _validate_create_collection_args(self, mode: str, start_idx: int, end_idx: int | None, checkpoint: int | None):
+        """Private helper to validate arguments and load pre_collections.
+
+        Returns tuple (pre_collections_path, pre_collections_polars_df)
+        May raise AssertionError or ValueError on invalid inputs.
+        """
+        # basic mode and repo structure checks
+        if mode not in ["train", "test"]:
+            raise ValueError("Mode must be 'train' or 'test'")
+        if self.train_set is None or self.test_set is None:
+            raise ValueError("Train and test sets must be loaded")
+        if self.train_collections_idx is None or self.test_collections_idx is None:
+            raise ValueError("Train and test collections index must be loaded")
+        if self.num_models != len(self.train_collections_idx) or self.num_models != len(self.test_collections_idx):
+            raise ValueError("Number of models must match the number of collections index")
+
+        pre_collections_path = f"{self.datamodels_path}/pre_collections/{mode}"
+        assert os.path.exists(pre_collections_path), f"Pre-collections path not found: {pre_collections_path}"
+
+        # Read all pre-collections
+        feather_files = Path(pre_collections_path).glob('*.feather')
+        dfs = [pl.read_ipc(file, memory_map=False) for file in feather_files]
+        if len(dfs) == 0:
+            raise AssertionError(f"No pre-collection files found in {pre_collections_path}")
+
+        pre_collections = pl.concat(dfs, how='vertical').sort(["collection_idx", "test_idx"])
+
+        # Verify if pre-collections are not empty
+        if len(pre_collections) == 0:
+            raise AssertionError("Concatenated pre-collections is empty")
+
+        # clamp end_idx
+        if end_idx is not None and end_idx > len(pre_collections):
+            print(f"Setting idx to max {len(pre_collections)}")
+            end_idx = len(pre_collections)
+
+        # validate checkpoint
+        effective_end = end_idx if end_idx is not None else len(pre_collections)
+        effective_checkpoint = checkpoint if checkpoint is not None else (effective_end - start_idx)
+        if effective_checkpoint > (effective_end - start_idx):
+            raise ValueError(f"checkpoint {effective_checkpoint} is greater than the number of pre-collections to process {effective_end - start_idx}")
+
+        ## validating expected collection size mathcing the real collection size
+        if mode == "train":
+            assert len(pre_collections) == (self.num_models * len(self.train_collections_idx)), f"Pre-collections size {len(pre_collections)} does not match expected size {self.num_models * len(self.train_collections_idx)}"
+        elif mode == "test":
+            assert len(pre_collections) == (self.num_models * len(self.test_collections_idx)), f"Pre-collections size {len(pre_collections)} does not match expected size {self.num_models * len(self.test_collections_idx)}"
+
+        return pre_collections_path, pre_collections
+    
+
 
     def create_pre_collection(
         self,
@@ -138,34 +189,100 @@ class DatamodelsIndexBasedNQPipeline:
         end_idx: int | None = None
     ):
         
+        """
+        Create a collection of evaluated model outputs from pre-computed "pre-collections" and save them
+        to disk (in IPC/Feather format). The function reads pre-collection files from
+        {datamodels_path}/pre_collections/{mode}, evaluates each chunk with the provided evaluator,
+        and writes resulting collection chunks to {datamodels_path}/collections/{mode}/{collection_name}_{chunk_start}.feather.
+        Optionally logs progress and metrics to Weights & Biases (wandb).
+        Parameters
+        ----------
+        evaluator : BaseReferenceEvaluator | BaseUnsupervisedEvaluator
+            An evaluator instance used to compute a scalar evaluation for each item in a pre-collection.
+            - If BaseReferenceEvaluator: its evaluate(true_outputs, predicted_outputs) will be called.
+              Both arguments are expected to be numpy-like arrays extracted from the "true_output" and
+              "predicted_output" columns of the pre-collections.
+            - If BaseUnsupervisedEvaluator: its evaluate(predicted_outputs, questions=...) will be called.
+              The function will assemble `questions` by looking up the "question" field from the pipeline's
+              self.test_set for each `test_idx` in the pre-collection chunk.
+        collection_name : str
+            Base name for output files. Each saved chunk will be named:
+            {collection_name}_{chunk_start}.feather and stored under
+            {datamodels_path}/collections/{mode}/.
+        mode : str, optional
+            Either "train" or "test" (default "train"). Determines which pre-collections subfolder is read
+            and under which subfolder the resulting collection files are written.
+        log : bool, optional
+            If True, attempt to initialize wandb with log_config and log per-chunk metadata and
+            evaluation vectors. When logging is enabled, wandb.finish() is called at the end.
+        log_config : LogConfig | None, optional
+            Required if log is True. Must contain the fields used when calling wandb.init:
+            project, dir, id, name, config, tags. If wandb cannot be initialized an exception is raised.
+        checkpoint : int | None, optional
+            Number of pre-collection rows (i.e. examples) to process per chunk. If None, defaults to
+            (end_idx - start_idx) which results in a single chunk spanning the requested range.
+            Must be <= (end_idx - start_idx) or a ValueError is raised.
+        start_idx : int, optional
+            Starting index (inclusive) within the concatenated pre-collections to begin processing.
+            Defaults to 0.
+        end_idx : int | None, optional
+            End index (exclusive) within the concatenated pre-collections to stop processing.
+            If None, defaults to the total number of rows in the concatenated pre-collections.
+        Behavior and side effects
+        -------------------------
+        - Expects a directory at {datamodels_path}/pre_collections/{mode} containing one or more
+          .feather/.ipc files. These files are read and concatenated into a single polars DataFrame and
+          sorted by ["collection_idx", "test_idx"].
+        - Asserts that the pre-collections directory exists and that the concatenated DataFrame is non-empty.
+          Missing path or empty pre-collections result in an AssertionError.
+        - Validates checkpoint, start_idx, end_idx relationships and will clamp end_idx to the available
+          number of pre-collection rows if it exceeds that length.
+        - Processes the pre-collections in chunks. For each chunk:
+          - Calls the evaluator according to its type to compute an evaluation vector.
+          - Adds a column named "evaluation" (float) to the chunk.
+          - Selects columns ["collection_idx", "test_idx", "input", "evaluation"] and writes them to
+            {datamodels_path}/collections/{mode}/{collection_name}_{chunk_start}.feather using zstd compression.
+          - Creates the directories {datamodels_path}/collections, {datamodels_path}/collections/train and
+            {datamodels_path}/collections/test if they do not already exist.
+          - If logging is enabled, logs chunk metadata and the evaluation vector to wandb.
+        - After all chunks complete (or immediately if checkpoint equals the requested range), wandb.finish()
+          is called when logging is enabled.
+        Exceptions
+        ----------
+        - ValueError
+            - If mode is not "train" or "test".
+            - If the provided evaluator is not an instance of BaseReferenceEvaluator or BaseUnsupervisedEvaluator.
+            - If checkpoint is greater than the number of items to process.
+        - AssertionError
+            - If the pre-collections path does not exist.
+            - If concatenated pre-collections is empty.
+        - Exception
+            - If log is True but log_config is not provided, or if wandb initialization fails.
+        Notes
+        -----
+        - The function writes files and mutates the filesystem; it does not return a value.
+        - It expects self to expose: datamodels_path (base path string), train_set and test_set (used
+          when composing questions for unsupervised evaluation), and possibly train_collections_idx / test_collections_idx
+          for consistency checks (the helper validation exists in the implementation).
+        - The exact shape and types of columns in the pre-collections must match what the evaluator expects:
+          typically "predicted_output" and "true_output" (when present) should be array-like / convertible
+          to numpy arrays, and "test_idx" must index into self.test_set.
+        Returns
+        -------
+        None
+        """
         start_time = datetime.datetime.now()
-        ## Verfiy if pre-collections exist
-        
-        pre_collections_path = f"{self.datamodels_path}/pre_collections/{mode}"
-        assert os.path.exists(pre_collections_path)       
 
-        ## Read all pre-collections
-        feather_files = Path(pre_collections_path).glob('*.feather')
-        dfs = [pl.read_ipc(file, memory_map=False) for file in sorted(feather_files)]
-        pre_collections = pl.concat(dfs, how='vertical')
-
-        ## Verify if pre-collections are not empty
-        assert len(pre_collections) > 0
+        # perform validations and prepare pre_collections, pre_collections_path and checkpoint/end_idx
+        pre_collections_path, pre_collections = self._validate_create_collection_args(
+            mode, start_idx, end_idx, checkpoint
+        )
 
         if end_idx is None:
             end_idx = len(pre_collections)
-        ##Checkponints
 
         if checkpoint is None:
             checkpoint = end_idx - start_idx
-
-        if end_idx > len(pre_collections):
-            raise ValueError(f"end_idx {end_idx} is greater than the number of pre-collections {len(pre_collections)}")
-        if checkpoint > (end_idx - start_idx):
-            raise ValueError(f"checkpoint {checkpoint} is greater than the number of pre-collections to process {end_idx - start_idx}")
-
-        
-
 
         ## Init Log
         if log:
@@ -189,7 +306,7 @@ class DatamodelsIndexBasedNQPipeline:
 
         ## Break chunks
         chunk_size = start_idx
-        print(f"len pre collections {len(pre_collections)}")
+        print(f"Overiw collection {collection_name} from {start_idx} to {end_idx} with checkpoint {checkpoint}")
         while chunk_size < end_idx:
             print(f"Starting chunk {chunk_size}")
             next_chunk = min(chunk_size+checkpoint, end_idx)
