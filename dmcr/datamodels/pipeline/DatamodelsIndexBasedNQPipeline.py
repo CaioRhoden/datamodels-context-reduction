@@ -127,12 +127,6 @@ class DatamodelsIndexBasedNQPipeline:
         # basic mode and repo structure checks
         if mode not in ["train", "test"]:
             raise ValueError("Mode must be 'train' or 'test'")
-        if self.train_set is None or self.test_set is None:
-            raise ValueError("Train and test sets must be loaded")
-        if self.train_collections_idx is None or self.test_collections_idx is None:
-            raise ValueError("Train and test collections index must be loaded")
-        if self.num_models != len(self.train_collections_idx) or self.num_models != len(self.test_collections_idx):
-            raise ValueError("Number of models must match the number of collections index")
 
         pre_collections_path = f"{self.datamodels_path}/pre_collections/{mode}"
         assert os.path.exists(pre_collections_path), f"Pre-collections path not found: {pre_collections_path}"
