@@ -76,13 +76,22 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
 
 
         results = []
+
+        
         for i in range(0, len(y), self.batch_size):
-            pred_ = y[i:i+self.batch_size]
+            pred = y[i:i+self.batch_size]
             question = questions[i:i+self.batch_size]
-            judge_inputs = [self.format_template(q, p) for q, p in zip(question, pred_)]
-            grades = self.judge.run(prompts=judge_inputs, instruction=self.instruction, config_params=self.model_configs)
-            scores = [self._calculate_rating_mean(g if isinstance(g, list) else [g]) for g in grades]
-            results.extend(scores)
+
+            scores = np.zeros((len(pred),))
+            for pi in range(len(pred)):
+                judge_inputs = [self.format_template(q, pi) for q, pi in zip(question, pi)]
+                grades = self.judge.run(prompts=judge_inputs, instruction=self.instruction, config_params=self.model_configs)
+                _scores = np.array([self._calculate_rating_mean(g if isinstance(g, list) else [g]) for g in grades])
+                
+
+                ### change scores values when _scores is greater than idx value in scores
+                scores = np.maximum(scores, _scores)
+            results.extend(scores.tolist())
 
         return np.array(results)
 

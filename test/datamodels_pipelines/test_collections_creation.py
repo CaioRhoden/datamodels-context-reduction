@@ -9,10 +9,10 @@ import tempfile
 import os
 import shutil
 from pathlib import Path
-PATH = Path(__file__).parent.parent.parent.parent
+PATH = Path(__file__).parent.parent.parent
 
 
-class TestIndexBasedNQPipelineCollectionCreation:
+class TestCollectionCreation:
 
     @classmethod
     def setup_class(cls):

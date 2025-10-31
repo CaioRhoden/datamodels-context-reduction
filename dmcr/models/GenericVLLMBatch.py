@@ -15,21 +15,20 @@ class GenericVLLMBatch(BatchModel):
 
     def __init__(self, 
                 path: str, 
+                quantization: str = None,
                 thinking: bool = False, 
-                quantization: str = None, 
-                **vllm_kwargs: Any
+                vllm_kwargs: dict = {}
             ) -> None:
         """
         Initializes the vLLM engine and tokenizer.
 
         Args:
             path (str): The path to the Hugging Face model repository or a local directory.
-            thinking (bool): A flag to enable "thinking" mode in the chat template, if supported.
             quantization (str, optional): The quantization method to use (e.g., 'awq', 'gptq'). Defaults to None.
-            **vllm_kwargs: Additional keyword arguments to pass directly to the vLLM LLM constructor,
-                           such as `tensor_parallel_size`, `gpu_memory_utilization`, etc.
+            vllm_kwargs (dict, optional): Additional keyword arguments to pass directly to the vLLM LLM constructor,
+                                           such as `tensor_parallel_size`, `gpu_memory_utilization`, etc.
         """
-        self.tokenizer = AutoTokenizer.from_pretrained(path)
+
         self.thinking = thinking
 
         # The vLLM engine replaces the HF model, pipeline, and accelerator
@@ -39,8 +38,9 @@ class GenericVLLMBatch(BatchModel):
             trust_remote_code=True,  # Recommended for many models
             **vllm_kwargs
         )
+        self.tokenizer = self.llm.get_tokenizer()
 
-    def run(self, prompts: List[str], instruction: str, config_params: Dict[str, Any]) -> List[List[Dict[str, str]]]:
+    def run(self, prompts: List[str], instruction: str, config_params: Dict[str, Any], chat_template_kwargs: dict = {}) -> List[List[Dict[str, str]]]:
         """
         Generate text for a list of prompts using the vLLM engine.
 
@@ -54,25 +54,19 @@ class GenericVLLMBatch(BatchModel):
                                         with a single dictionary: [{'generated_text': '...'}].
                                         This format mimics the original HF pipeline output.
         """
-        # 1. Prepare the prompts using the chat template
         messages = [[
             {"role": "system", "content": instruction},
             {"role": "user", "content": p},
         ] for p in prompts]
 
-        if self.thinking:
-            formatted_prompts = [self.tokenizer.apply_chat_template(
-                m,
+        formatted_prompts = [
+            self.tokenizer.apply_chat_template(
+                conversation=m,
                 tokenize=False,
-                add_generation_prompt=True,
-                enable_thinking=self.thinking
-            ) for m in messages]
-        else:
-            formatted_prompts = [self.tokenizer.apply_chat_template(
-                m,
-                tokenize=False,
-                add_generation_prompt=True,
-            ) for m in messages]
+                add_generation_prompt=True 
+            ) for m in messages
+        ]
+
 
         sampling_config = config_params.copy()
         
@@ -86,8 +80,11 @@ class GenericVLLMBatch(BatchModel):
         outputs = self.llm.generate(formatted_prompts, sampling_params)
 
         results = []
-        for output in outputs:
-            generated_text = output.outputs[0].text
-            results.append([{"generated_text": generated_text}])
-        
+
+        for res in outputs:
+            curr_output = []
+            for output in res.outputs:
+                generated_text = output.text
+                curr_output.append({"generated_text": generated_text})
+            results.append(curr_output)
         return results

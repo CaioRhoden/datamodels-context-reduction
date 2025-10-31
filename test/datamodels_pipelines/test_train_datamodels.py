@@ -12,7 +12,7 @@ import os
 import shutil
 
 
-class TestIndexBasedNQPipelineCollectionCreation:
+class TestPreCollectionsMultipleInferences:
 
 
 

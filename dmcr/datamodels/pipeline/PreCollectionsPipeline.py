@@ -133,7 +133,7 @@ class PreCollectionsPipeline():
         except Exception as e:
             raise RuntimeError("Wandb initialization failed") from e
 
-    def _parse_generation_output(self, output: dict, thinking: bool=False) -> str:
+    def _parse_generation_output(self, output: list[dict], thinking: bool=False) -> str:
         """
         Parse the output of the generation model, analyze if is it "enable_thinking"
 
@@ -144,15 +144,18 @@ class PreCollectionsPipeline():
         - str: The parsed output.
         """
         # Implement your parsing logic here
-        
-        if thinking:
-            # Example parsing logic for "enable_thinking"
-            # This is a placeholder; replace with actual logic as needed
-            parsed_output = str(output["generated_text"].split("</think>")[-1].strip())
-        else:
-            parsed_output = str(output["generated_text"])
+        results = []
+        print(output)
+        for out in output: 
+            if thinking:
+                # Example parsing logic for "enable_thinking"
+                # This is a placeholder; replace with actual logic as needed
+                parsed_output = str(out["generated_text"].split("</think>")[-1].strip())
+            else:
+                parsed_output = str(out["generated_text"])
 
-        return parsed_output
+            results.append(parsed_output)
+        return results
     
 class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
 
@@ -246,7 +249,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
 
                 if isinstance(self.model, GenericInstructModelHF):
-                    result = self._parse_generation_output(self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs)[0], self.model.thinking)
+                    result = self._parse_generation_output(self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs), self.model.thinking)
                 else:
                     result = self.model.run(prompt)
 
@@ -399,7 +402,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                         batch_pairs.append((prompt, true_output, sample_idx))
                         # Run the model on the batch
                         _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
-                        results = [self._parse_generation_output(result[0], self.model.thinking) for result in _list_results]
+                        results = [self._parse_generation_output(result, self.model.thinking) for result in _list_results]
 
                         # Store results in the pre_collection_dict
                         
