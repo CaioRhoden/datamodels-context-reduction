@@ -54,14 +54,9 @@ class DatamodelsIndexBasedNQPipeline:
         self.datamodels_path = config.datamodels_path
 
         
-        if not hard_test_flag and not soft_test_flag:
-            self._verify_repo_structure()
-            self.set_collections_index()
-            self.set_dataframes(config.train_set_path, config.test_set_path)
-        elif not hard_test_flag:
-            self.set_dataframes(config.train_set_path, config.test_set_path)
-        else:
-            pass
+        self._verify_repo_structure()
+        self.set_collections_index()
+        self.set_dataframes(config.train_set_path, config.test_set_path)
     
     def set_collections_index(self):
 
@@ -316,7 +311,7 @@ class DatamodelsIndexBasedNQPipeline:
             else:
                 raise ValueError("Evaluator must be an instance of BaseReferenceEvaluator or BaseUnsupervisedEvaluator")
             
-            pre_collections_chunk  = pre_collections_chunk.with_columns(pl.Series("evaluation", evaluation).cast(pl.Float64).alias("evaluation"))
+            pre_collections_chunk  = pre_collections_chunk.with_columns(pl.Series("evaluation", evaluation).alias("evaluation"))
             collection = pre_collections_chunk[["collection_idx","test_idx","input", "evaluation"]]
 
             ## Guarantees the necessary directories

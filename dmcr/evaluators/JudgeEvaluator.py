@@ -58,8 +58,6 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
             )
         
 
-
-        
     def evaluate(self, y: np.ndarray, questions:np.ndarray) -> np.ndarray:
         """
         Evaluate the data using an unsupervised approach.
@@ -79,21 +77,45 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
 
         
         for i in range(0, len(y), self.batch_size):
-            pred = y[i:i+self.batch_size]
-            question = questions[i:i+self.batch_size]
+            pred = y[i:min(i+self.batch_size, len(y))]
+            question = questions[i:min(i+self.batch_size, len(y))]
 
-            scores = np.zeros((len(pred),))
-            for pi in range(len(pred)):
-                judge_inputs = [self.format_template(q, pi) for q, pi in zip(question, pi)]
-                grades = self.judge.run(prompts=judge_inputs, instruction=self.instruction, config_params=self.model_configs)
-                _scores = np.array([self._calculate_rating_mean(g if isinstance(g, list) else [g]) for g in grades])
-                
+            judge_inputs = []
+            mapping = []
 
-                ### change scores values when _scores is greater than idx value in scores
-                scores = np.maximum(scores, _scores)
-            results.extend(scores.tolist())
+            for pi, sample in enumerate(pred):  # sample corresponds to one top-level item in the batch slice
+                pi_prompts = []
+                for pj, group in enumerate(sample):  # group is expected to be iterable of generated outputs
+                    question_for_sample = question[pi]
+                    # Build prompts for this group (one prompt per item in group)
+                    prompts = [self.format_template(q, p) for q, p in zip(question_for_sample, group)]
+                    judge_inputs.extend(prompts)
+                    pi_prompts.extend(prompts)
+                mapping.append((pi, len(pi_prompts)))
 
-        return np.array(results)
+
+            assert len(judge_inputs) == (len(pred) * len(pred[0])), "Mismatch in number of judge inputs constructed"
+
+            if not judge_inputs:
+                # nothing to evaluate in this batch slice; continue
+                continue
+
+            # Run the judge in one batch
+            grades = self.judge.run(prompts=judge_inputs, instruction=self.instruction, config_params=self.model_configs)
+
+            # Now reconstruct scores: grades is expected to be a list/dict entries matching judge_inputs order
+            idx = 0
+            for (pi, n_items) in mapping:
+                slice_grades = grades[idx: (idx + n_items) ]
+                idx += n_items
+
+                score = self._calculate_rating_mean(slice_grades)
+                results.append(score)
+
+
+
+        assert len(results) == len(y), "Mismatch between number of results and input samples"
+        return np.array(results, dtype=np.float64)
 
 
 
@@ -109,19 +131,19 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
             Mean rating (float), or None if no ratings found
         """
         ratings = []
-        
-        for item in grades:
-            text = item['generated_text']
-            # Search for rating pattern
-            match = re.search(self.regex_pattern, text)
-            if match:
-                ratings.append(int(match.group(1)))
-        
+        for pred in grades:
+            for item in pred:
+                text = item['generated_text']
+                # Search for rating pattern
+                match = re.search(self.regex_pattern, text)
+                if match:
+                    ratings.append(int(match.group(1)))
+            
         if not ratings:
             print("No ratings found in generated text")
             return 0
-        
+    
         return (sum(ratings) / len(ratings))/10
 
-        
+
 

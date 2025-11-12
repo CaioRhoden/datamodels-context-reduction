@@ -145,7 +145,6 @@ class PreCollectionsPipeline():
         """
         # Implement your parsing logic here
         results = []
-        print(output)
         for out in output: 
             if thinking:
                 # Example parsing logic for "enable_thinking"
