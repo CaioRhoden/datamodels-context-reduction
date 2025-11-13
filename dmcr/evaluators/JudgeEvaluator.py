@@ -83,16 +83,17 @@ class JudgeEvaluator(BaseUnsupervisedEvaluator):
             judge_inputs = []
             mapping = []
 
+
             for pi, sample in enumerate(pred):  # sample corresponds to one top-level item in the batch slice
                 pi_prompts = []
+                sample = sample.tolist()
                 for pj, group in enumerate(sample):  # group is expected to be iterable of generated outputs
                     question_for_sample = question[pi]
                     # Build prompts for this group (one prompt per item in group)
-                    prompts = [self.format_template(q, p) for q, p in zip(question_for_sample, group)]
+                    prompts = [self.format_template(question_for_sample, group)]
                     judge_inputs.extend(prompts)
                     pi_prompts.extend(prompts)
                 mapping.append((pi, len(pi_prompts)))
-
 
             assert len(judge_inputs) == (len(pred) * len(pred[0])), "Mismatch in number of judge inputs constructed"
 
