@@ -53,10 +53,9 @@ class DatamodelsIndexBasedNQPipeline:
         self.num_models = config.num_models
         self.datamodels_path = config.datamodels_path
 
-        
-        self._verify_repo_structure()
-        self.set_collections_index()
-        self.set_dataframes(config.train_set_path, config.test_set_path)
+        self.train_set_path = config.train_set_path
+        self.test_set_path = config.test_set_path
+
     
     def set_collections_index(self):
 
@@ -80,14 +79,8 @@ class DatamodelsIndexBasedNQPipeline:
             self.test_collections_idx = f["test_collection"][()]
         print("Loaded test collection index")
         
-    def _verify_repo_structure(self):
-
-        if not os.path.exists(f"{self.datamodels_path}/train_collection.h5"):
-            raise Exception("Train collection not found in datamodels path")
-        if not os.path.exists(f"{self.datamodels_path}/test_collection.h5"):
-            raise Exception("Test collection not found in datamodels path")
         
-    def set_dataframes(self, train_set_path: str, test_set_path: str):
+    def set_train_dataframes(self, train_set_path: str):
         """
         Loads the test set if it has not been loaded yet.
 
@@ -101,6 +94,8 @@ class DatamodelsIndexBasedNQPipeline:
             self.train_set = pl.read_ipc(train_set_path, memory_map=False)
         else:
             raise ValueError(f"Unsupported file format: {train_set_path}")
+        
+    def set_test_dataframes(self, test_set_path: str):
         
         if test_set_path.endswith(".csv"):
             self.test_set = pl.read_csv(test_set_path)
@@ -164,6 +159,7 @@ class DatamodelsIndexBasedNQPipeline:
         pre_collection_pipeline: BaseLLMPreCollectionsPipeline | BatchLLMPreCollectionsPipeline
     ):
        
+
         pre_collection_pipeline.process()
 
     def create_collection(
@@ -261,6 +257,7 @@ class DatamodelsIndexBasedNQPipeline:
         None
         """
         start_time = datetime.datetime.now()
+        self.set_test_dataframes(self.test_set_path)
 
         # perform validations and prepare pre_collections, pre_collections_path and checkpoint/end_idx
         pre_collections_path, pre_collections = self._validate_create_collection_args(

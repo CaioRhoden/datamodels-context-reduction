@@ -80,6 +80,8 @@ class TestCollectionCreation:
         )
 
         pipe = DatamodelsIndexBasedNQPipeline(config)
+        pipe.set_collections_index()
+
         evaluator = Rouge_L_evaluator()
 
         def format_input(question, response):
@@ -209,6 +211,7 @@ class TestMultiInferenceCollectionCreation:
         )
 
         pipe = DatamodelsIndexBasedNQPipeline(config)
+        pipe.set_collections_index()
         evaluator = Rouge_L_evaluator()
 
         def format_input(question, response):

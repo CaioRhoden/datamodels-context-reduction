@@ -112,6 +112,9 @@ class TestPipelinePreCollectionCreationBatch:
         )
 
         pipe =DatamodelsIndexBasedNQPipeline(config)
+        pipe.set_collections_index()
+        pipe.set_train_dataframes(pipe.train_set_path)
+        pipe.set_test_dataframes(pipe.test_set_path)
 
         ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
         datamodels_data = DatamodelsPreCollectionsData(

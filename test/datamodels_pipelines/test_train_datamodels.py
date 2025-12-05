@@ -10,6 +10,9 @@ from dmcr.utils.test_utils import clean_temp_folders
 import tempfile
 import os
 import shutil
+import pathlib
+
+ROOT = pathlib.Path(__file__).parent
 
 
 class TestPreCollectionsMultipleInferences:
@@ -48,12 +51,12 @@ class TestPreCollectionsMultipleInferences:
         config = DatamodelIndexBasedConfig(
             k = 4,
             num_models= 4,
-            datamodels_path = f"{tmp_path}",
+            datamodels_path = f"{tmp_path.split('/')[-1]}",
             train_set_path= f"{tmp_path}/train_set.feather",
             test_set_path= f"{tmp_path}/test_set.feather",
         )
 
-        pipeline = DatamodelsIndexBasedNQPipeline(config, hard_test_flag=True)
+        pipeline = DatamodelsIndexBasedNQPipeline(config)
         model_factory = FactoryLASSOLinearRegressor(3, 1, device="cpu", **{"lambda_l1": 0.01})
 
 
@@ -69,8 +72,7 @@ class TestPreCollectionsMultipleInferences:
             run_id="test",
             start_idx=0,
             end_idx=4,
-            checkpoint=2
-
+            checkpoint=2,
         )
 
 

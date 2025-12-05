@@ -1,4 +1,4 @@
-import pytest
+
 import polars as pl
 import numpy as np
 import h5py
@@ -108,6 +108,9 @@ class TestPipelinePreCollectionMultipleSentencesSingleInference:
         )
 
         pipe =DatamodelsIndexBasedNQPipeline(config)
+        pipe.set_collections_index()
+        pipe.set_train_dataframes(pipe.train_set_path)
+        pipe.set_test_dataframes(pipe.test_set_path)
 
         ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
         datamodels_data = DatamodelsPreCollectionsData(
@@ -261,6 +264,9 @@ class TestPipelinePreCollectionMultipleSentencesGenericInstructBatchHF:
         )
 
         pipe =DatamodelsIndexBasedNQPipeline(config)
+        pipe.set_collections_index()
+        pipe.set_train_dataframes(pipe.train_set_path)
+        pipe.set_test_dataframes(pipe.test_set_path)
 
         ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
         datamodels_data = DatamodelsPreCollectionsData(
@@ -353,6 +359,11 @@ class TestPipelinePreCollectionMultipleSentencesBatchInferenceVLLM:
             prompt = PromptTemplate.from_template(template).format(context=context, input=input)
 
             return prompt
+        ## SET ENV VARIABLE FOR VLLM MODEL
+
+        os.environ["VLLM_WORKER_MULTIPROC_METHOD"] = "spawn"
+        os.environ["C_INCLUDE_PATH"] = f"{os.environ['CONDA_PREFIX']}/include"
+        os.environ["CPLUS_INCLUDE_PATH"] = f"{os.environ['CONDA_PREFIX']}/include"
 
         ## CREATE TEMP DATA FOR PIPELINE
         clean_temp_folders()
@@ -418,6 +429,9 @@ class TestPipelinePreCollectionMultipleSentencesBatchInferenceVLLM:
         )
 
         pipe =DatamodelsIndexBasedNQPipeline(config)
+        pipe.set_collections_index()
+        pipe.set_train_dataframes(pipe.train_set_path)
+        pipe.set_test_dataframes(pipe.test_set_path)
 
         ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
         datamodels_data = DatamodelsPreCollectionsData(
@@ -432,7 +446,7 @@ class TestPipelinePreCollectionMultipleSentencesBatchInferenceVLLM:
             datamodels_data=datamodels_data,
             mode="train",
             instruction="Answer",
-            model=GenericVLLMBatch(f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}", quantization="fp8", vllm_kwargs={"gpu_memory_utilization":0.7}),
+            model=GenericVLLMBatch(f"{PATH}/{os.environ['DATAMODELS_TEST_MODEL']}", quantization="fp8", vllm_kwargs={"gpu_memory_utilization":0.7, "max_model_len": 2048}),
             context_strategy=fill_prompt_template,
             rag_indexes_path=f"{tmp_path}/indexes.json",
             output_column="answer",

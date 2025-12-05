@@ -109,6 +109,10 @@ class TestPipelinePreCollectionCreation:
         pipe =DatamodelsIndexBasedNQPipeline(config)
 
         ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
+        pipe.set_train_dataframes(pipe.train_set_path)
+        pipe.set_test_dataframes(pipe.test_set_path)
+        pipe.set_collections_index()
+        
         datamodels_data = DatamodelsPreCollectionsData(
             train_set=pipe.train_set,
             test_set=pipe.test_set,
@@ -116,6 +120,7 @@ class TestPipelinePreCollectionCreation:
             test_collections_idx=pipe.test_collections_idx,
             datamodels_path=pipe.datamodels_path,
         )
+
         print(tmp_path)
         pre_collection_pipeline = BaseLLMPreCollectionsPipeline(
             datamodels_data=datamodels_data,
