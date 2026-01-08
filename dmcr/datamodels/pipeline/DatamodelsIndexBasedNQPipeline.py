@@ -421,9 +421,20 @@ class DatamodelsIndexBasedNQPipeline:
         device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
         
-        ## Load model parameters
-        weigths = torch.load(f"{self.datamodels_path}/models/{model_id}/weights.pt", weights_only=True)
-        bias = torch.load(f"{self.datamodels_path}/models/{model_id}/bias.pt", weights_only=True)
+        ## Load model parameters from all checkpoint files
+        model_dir = f"{self.datamodels_path}/models/{model_id}"
+        weight_files = sorted([f for f in os.listdir(model_dir) if f.endswith("_weights.pt")])
+        bias_files = sorted([f for f in os.listdir(model_dir) if f.endswith("_bias.pt")])
+        
+        if len(weight_files) == 0 or len(bias_files) == 0:
+            raise Exception(f"No checkpoint files found in {model_dir}")
+        
+        # Load and concatenate all weight and bias checkpoints
+        weights_list = [torch.load(os.path.join(model_dir, f), weights_only=True) for f in weight_files]
+        bias_list = [torch.load(os.path.join(model_dir, f), weights_only=True) for f in bias_files]
+        
+        weigths = torch.cat(weights_list, dim=0)
+        bias = torch.cat(bias_list, dim=0)
 
        ## Create and verify list of files from collection
         colleciton_path = f"{self.datamodels_path}/collections/test/"
