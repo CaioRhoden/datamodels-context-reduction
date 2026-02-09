@@ -163,7 +163,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 mode: Literal["train", "test"],
                 instruction: dict | str,
                 model: BaseLLM,
-                context_strategy: Callable[[int, int, dict, DatamodelsPreCollectionsData], str],
+                context_strategy: Callable[[int, int, dict, DatamodelsPreCollectionsData, str], str],
                 rag_indexes_path: str,
                 output_column: str,
                 start_idx: int = 0,
@@ -286,7 +286,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 instruction: dict | str,
                 model: BatchModel,
                 batch_size: int,
-                context_strategy: Callable[[int, int, dict, DatamodelsPreCollectionsData], str],
+                context_strategy: Callable[[int, int, dict, DatamodelsPreCollectionsData, str], str],
                 rag_indexes_path: str,
                 output_column: str,
                 start_idx: int = 0,
@@ -384,7 +384,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 # Iterate over each sample in the test set
                 for sample_idx, _ in enumerate(self.datamodels_data.test_set["idx"]):
                     # Generate the prompt for the current sample
-                    prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels_data)
+                    prompt = self.context_strategy(idx_row, sample_idx, rag_indexes, self.datamodels_data, self.mode)
                     print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
 
                     # Retrieve the true output and verify its format

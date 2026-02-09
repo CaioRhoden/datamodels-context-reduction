@@ -22,7 +22,7 @@ class TestPipelinePreCollectionCreation:
 
     @classmethod
     def setup_class(cls):
-        def fill_prompt_template(idx_row: int, idx_test: int, rag_indexes: dict, datamodels: DatamodelsIndexBasedNQPipeline) -> str:
+        def fill_prompt_template(idx_row: int, idx_test: int, rag_indexes: dict, datamodels: DatamodelsIndexBasedNQPipeline, mode = "train") -> str:
             template = """
                 Documents:
                 {context}
@@ -32,7 +32,8 @@ class TestPipelinePreCollectionCreation:
 
             context = ""
             count = 0
-            for collection_idx in datamodels.train_collections_idx[idx_row]:
+            collection = datamodels.train_collections_idx[idx_row] if mode == "train" else datamodels.test_collections_idx[idx_row] 
+            for collection_idx in collection:
                 
                 idx = rag_indexes[str(idx_test)][collection_idx]
                 title = datamodels.train_set[idx]["title"].to_numpy().flatten()[0]
