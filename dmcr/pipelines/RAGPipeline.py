@@ -3,7 +3,7 @@ from dmcr.dataloaders.BaseDataloader import BaseDataloader
 # from langchain.embeddings import HuggingFaceBgeEmbeddings
 from dmcr.models import BaseLLM
 import torch
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 import pandas as pd
 
 

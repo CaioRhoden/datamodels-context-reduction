@@ -2,7 +2,7 @@ from dmcr.models import BaseLLM
 from dmcr.pipelines import BasePipeline
 
 import torch
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 import pandas as pd
 import json
 

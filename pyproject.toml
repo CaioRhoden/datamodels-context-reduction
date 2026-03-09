@@ -28,7 +28,11 @@ dependencies = [
     "wandb>=0.19.8",
     "bitsandbytes>=0.45.3",
     "vllm>=0.10.2",
-    "sentence-transformers==3.4.1"
+    "sentence-transformers==3.4.1",
+    "interpret>=0.7.6",
+    "joblib>=1.5.3",
+    "pytest>=9.0.2",
+    "torcheval>=0.0.7",
 ]
 
 

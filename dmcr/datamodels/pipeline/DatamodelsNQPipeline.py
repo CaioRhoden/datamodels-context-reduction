@@ -10,7 +10,7 @@ import polars as pl
 import numpy as np
 import torch
 
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from dmcr.datamodels.models import LinearRegressor
 import h5py
 import json

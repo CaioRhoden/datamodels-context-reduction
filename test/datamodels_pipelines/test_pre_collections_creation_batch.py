@@ -12,7 +12,7 @@ import tempfile
 import os
 import shutil
 import json
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from pathlib import Path
 
 PATH = Path(__file__).parent.parent.parent
