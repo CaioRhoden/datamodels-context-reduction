@@ -6,6 +6,7 @@ import polars as pl
 import torch.nn as nn
 import torch.optim as optim
 from torch.utils.data import random_split
+from datetime import datetime
 
 from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
 from dmcr.datamodels.config import LogConfig
@@ -21,15 +22,9 @@ class TrainModelsPipeline():
     def train_datamodels(
             self,
             collection_name: str,
-            epochs: int,
-            train_batches: int,
-            val_batches: int,
             val_size: float,
-            lr: float ,
-            patience: int,
             random_seed: int = 42,
             log: bool = False,
-            log_epochs: int = 1,
             log_config: LogConfig | None = None,
             run_id: str = "default_run_id",
             # --- New arguments for range and checkpointing ---
@@ -104,14 +99,15 @@ class TrainModelsPipeline():
             raise Exception("No collections found in train folder")
 
         ## Load existing weights and bias if resuming a run
-        stacked_weights = torch.tensor([], device=self.model_factory.device)
-        stacked_bias = torch.tensor([], device=self.model_factory.device)
+        stacked_weights = []
+        stacked_bias = []
 
         df = pl.concat([pl.read_ipc(file, memory_map=False) for file in collections_arr], how="vertical")
         last_checkpoint = start_idx
 
         for idx in range(start_idx, end_idx):
             model = self.model_factory.create_model()
+            starting_timestamp = datetime.now()
             print(f"Model {idx} training")
             
             _temp = (
@@ -122,14 +118,11 @@ class TrainModelsPipeline():
             _x = _temp["input"].to_numpy()
             _y = _temp["evaluation"].to_numpy()
 
-            dataset = torch.utils.data.TensorDataset(torch.tensor(_x, device=model.device), torch.tensor(_y, device=model.device))
+            dataset = torch.utils.data.TensorDataset(torch.tensor(_x, device="cpu"), torch.tensor(_y, device="cpu"))
             
             train_dt, val_dt = random_split(dataset, [float(1 - val_size), val_size], generator=torch.Generator().manual_seed(random_seed)) 
-            train = torch.utils.data.DataLoader(train_dt, batch_size=train_batches, shuffle=True)
-            val = torch.utils.data.DataLoader(val_dt, batch_size=val_batches, shuffle=True)
-
-            best_mse = float('inf')
-            early_stopping_counter = 0
+            train = torch.utils.data.DataLoader(train_dt, batch_size=len(train_dt), shuffle=True)
+            val = torch.utils.data.DataLoader(val_dt, batch_size=len(val_dt), shuffle=True)
 
             if log:
                 if log_config is None:
@@ -148,41 +141,17 @@ class TrainModelsPipeline():
                     resume="allow"
                 )
 
-            for epoch in range(epochs):
-                total_loss = 0
-                total_mse = 0
-                for x_train_batch, y_train_batch in train:
-                    x_train_batch, y_train_batch = x_train_batch.to(model.device).to(dtype=torch.float32), y_train_batch.to(model.device).to(dtype=torch.float32)
-                    y_pred = model.forward(x_train_batch).squeeze()
-                    total_loss += model.optimize(y_pred, y_train_batch, lr)
-                    
-                for x_val_batch, y_val_batch in val:
-                    total_mse += model.evaluate(x_val_batch.to(model.device).to(dtype=torch.float32), y_val_batch.to(model.device).to(dtype=torch.float32))
-                
-                mean_loss = round(total_loss / len(train), 4)
-                mean_mse = round(total_mse / len(val), 4)
+         
+            x_train, y_train = next(iter(train))
+            x_val, y_val = next(iter(val))
 
-                print(f'Epoch [{epoch + 1}/{epochs}], Loss: {mean_loss:.4f}, Val MSE: {mean_mse:.4f}')
+            model.train(x_train, y_train)
+            val_mse = model.evaluate(x_val, y_val)
 
-                if log and epoch % log_epochs == 0:
-                    wandb.log({"epoch": epoch, "mean_loss": mean_loss, "mean_metric": mean_mse})
-
-                if mean_mse < best_mse:
-                    best_mse = mean_mse
-                    early_stopping_counter = 0
-                else:
-                    early_stopping_counter += 1
-
-                if early_stopping_counter >= patience:
-                    if log:
-                        wandb.log({"early_stopping_counter": epoch, "epoch": epoch, "mean_loss": mean_loss, "mean_metric": mean_mse})
-                    print(f"Early stopping at epoch {epoch + 1}")
-                    break
-
-            stacked_weights = torch.concat((stacked_weights, model.get_weights()), dim=0)
-            stacked_bias = torch.concat((stacked_bias, model.get_bias()), dim=0)
-
-            model.detach()
+            if log:
+                wandb.log({"val_mse": val_mse, "total_time": (datetime.now() - starting_timestamp).total_seconds()})
+            stacked_weights.append(model.get_weights())
+            stacked_bias.append(model.get_bias())
 
             # --- Checkpoint Saving Logic ---
             is_checkpoint = (idx + 1) % checkpoint == 0
@@ -190,19 +159,10 @@ class TrainModelsPipeline():
 
             if is_checkpoint or is_last_model:
                 print(f"Checkpointing at model index {idx}. Saving models to {run_dir}")
-                torch.save(stacked_weights, f"{run_dir}/{last_checkpoint}_{idx}_weights.pt")
-                torch.save(stacked_bias, f"{run_dir}/{last_checkpoint}_{idx}_bias.pt")
+                torch.save(torch.tensor(stacked_weights), f"{run_dir}/{last_checkpoint}_{idx}_weights.pt")
+                torch.save(torch.tensor(stacked_bias), f"{run_dir}/{last_checkpoint}_{idx}_bias.pt")
                 last_checkpoint = idx+1
-                stacked_weights = torch.tensor([], device=self.model_factory.device)
-                stacked_bias = torch.tensor([], device=self.model_factory.device)
-
-                # if log:
-                #     # Log a single artifact for the checkpoint file
-                #     artifact_name = f"model_{run_id}_to_{idx+1}"
-                #     artifact = wandb.Artifact(name=artifact_name, type="model_checkpoint")
-                #     artifact.add_file(f"{run_dir}/{last_checkpoint}_{idx}_weights.pt")
-                #     artifact.add_file(f"{run_dir}/{last_checkpoint}_{idx}_bias.pt")
-                #     wandb.log_artifact(artifact)
-
+                stacked_weights = []
+                stacked_bias = []
             if log:
                 wandb.finish()

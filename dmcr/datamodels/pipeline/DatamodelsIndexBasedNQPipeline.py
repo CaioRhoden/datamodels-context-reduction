@@ -4,7 +4,7 @@ import polars as pl
 import numpy as np
 import torch
 
-from langchain.prompts import PromptTemplate
+from langchain_core.prompts import PromptTemplate
 from dmcr.datamodels.models import FactoryLinearRegressor, LinearRegressor
 import h5py
 import json
@@ -392,15 +392,9 @@ class DatamodelsIndexBasedNQPipeline:
         train_models = TrainModelsPipeline(self, model_factory)
         train_models.train_datamodels(
             collection_name, 
-            epochs, 
-            train_batches, 
-            val_batches, 
             val_size, 
-            lr, 
-            patience, 
             random_seed, 
             log, 
-            log_epochs, 
             log_config, 
             run_id,
             start_idx,

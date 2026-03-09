@@ -1,3 +1,5 @@
 from dmcr.datamodels.models.LinearRegressor import LinearRegressor
 from dmcr.datamodels.models.LASSOLinearRegressor import LASSOLinearRegressor
-from dmcr.datamodels.models.FactoryModels import FactoryBaseModel, FactoryLinearRegressor, FactoryLASSOLinearRegressor
+from dmcr.datamodels.models.EBMClassifier import EBMClassifier
+from dmcr.datamodels.models.BinaryClassifier import BinaryClassifier
+from dmcr.datamodels.models.FactoryModels import FactoryBaseModel, FactoryLinearRegressor
