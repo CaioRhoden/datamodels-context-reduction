@@ -133,12 +133,13 @@ class PreCollectionsPipeline():
         except Exception as e:
             raise RuntimeError("Wandb initialization failed") from e
 
-    def _parse_generation_output(self, output: list[dict], thinking: bool=False) -> str:
+    def _parse_generation_output(self, output: list[dict], thinking: bool=False, extract_response_strategy: Callable[[str], str] | None = None) -> str:
         """
         Parse the output of the generation model, analyze if is it "enable_thinking"
 
         Parameters:
         - output (str): The raw output from the generation model.
+        - extract_response_strategy (Callable[[str], str] | None): A strategy to extract the response from the generated text.
 
         Returns:
         - str: The parsed output.
@@ -152,6 +153,9 @@ class PreCollectionsPipeline():
                 parsed_output = str(out["generated_text"].split("</think>")[-1].strip())
             else:
                 parsed_output = str(out["generated_text"])
+            if extract_response_strategy is not None:
+                parsed_output = extract_response_strategy(parsed_output)
+
 
             results.append(parsed_output)
         return results
@@ -289,6 +293,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 context_strategy: Callable[[int, int, dict, DatamodelsPreCollectionsData, str], str],
                 rag_indexes_path: str,
                 output_column: str,
+                extract_response_strategy: Callable[[str], str] | None = None,
                 start_idx: int = 0,
                 end_idx: int = -1,
                 checkpoint: int = 50,
@@ -401,10 +406,10 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                         batch_pairs.append((prompt, true_output, sample_idx))
                         # Run the model on the batch
                         _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
-                        results = [self._parse_generation_output(result, self.model.thinking) for result in _list_results]
-
+                        results = [self._parse_generation_output(result, self.model.thinking, self.extract_response_strategy) for result in _list_results]
                         # Store results in the pre_collection_dict
-                        
+                
+
                         for _results_idx in range(len(results)):
                             pre_collection_dict = self._add_row(
                                 pre_collection_dict,
