@@ -334,6 +334,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
         self.log = log
         self.log_config = log_config
         self.model_configs = model_configs
+        self.extract_response_strategy=extract_response_strategy
     
 
     def process(self) -> None: 
