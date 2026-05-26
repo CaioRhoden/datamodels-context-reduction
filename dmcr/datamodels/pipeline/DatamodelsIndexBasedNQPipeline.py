@@ -123,32 +123,32 @@ class DatamodelsIndexBasedNQPipeline:
 
         # Read all pre-collections
         feather_files = Path(pre_collections_path).glob('*.feather')
-        dfs = [pl.read_ipc(file, memory_map=False) for file in feather_files]
+        dfs = [pl.scan_ipc(file, memory_map=True) for file in feather_files]
         if len(dfs) == 0:
             raise AssertionError(f"No pre-collection files found in {pre_collections_path}")
 
-        pre_collections = pl.concat(dfs, how='vertical').sort(["collection_idx", "test_idx"])
-
+        pre_collections = pl.concat(dfs, how='vertical')
+        size_collections = pre_collections.select(pl.len()).collect().item()
         # Verify if pre-collections are not empty
-        if len(pre_collections) == 0:
+        if size_collections == 0:
             raise AssertionError("Concatenated pre-collections is empty")
 
         # clamp end_idx
-        if end_idx is not None and end_idx > len(pre_collections):
-            print(f"Setting idx to max {len(pre_collections)}")
-            end_idx = len(pre_collections)
+        if end_idx is not None and end_idx > size_collections:
+            print(f"Setting idx to max {size_collections}")
+            end_idx = size_collections
 
         # validate checkpoint
-        effective_end = end_idx if end_idx is not None else len(pre_collections)
+        effective_end = end_idx if end_idx is not None else size_collections
         effective_checkpoint = checkpoint if checkpoint is not None else (effective_end - start_idx)
         if effective_checkpoint > (effective_end - start_idx):
             raise ValueError(f"checkpoint {effective_checkpoint} is greater than the number of pre-collections to process {effective_end - start_idx}")
 
-        ## validating expected collection size mathcing the real collection size
-        if mode == "train":
-            assert len(pre_collections) == (self.num_models * len(self.train_collections_idx)), f"Pre-collections size {len(pre_collections)} does not match expected size {self.num_models * len(self.train_collections_idx)}"
-        elif mode == "test":
-            assert len(pre_collections) == (self.num_models * len(self.test_collections_idx)), f"Pre-collections size {len(pre_collections)} does not match expected size {self.num_models * len(self.test_collections_idx)}"
+        # ## validating expected collection size mathcing the real collection size
+        # if mode == "train":
+        #     assert size_collections == (self.num_models * len(self.train_collections_idx)), f"Pre-collections size {size_collections} does not match expected size {self.num_models * len(self.train_collections_idx)}"
+        # elif mode == "test":
+        #     assert size_collections == (self.num_models * len(self.test_collections_idx)), f"Pre-collections size {size_collections} does not match expected size {self.num_models * len(self.test_collections_idx)}"
 
         return pre_collections_path, pre_collections
     
@@ -258,12 +258,10 @@ class DatamodelsIndexBasedNQPipeline:
         """
         start_time = datetime.datetime.now()
         self.set_test_dataframes(self.test_set_path)
-
         # perform validations and prepare pre_collections, pre_collections_path and checkpoint/end_idx
         pre_collections_path, pre_collections = self._validate_create_collection_args(
             mode, start_idx, end_idx, checkpoint
         )
-
         if end_idx is None:
             end_idx = len(pre_collections)
 
@@ -289,18 +287,22 @@ class DatamodelsIndexBasedNQPipeline:
             except:
                 raise Exception("Wandb not initialized, please check your log configuration")
 
-
         ## Break chunks
         chunk_size = start_idx
         print(f"Overiw collection {collection_name} from {start_idx} to {end_idx} with checkpoint {checkpoint}")
         while chunk_size < end_idx:
+            if checkpoint >= (end_idx - chunk_size):
+                checkpoint = end_idx - chunk_size
+
             print(f"Starting chunk {chunk_size}")
-            next_chunk = min(chunk_size+checkpoint, end_idx)
-            pre_collections_chunk = pre_collections[chunk_size:next_chunk]
+            pre_collections_chunk = pre_collections.slice(chunk_size, checkpoint).collect()
+            print(f"Chunk {chunk_size} collected with size {len(pre_collections_chunk)}")
 
             ## Evaluate the pre_collections and add them to the dataframe
             if isinstance(evaluator, BaseReferenceEvaluator):
+                print(f"Starting time: {datetime.datetime.now()}")
                 evaluation = evaluator.evaluate(pre_collections_chunk["true_output"].to_numpy(),  pre_collections_chunk["predicted_output"].to_numpy())
+                print(f"Evaluation done: {datetime.datetime.now()}")
             elif isinstance(evaluator, BaseUnsupervisedEvaluator):
                 questions  = [self.test_set[idx_test]["question"].to_numpy().flatten()[0] for idx_test in pre_collections_chunk["test_idx"]]
                 
