@@ -1,10 +1,8 @@
 
 
 import polars as pl
-import numpy as np
 import torch
 
-from langchain_core.prompts import PromptTemplate
 from dmcr.datamodels.models import FactoryLinearRegressor, LinearRegressor
 import h5py
 import json
@@ -80,33 +78,48 @@ class DatamodelsIndexBasedNQPipeline:
         print("Loaded test collection index")
         
         
+    @staticmethod
+    def _load_dataframe(path: str) -> pl.DataFrame:
+        if path.endswith(".csv"):
+            return pl.read_csv(path)
+        elif path.endswith(".feather"):
+            return pl.read_ipc(path, memory_map=False)
+        raise ValueError(f"Unsupported file format: {path}")
+
     def set_train_dataframes(self, train_set_path: str):
         """
-        Loads the test set if it has not been loaded yet.
+        Loads the train set if it has not been loaded yet.
 
         Returns:
             None
         """
-
-        if train_set_path.endswith(".csv"):
-            self.train_set = pl.read_csv(train_set_path)
-        elif train_set_path.endswith(".feather"):
-            self.train_set = pl.read_ipc(train_set_path, memory_map=False)
-        else:
-            raise ValueError(f"Unsupported file format: {train_set_path}")
-        
-    def set_test_dataframes(self, test_set_path: str):
-        
-        if test_set_path.endswith(".csv"):
-            self.test_set = pl.read_csv(test_set_path)
-        elif test_set_path.endswith(".feather"):
-            self.test_set = pl.read_ipc(test_set_path, memory_map=False)
-        else:
-            raise ValueError(f"Unsupported file format: {test_set_path}")
-
-
-
+        self.train_set = self._load_dataframe(train_set_path)
         print("Loaded train set")
+
+    def set_test_dataframes(self, test_set_path: str):
+        self.test_set = self._load_dataframe(test_set_path)
+        print("Loaded test set")
+
+    def get_pre_collections_data(self) -> DatamodelsPreCollectionsData:
+        """
+        Assemble the `DatamodelsPreCollectionsData` bundle expected by
+        `PreCollectionsPipeline` from this pipeline's currently loaded state.
+
+        Requires `set_collections_index`, `set_train_dataframes` and
+        `set_test_dataframes` to have been called first.
+        """
+        assert self.train_set is not None, "Train set not loaded, call set_train_dataframes first"
+        assert self.test_set is not None, "Test set not loaded, call set_test_dataframes first"
+        assert self.train_collections_idx is not None, "Train collections index not loaded, call set_collections_index first"
+        assert self.test_collections_idx is not None, "Test collections index not loaded, call set_collections_index first"
+
+        return DatamodelsPreCollectionsData(
+            train_set=self.train_set,
+            test_set=self.test_set,
+            train_collections_idx=self.train_collections_idx,
+            test_collections_idx=self.test_collections_idx,
+            datamodels_path=self.datamodels_path,
+        )
 
     def _validate_create_collection_args(self, mode: str, start_idx: int, end_idx: int | None, checkpoint: int | None):
         """Private helper to validate arguments and load pre_collections.
@@ -512,81 +525,3 @@ class DatamodelsIndexBasedNQPipeline:
 
 
     
-    def _add_element_to_collection(self, pre_collection_dict, collection_idx, test_idx, input, predicted_output, true_output):
-
-        pre_collection_dict["collection_idx"].append(collection_idx)
-        pre_collection_dict["test_idx"].append(test_idx)
-        pre_collection_dict["input"].append(input)
-        pre_collection_dict["predicted_output"].append(predicted_output)
-        pre_collection_dict["true_output"].append(true_output)
-
-        return pre_collection_dict
-
-    def _fill_prompt_template(
-            self,
-            idx_row: int,
-            idx_test: int,
-            title_column: str,
-            text_column: str,
-            rag_indexes: dict,
-            question_column: str      ) -> str:
-        
-        template = """
-            Documents:
-            {context}
-
-            Question: {input}\nAnswer: 
-        """
-
-        context = ""
-        count = 0
-        for collection_idx in self.train_collections_idx[idx_row]:
-
-            idx = rag_indexes[str(idx_test)][collection_idx]
-            title = self.train_set[idx][title_column].to_numpy().flatten()[0]
-            text = self.train_set[idx][text_column].to_numpy().flatten()[0]
-            context += f"Document[{count}](Title: {title}){text}\n\n"
-            count += 1
-
-        
-        input = self.test_set[idx_test][question_column].to_numpy().flatten()[0]
-
-        prompt = PromptTemplate.from_template(template).format(context=context, input=input)
-
-        return prompt
-
-    def _convert_idx_to_binary(self, arr: np.ndarray, collection_size: int) -> np.ndarray:
-        
-        """
-        Convert an array of indices into a binary numpy array of the same length as a given DataFrame.
-        
-        Parameters
-        ----------
-        arr : np.ndarray
-            The array of indices to convert.
-        df : pd.DataFrame, optional
-            The DataFrame to use to determine the length of the output array.
-            Defaults to None, in which case the length of the output array is the same as the length of the input array.
-        
-        Returns
-        -------
-        np.ndarray
-            The binary numpy array where the indices from the input array are 1 and the rest are 0.
-        """
-        indeces_df =  np.zeros(collection_size, dtype=int)
-        indeces_df[arr] = 1
-        return indeces_df
-        
-    def _reset_pre_collection_dict(self, optional_column: str | None = None) -> dict:
-        pre_collection_dict = {
-            "collection_idx": [],
-            "test_idx": [],
-            "input": [],
-            "predicted_output": [],
-            "true_output": [],
-        }
-
-        if optional_column is not None:
-            pre_collection_dict["optinal_output"] = []
-
-        return pre_collection_dict

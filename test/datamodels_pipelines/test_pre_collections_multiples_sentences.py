@@ -4,7 +4,6 @@ import numpy as np
 import h5py
 from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
 from dmcr.datamodels.pipeline import BaseLLMPreCollectionsPipeline, BatchLLMPreCollectionsPipeline
-from dmcr.datamodels.pipeline.DatamodelsPipelineData import DatamodelsPreCollectionsData
 from dmcr.datamodels import DatamodelIndexBasedConfig
 from dmcr.models import GenericInstructModelHF, GenericVLLMBatch, GenericInstructBatchHF
 from dmcr.utils.test_utils import clean_temp_folders
@@ -113,13 +112,7 @@ class TestPipelinePreCollectionMultipleSentencesSingleInference:
         pipe.set_test_dataframes(pipe.test_set_path)
 
         ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
-        datamodels_data = DatamodelsPreCollectionsData(
-            train_set=pipe.train_set,
-            test_set=pipe.test_set,
-            train_collections_idx=pipe.train_collections_idx,
-            test_collections_idx=pipe.test_collections_idx,
-            datamodels_path=pipe.datamodels_path,
-        )
+        datamodels_data = pipe.get_pre_collections_data()
         print(tmp_path)
 
         
@@ -269,13 +262,7 @@ class TestPipelinePreCollectionMultipleSentencesGenericInstructBatchHF:
         pipe.set_test_dataframes(pipe.test_set_path)
 
         ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
-        datamodels_data = DatamodelsPreCollectionsData(
-            train_set=pipe.train_set,
-            test_set=pipe.test_set,
-            train_collections_idx=pipe.train_collections_idx,
-            test_collections_idx=pipe.test_collections_idx,
-            datamodels_path=pipe.datamodels_path,
-        )
+        datamodels_data = pipe.get_pre_collections_data()
 
         pre_collection_pipeline = BatchLLMPreCollectionsPipeline(
             datamodels_data=datamodels_data,
@@ -434,13 +421,7 @@ class TestPipelinePreCollectionMultipleSentencesBatchInferenceVLLM:
         pipe.set_test_dataframes(pipe.test_set_path)
 
         ## INSTANTIATE PRE-COLLECTION PIPELINE DATACLASS
-        datamodels_data = DatamodelsPreCollectionsData(
-            train_set=pipe.train_set,
-            test_set=pipe.test_set,
-            train_collections_idx=pipe.train_collections_idx,
-            test_collections_idx=pipe.test_collections_idx,
-            datamodels_path=pipe.datamodels_path,
-        )
+        datamodels_data = pipe.get_pre_collections_data()
 
         pre_collection_pipeline = BatchLLMPreCollectionsPipeline(
             datamodels_data=datamodels_data,

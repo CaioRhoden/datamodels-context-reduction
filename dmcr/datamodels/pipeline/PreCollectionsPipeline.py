@@ -175,8 +175,8 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 checkpoint: int = 50,
                 log: bool = False,
                 log_config: LogConfig | None = None,
-                model_configs: dict | None = None,      
-            
+                model_configs: dict | None = None,
+                parse_generation_output_strategy: Callable[..., list[str]] | None = None,
                 ):
         self.datamodels_data = datamodels_data
         self.mode = mode
@@ -191,10 +191,11 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
         self.log = log
         self.log_config = log_config
         self.model_configs = model_configs
-    
+        self.parse_generation_output_strategy = parse_generation_output_strategy or self._parse_generation_output
 
-    def process(self) -> None: 
-       
+
+    def process(self) -> None:
+
         ## guarantees it's a single inference scenario
         """
         Process a single inference scenario.
@@ -252,7 +253,7 @@ class BaseLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 print(f"Train collection index: {idx_row}, Dev index: {sample_idx}")
 
                 if isinstance(self.model, GenericInstructModelHF):
-                    result = self._parse_generation_output(self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs), self.model.thinking)
+                    result = self.parse_generation_output_strategy(self.model.run(prompt, instruction=str(self.instruction), config_params=self.model_configs), self.model.thinking)
                 else:
                     result = self.model.run(prompt)
 
@@ -299,8 +300,8 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                 checkpoint: int = 50,
                 log: bool = False,
                 log_config: LogConfig | None = None,
-                model_configs: dict | None = None,      
-            
+                model_configs: dict | None = None,
+                parse_generation_output_strategy: Callable[..., list[str]] | None = None,
                 ):
         """
         Initialize a BatchLLMPreCollectionsPipeline.
@@ -335,7 +336,8 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
         self.log_config = log_config
         self.model_configs = model_configs
         self.extract_response_strategy=extract_response_strategy
-    
+        self.parse_generation_output_strategy = parse_generation_output_strategy or self._parse_generation_output
+
 
     def process(self) -> None: 
             """
@@ -407,7 +409,7 @@ class BatchLLMPreCollectionsPipeline(PreCollectionsPipeline):
                         batch_pairs.append((prompt, true_output, sample_idx))
                         # Run the model on the batch
                         _list_results = self.model.run([pair[0] for pair in batch_pairs], instruction=str(self.instruction), config_params=self.model_configs)
-                        results = [self._parse_generation_output(result, self.model.thinking, self.extract_response_strategy) for result in _list_results]
+                        results = [self.parse_generation_output_strategy(result, self.model.thinking, self.extract_response_strategy) for result in _list_results]
                         # Store results in the pre_collection_dict
                 
 

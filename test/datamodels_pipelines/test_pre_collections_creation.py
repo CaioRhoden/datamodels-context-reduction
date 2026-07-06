@@ -4,7 +4,6 @@ import numpy as np
 import h5py
 from dmcr.datamodels.pipeline import DatamodelsIndexBasedNQPipeline
 from dmcr.datamodels.pipeline import BaseLLMPreCollectionsPipeline
-from dmcr.datamodels.pipeline.DatamodelsPipelineData import DatamodelsPreCollectionsData
 from dmcr.datamodels import DatamodelIndexBasedConfig
 from dmcr.models import GenericInstructModelHF
 from dmcr.utils.test_utils import clean_temp_folders
@@ -114,13 +113,7 @@ class TestPipelinePreCollectionCreation:
         pipe.set_test_dataframes(pipe.test_set_path)
         pipe.set_collections_index()
         
-        datamodels_data = DatamodelsPreCollectionsData(
-            train_set=pipe.train_set,
-            test_set=pipe.test_set,
-            train_collections_idx=pipe.train_collections_idx,
-            test_collections_idx=pipe.test_collections_idx,
-            datamodels_path=pipe.datamodels_path,
-        )
+        datamodels_data = pipe.get_pre_collections_data()
 
         print(tmp_path)
         pre_collection_pipeline = BaseLLMPreCollectionsPipeline(
